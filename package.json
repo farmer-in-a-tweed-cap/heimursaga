@@ -1,13 +1,13 @@
 {
   "name": "heimursaga",
-  "version": "1.0",
-  "description": "Heimursaga Web Application",
+  "version": "1.0.0",
+  "description": "Heimuraga Web Application",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack -p --config webpack.config.js",
     "start": "node db.js",
     "watch": "nodemon db & webpack --watch"
   },
-  "author": "Paul Laros <support@bootlab.io>",
+  "author": "dev team, The Peripety Company",
   "private": true,
   "browserslist": [
     "> 0.5%",
