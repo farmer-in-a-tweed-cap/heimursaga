@@ -83,6 +83,7 @@
     "feather-icons": "4.28.0",
     "fullcalendar": "5.5.1",
     "geojson": "^0.5.0",
+    "heroku": "^7.54.1",
     "jquery": "3.5.1",
     "jquery-mask-plugin": "1.14.16",
     "jquery-validation": "1.19.3",
