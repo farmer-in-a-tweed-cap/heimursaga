@@ -7,7 +7,7 @@
     "start": "node db.js",
     "watch": "nodemon db & webpack --watch"
   },
-  "author": "dev team, The Peripety Company",
+  "author": "Dev Team, The Peripety Company",
   "private": true,
   "browserslist": [
     "> 0.5%",
