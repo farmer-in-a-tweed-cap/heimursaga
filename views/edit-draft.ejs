@@ -1,0 +1,302 @@
+<%- include('includes/header') %>
+
+<title>Heimursaga | Edit Draft</title>
+
+<%- include('includes/sidebar') %>
+
+<%- include('includes/navbar') %>
+
+
+			<main class="content">
+				<div class="container-fluid p-0">
+
+					<h1 class="h3 mb-3 text-center">Edit Draft</h1>
+
+					<div class="row">
+
+						<div class="col-12 col-xl-12">
+							<div class="card">
+
+								<a class="small font-weight-bold mt-3" href="/draft/<%= draft._id %>">&laquo; Back to draft permalink</a>
+
+								<div class="card-header">
+									<%- include('includes/flash') %>
+									<h5 class="card-title mb-0">1. Navigate to marker location</h5>
+								</div>
+								<div class="card-body">
+
+									<div class="entrymap" id="entrymap" style="height: 300px"></div>
+								</div>
+							</div>
+						</div>
+
+						<form method="POST">
+							<div class="col-12 col-xl-12">
+							  <div class="card">
+								<div class="card-header">
+								  <h5 class="card-title mb-0">2. Log marker coordinates</h5>
+								</div>
+								<div class="card-body">
+								  
+						  
+								  <div class="mb-3">
+									<output
+									  class="form-control"
+									  type="text"
+									  name="coordinates"
+									  id="coordinates"
+									  hidden
+									></output>
+								  </div>
+						  
+								  <button
+									type="button"
+									class="btn btn-outline-secondary mb-3"
+									onclick="myFunction()"
+								  >
+									Log Coordinates
+								  </button>
+						  
+								  <div class="mb-3">
+									<label class="form-label">Lng/Lat Coordinates</label>
+									<label class="form-text text-muted">
+									  - when your marker is in place, click "Log Coordinates" to capture
+									  the coordinates</label
+									>
+									<input
+									  class="form-control"
+									  type="text"
+									  name="lnglatcoordinates"
+									  id="lnglatcoordinates"
+									  value="<%= JSON.stringify(draft.GeoJSONcoordinates.coordinates[0]) %>, <%= JSON.stringify(draft.GeoJSONcoordinates.coordinates[1]) %>"
+									  readonly
+									/>
+								  </div>
+								</div>
+							  </div>
+							</div>
+						  
+							<div class="col-12 col-xl-12">
+							  <div class="card">
+								<div class="card-header">
+								  <h5 class="card-title mb-0">3. Write entry content</h5>
+								</div>
+								<div class="card-body">
+								  <div class="mb-3">
+									<label class="form-label">What</label>
+									<label class="form-text text-muted">
+									  - craft the perfect title and make it unique!</label
+									>
+									<input
+									  required
+									  name="title"
+									  id="post-title"
+									  class="form-control"
+									  type="text"
+									  value="<%= draft.title %>"
+									/>
+								  </div>
+								  <div class="mb-3">
+									<label class="form-label">Where</label>
+									<label class="form-text text-muted">
+									  - the place where it happened - the official name or your own
+									  name</label
+									>
+									<input
+									  required
+									  name="place"
+									  id="post-place"
+									  class="form-control"
+									  type="text"
+									  value="<%= draft.place %>"
+									/>
+								  </div>
+								  <div class="mb-3">
+									<label class="form-label">When</label>
+									<label class="form-text text-muted">
+									  - date of occurence - may be different from the date you post</label
+									>
+									<input required name="datesingle" class="form-control" type="text" value="<%= draft.date %>"/>
+								  </div>
+								  <div class="mb-3">
+									<label class="form-label">Tell Your Story</label>
+									<label class="form-text text-muted">
+									  - in 250-1000 words - if there's more write a series!</label
+									>
+									<textarea name="body" id="post-body" class="body-content tall-textarea form-control" type="text" rows="10"><%= draft.body %></textarea>
+								  </div>
+								</div>
+							  </div>
+							</div>
+						  
+							<div class="col-12 col-xl-12">
+							  <div class="card">
+								<div class="card-header">
+								  <h5 class="card-title mb-0">4. Upload optional photo and post entry</h5>
+								</div>
+								<div class="card-body">
+								  <div class="mb-3">
+									<input type="file" />
+									<small class="form-text text-muted">photo formats: _</small>
+								  </div>
+								  <button type="submit" formaction="/draft/<%= draft._id %>/edit" class="btn btn-secondary">Update Draft</button>
+								  <button type="submit" formaction="/create-entry" class="btn btn-primary">Post Entry</button>
+								</div>
+							  </div>
+							</div>
+						  </form>
+						  
+					</div>
+
+				</div>
+			</main>
+
+			<%- include('includes/footer') %>
+
+	<script>
+
+	mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
+		const entrymap = new mapboxgl.Map({
+			container: 'entrymap', // container ID
+			style: 'mapbox://styles/mapbox/cjaudgl840gn32rnrepcb9b9g', // style URL
+			center: [-105.595899,39.272346], // starting position [lng, lat]
+			zoom: 6,// starting zoom
+			attributionControl: false,
+			});
+
+			entrymap.on('load', function () {
+				entrymap.addSource('dem', {
+				'type': 'raster-dem',
+				'url': 'mapbox://mapbox.terrain-rgb'
+				});
+				entrymap.addLayer(
+				{
+				'id': 'hillshading',
+				'source': 'dem',
+				'type': 'hillshade'
+				// insert below waterway-river-canal-shadow;
+				// where hillshading sits in the Mapbox Outdoors style
+				},
+				'waterway-river-canal-shadow'
+				);
+			});
+
+			var marker = new mapboxgl.Marker({
+				color: '#3C73AA',
+				draggable: false,
+				})
+				.setLngLat([-119.5591, 37.715])
+				.addTo(entrymap);
+
+
+			entrymap.on('move', function (e) {
+				console.log(`Current Map Center: ${entrymap.getCenter()}`);
+				marker.setLngLat(entrymap.getCenter());
+				var lngLat = marker.getLngLat();
+				var entryCoordinates = marker.getLngLat();
+				console.log(document.getElementById('coordinates').value);
+				coordinates.innerHTML = [lngLat.lng,lngLat.lat];
+				coordinates.style.display = 'block';
+			});
+
+			entrymap.addControl(
+				new MapboxGeocoder({
+				accessToken: mapboxgl.accessToken,
+				marker: false,
+				mapboxgl: mapboxgl,
+				})
+			);
+
+		function myFunction() {
+			var copyText = document.getElementById("coordinates").value;
+			document.getElementById("lnglatcoordinates").value = copyText;
+			}
+
+		document.addEventListener("DOMContentLoaded", function() {
+			if (!window.Quill) {
+				return $("#quill-editor,#quill-toolbar,#quill-bubble-editor,#quill-bubble-toolbar").remove();
+			}
+			var editor = new Quill("#quill-editor", {
+				modules: {
+					toolbar: "#quill-toolbar"
+				},
+				placeholder: "Type something",
+				theme: "snow"
+			});
+			var bubbleEditor = new Quill("#quill-bubble-editor", {
+				placeholder: "",
+				modules: {
+					toolbar: "#quill-bubble-toolbar",
+				},
+				theme: "bubble"
+			});
+		});
+		var form = document.querySelector('form');
+			form.onsubmit = function() {
+			var text = document.querySelector('input[name=body]');
+			text.value = quill.root.innerHTML;
+			};
+
+		document.addEventListener("DOMContentLoaded", function() {
+			// Select2
+			$(".select2").each(function() {
+				$(this)
+					.wrap("<div class=\"position-relative\"></div>")
+					.select2({
+						placeholder: "Select value",
+						dropdownParent: $(this).parent()
+					});
+			})
+			// Daterangepicker
+			$("input[name=\"daterange\"]").daterangepicker({
+				opens: "left"
+			});
+			$("input[name=\"datetimes\"]").daterangepicker({
+				timePicker: true,
+				opens: "left",
+				startDate: moment().startOf("hour"),
+				endDate: moment().startOf("hour").add(32, "hour"),
+				locale: {
+					format: "M/DD hh:mm A"
+				}
+			});
+			$("input[name=\"datesingle\"]").daterangepicker({
+				singleDatePicker: true,
+				showDropdowns: true
+			});
+			var start = moment().subtract(29, "days");
+			var end = moment();
+
+			function cb(start, end) {
+				$("#reportrange span").html(start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY"));
+			}
+			$("#reportrange").daterangepicker({
+				startDate: start,
+				endDate: end,
+				ranges: {
+					"Today": [moment(), moment()],
+					"Yesterday": [moment().subtract(1, "days"), moment().subtract(1, "days")],
+					"Last 7 Days": [moment().subtract(6, "days"), moment()],
+					"Last 30 Days": [moment().subtract(29, "days"), moment()],
+					"This Month": [moment().startOf("month"), moment().endOf("month")],
+					"Last Month": [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")]
+				}
+			}, cb);
+			cb(start, end);
+			// Datetimepicker
+			$('#datetimepicker-minimum').datetimepicker();
+			$('#datetimepicker-view-mode').datetimepicker({
+				viewMode: 'years'
+			});
+			$('#datetimepicker-time').datetimepicker({
+				format: 'LT'
+			});
+			$('#datetimepicker-date').datetimepicker({
+				format: 'L'
+			});
+		});	
+
+	</script>
+</body>
+
+</html>

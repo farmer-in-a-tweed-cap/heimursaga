@@ -1,0 +1,338 @@
+<%- include('includes/header') %>
+
+<title>Heimursaga | Create Entry</title>
+
+<%- include('includes/sidebar') %>
+
+<%- include('includes/navbar') %>
+
+
+			<main class="content">
+				<div class="container-fluid p-0">
+
+					<h1 class="h3 mb-3 text-center">Create an Entry</h1>
+
+					<div class="row">
+					<div class="col-md-8 offset-md-2">
+
+						<div class="col-12 col-xl-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">1. Navigate to marker location</h5>
+								</div>
+								<div class="card-body">
+									<div id="entrymap" style="height: 300px"></div>
+								</div>
+							</div>
+						</div>
+
+						<form method="POST">
+							<div class="col-12 col-xl-12">
+							  <div class="card">
+								<div class="card-header">
+								  <h5 class="card-title mb-0">2. Log marker coordinates</h5>
+								</div>
+								<div class="card-body">
+								  <%- include('includes/flash') %>
+						  
+								  <div class="mb-3">
+									<output
+									  class="form-control"
+									  type="text"
+									  name="coordinates"
+									  id="coordinates"
+									  hidden
+									></output>
+								  </div>
+						  
+								  <button
+									type="button"
+									class="btn btn-outline-secondary mb-3"
+									onclick="myFunction()"
+								  >
+									Log Coordinates
+								  </button>
+						  
+								  <div class="mb-3">
+									<label class="form-label">Lng/Lat Coordinates</label>
+									<label class="form-text text-muted">
+									  - when your marker is in place, click "Log Coordinates" to capture
+									  the coordinates</label
+									>
+									<input
+									  class="form-control"
+									  type="text"
+									  name="lnglatcoordinates"
+									  id="lnglatcoordinates"
+									  readonly
+									/>
+								  </div>
+								</div>
+							  </div>
+							</div>
+						  
+							<div class="col-12 col-xl-12">
+							  <div class="card">
+								<div class="card-header">
+								  <h5 class="card-title mb-0">3. Write entry content</h5>
+								</div>
+								<div class="card-body">
+								  <div class="mb-3">
+									<label class="form-label">What</label>
+									<label class="form-text text-muted">
+									  - craft the perfect title and make it unique!</label
+									>
+									<input
+									  required
+									  name="title"
+									  id="post-title"
+									  class="form-control"
+									  type="text"
+									  maxlength="100"
+									/>
+								  </div>
+								  <div class="mb-3">
+									<label class="form-label">Where</label>
+									<label class="form-text text-muted">
+									  - the place where it happened - the official name or your own
+									  name</label
+									>
+									<input
+									  required
+									  name="place"
+									  id="post-place"
+									  class="form-control"
+									  type="text"
+									  maxlength="100"
+									/>
+								  </div>
+								  <div class="mb-3">
+									<label class="form-label">When</label>
+									<label class="form-text text-muted">
+									  - date of occurence - may be different from the date you post</label
+									>
+									<input required name="datesingle" class="form-control" type="text" />
+								  </div>
+								  <div class="mb-3">
+									<label class="form-label">Tell Your Story</label>
+									<label class="form-text text-muted">
+									  - in 250-1000 words - if there's more write a series! </label>
+									
+									<textarea name="body" id="post-body" class="body-content tall-textarea form-control" word-limit="true" max-words="10" min-words="3" type="text" rows="10"></textarea>
+									<div class="text-muted form-text">
+									Word Count: <span id="show">0</span>
+									</div>
+									<span></span>
+									<div class="writing_error form-text text-danger"></div>
+								  </div>
+								</div>
+							  </div>
+							</div>
+						  
+							<div class="col-12 col-xl-12">
+							  <div class="card">
+								<div class="card-header">
+								  <h5 class="card-title mb-0">4. Post entry</h5>
+								</div>
+								<div class="card-body">
+								  <!--<button type="submit" formaction="/save-draft" class="btn btn-secondary">Save to Drafts</button>-->
+								 
+								 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+								 
+								  <button type="submit" formaction="/create-entry" class="btn btn-primary">Post Entry</button>
+								</div>
+							  </div>
+							</div>
+						  </form>
+						  
+					</div>
+
+				</div>
+			</main>
+
+			<%- include('includes/footer') %>
+
+	<script>
+
+		// Add event trigger for change to textareas with limit
+		$(document).on("input", "textarea[word-limit=true]", function() {
+
+
+		// Get individual limits
+		thisMin = parseInt($(this).attr("min-words"));
+		thisMax = parseInt($(this).attr("max-words"));
+
+		// Create array of words, skipping the blanks
+		var removedBlanks = [];
+		removedBlanks = $(this).val().split(/\s+/).filter(Boolean);
+		
+		// Get word count
+		var wordCount = removedBlanks.length;
+		
+		// Remove extra words from string if over word limit
+		if (wordCount > thisMax) {
+				
+			// Trim string, use slice to get the first 'n' values
+			var trimmed = removedBlanks.slice(0, thisMax ).join(" ");
+			
+			// Add space to ensure further typing attempts to add a new word (rather than adding to penultimate word)
+			$(this).val(trimmed + " ");
+			
+			}
+			
+		
+		// Compare word count to limits and print message as appropriate
+		if ( wordCount < thisMin) {
+		
+			$(this).parent().children(".writing_error").text("Word count under " + thisMin + ".");
+		
+		} else if (wordCount > thisMax) {
+
+			$(this).parent().children(".writing_error").text("Word count over " + thisMax + ".");
+		
+		} else {
+			
+			// No issues, remove warning message
+			$(this).parent().children(".writing_error").text("");
+
+		}
+
+		});
+
+		mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
+		const entrymap = new mapboxgl.Map({
+			container: 'entrymap', // container ID
+			style: 'mapbox://styles/mapbox/cjaudgl840gn32rnrepcb9b9g', // style URL
+			center: [-105.595899,39.272346], // starting position [lng, lat]
+			zoom: 6,// starting zoom
+			attributionControl: false,
+			});
+
+			entrymap.on('load', function () {
+				entrymap.addSource('dem', {
+				'type': 'raster-dem',
+				'url': 'mapbox://mapbox.terrain-rgb'
+				});
+				entrymap.addLayer(
+				{
+				'id': 'hillshading',
+				'source': 'dem',
+				'type': 'hillshade'
+				// insert below waterway-river-canal-shadow;
+				// where hillshading sits in the Mapbox Outdoors style
+				},
+				'waterway-river-canal-shadow'
+				);
+			});
+
+			var marker = new mapboxgl.Marker({
+				color: '#3C73AA',
+				draggable: false,
+				})
+				.setLngLat([-119.5591, 37.715])
+				.addTo(entrymap);
+
+
+			entrymap.on('move', function (e) {
+				console.log(`Current Map Center: ${entrymap.getCenter()}`);
+				marker.setLngLat(entrymap.getCenter());
+				var lngLat = marker.getLngLat();
+				var entryCoordinates = marker.getLngLat();
+				console.log(document.getElementById('coordinates').value);
+				coordinates.innerHTML = [lngLat.lng,lngLat.lat];
+				coordinates.style.display = 'block';
+			});
+
+			entrymap.addControl(
+				new MapboxGeocoder({
+				accessToken: mapboxgl.accessToken,
+				marker: false,
+				mapboxgl: mapboxgl,
+				})
+			);
+
+		function myFunction() {
+			var copyText = document.getElementById("coordinates").value;
+			document.getElementById("lnglatcoordinates").value = copyText;
+			}
+
+		document.querySelector("#post-body")
+			.addEventListener("keyup", function countWord() {
+			let res = [];
+			let str = this.value.replace(/[\t\n\r\.\?\!]/gm, " ").split(" ");
+			str.map((s) => {
+				let trimStr = s.trim();
+				if (trimStr.length > 0) {
+				res.push(trimStr);
+				}
+			});
+		document.querySelector("#show").innerText = res.length;
+		});
+
+
+		
+
+
+		document.addEventListener("DOMContentLoaded", function() {
+			// Select2
+			$(".select2").each(function() {
+				$(this)
+					.wrap("<div class=\"position-relative\"></div>")
+					.select2({
+						placeholder: "Select value",
+						dropdownParent: $(this).parent()
+					});
+			})
+			// Daterangepicker
+			$("input[name=\"daterange\"]").daterangepicker({
+				opens: "left"
+			});
+			$("input[name=\"datetimes\"]").daterangepicker({
+				timePicker: true,
+				opens: "left",
+				startDate: moment().startOf("hour"),
+				endDate: moment().startOf("hour").add(32, "hour"),
+				locale: {
+					format: "M/DD hh:mm A"
+				}
+			});
+			$("input[name=\"datesingle\"]").daterangepicker({
+				singleDatePicker: true,
+				showDropdowns: true
+			});
+			var start = moment().subtract(29, "days");
+			var end = moment();
+
+			function cb(start, end) {
+				$("#reportrange span").html(start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY"));
+			}
+			$("#reportrange").daterangepicker({
+				startDate: start,
+				endDate: end,
+				ranges: {
+					"Today": [moment(), moment()],
+					"Yesterday": [moment().subtract(1, "days"), moment().subtract(1, "days")],
+					"Last 7 Days": [moment().subtract(6, "days"), moment()],
+					"Last 30 Days": [moment().subtract(29, "days"), moment()],
+					"This Month": [moment().startOf("month"), moment().endOf("month")],
+					"Last Month": [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")]
+				}
+			}, cb);
+			cb(start, end);
+			// Datetimepicker
+			$('#datetimepicker-minimum').datetimepicker();
+			$('#datetimepicker-view-mode').datetimepicker({
+				viewMode: 'years'
+			});
+			$('#datetimepicker-time').datetimepicker({
+				format: 'LT'
+			});
+			$('#datetimepicker-date').datetimepicker({
+				format: 'L'
+			});
+		});
+
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+<%- include('includes/header') %>
+
+<title>Heimursaga | Journal Feed</title>
+
+<%- include('includes/sidebar') %>
+
+<%- include('includes/navbar') %>
+
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<h1 class="h3 mb-3 text-center">Contact Us</h1>
+						<div class="col-12">
+							<div class="card">
+								<div class="card-body text-center col-md-8 offset-md-2 mb-5 mt-3">
+									Experiencing technical issues? Have questions or feedback? Want to chat about how to find Atlantis? Fill out the form below.
+									<div class="mt-6 col-md-6 offset-md-3">
+										<form>
+											<div class="mb-2">
+												<label class="form-label">Your Email</label>
+												<input
+												  required
+												  name="email"
+												  id="email"
+												  class="form-control"
+												  type="text"
+												/>
+											</div>
+											<div class="mb-2">
+												<label class="form-label">Your Name</label>
+												<input
+												  required
+												  name="email"
+												  id="email"
+												  class="form-control"
+												  type="text"
+												/>
+											</div>
+											<div class="mb-2">
+												<label class="form-label">Subject</label>
+												<input
+												  required
+												  name="email"
+												  id="email"
+												  class="form-control"
+												  type="text"
+												/>
+											</div>
+											<div class="mb-2">
+												<label class="form-label">Body</label>
+												<textarea
+												  required
+												  name="email"
+												  id="email"
+												  class="form-control body-content tall-textarea"
+												  rows="5"
+												  type="text"
+												></textarea>
+											</div>
+											<div class="card-body">
+
+												<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+												<button type="submit" class="btn btn-primary">Submit</button>
+											  </div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+					</div>
+				</div>
+			</main>
+			
+<%- include('includes/footer') %>

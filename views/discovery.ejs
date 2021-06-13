@@ -1,0 +1,141 @@
+<%- include('includes/header') %>
+
+<title>Heimursaga | Map View</title>
+
+<%- include('includes/sidebar') %>
+
+<%- include('includes/navbar') %>
+
+
+<main class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <%- include('includes/flash') %>
+
+                <div class="col-12 col-lg-8 d-flex">
+                    <div class="card w-100" style="height: 80vh;">
+                        <div class="card d-flex w-100"">
+                                <style>
+                                    .mapboxgl-popup {
+                                    max-width: 400px;
+                                    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+                                    }
+                                </style>
+                                    
+                                <div id="map" class="map" style='width: 100%; height: 80vh;'></div>
+                                
+                                <!--<div id="bounds" class="bounds" style="height: 10vh;"></div>-->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-4 d-flex">
+                    <div class="card flex-fill w-100" style="height: 80vh;">
+                        <div class="card-body overflow-auto">
+                            <div class="list-group list-group-flush">
+
+                                <% entries.forEach(function(entry) { %>
+                                    <% if (entry.GeoJSONcoordinates.coordinates[0]) { %>
+
+									<a data-bs-toggle="modal" href="#sizedModalMd-<%= entry._id %>" class="list-group-item list-group-item-action">
+                                    <strong><%= entry.title %></strong><br/>
+                                    <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle"><%= entry.place %> | <%= entry.date %></small><br/>
+                                    <small>by <strong><%= entry.author.username %></strong></small>
+                                    </a>
+                                        <div class="modal fade" id="sizedModalMd-<%= entry._id %>" tabindex="-1" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-body mb-0">
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="mt-0 mb-0">
+                                                        <h4 class="col-12 modal-title text-center"><%= entry.title %></h4>
+                                                    </div>
+
+                                                    <div class="col-md-6 offset-md-3">
+                                                        <hr>
+                                                    </div>
+                          
+                                                    <div class="mb-2">
+                                                      <h5 class="text-center"><%= entry.place %></h5>
+                                                    </div>
+                          
+                                                    <div class="mb-4">
+                                                      <h5 class="text-center text-muted"><%= entry.date %></h5>
+                                                    </div>
+                          
+                                                    <div class="modal-body">
+                                                      <div class="text-center mb-1 overflow-hidden">
+                                                        <img src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-s+3C73AA(<%=entry.GeoJSONcoordinates.coordinates%>)/<%=entry.GeoJSONcoordinates.coordinates%>,6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
+                                                      </div>
+                                                      <div class="mb-4 text-center">
+                                                        <small>Longitude: <%= entry.GeoJSONcoordinates.coordinates[0]%>, Latitude: <%= entry.GeoJSONcoordinates.coordinates[1]%></small>
+                                                      </div>
+                          
+                          
+                                                      <div class="modal-body mb-2">
+                                                        <%- filterUserHTML(entry.body) %>
+                                                      </div>
+                                                    </div>
+
+                                                    <div class="col-md-3 offset-md-3">
+                                                        <div class="row">
+                                                          <div class="col-md-4 overflow-hidden" id="single-entry-likes">
+                            
+                                                            <iframe src="single-entry-likes/<%=entry._id%>" id="single-entry-likes" height="20"></iframe>
+                            
+                                                          </div>
+                                                        </div>
+                                                    </div>
+                          
+                          
+                                                    <div class="col-md-6 offset-md-3 mb-1">
+                                                      <hr>
+                                                    </div>
+                          
+                                                    <div>
+                                                      <p class="text-muted small mb-4 text-center">
+                                                      <a href="/journal/<%= entry.author.username %>"><img class="avatar img-fluid rounded-circle me-1" src="<%= entry.author.avatar %>"></a>
+                                                      Posted by <a href="/journal/<%= entry.author.username %>"><%= entry.author.username %></a> on <%= entry.createdDate.getMonth() + 1 %>/<%= entry.createdDate.getDate() %>/<%= entry.createdDate.getFullYear() %></p>
+                                                    </div> 
+                                                    
+                                                    <div class="text-center mb-4">
+                                                        <small class="text-muted">
+                                                        <a href="/entry/<%= entry._id %>">Visit entry permalink</a>
+                                                        </small>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    <!--<a href="/entry/<%= entry._id %>" class="list-group-item list-group-item-action">-->
+                                   <!-- <strong><%= entry.title %></strong><br/>
+                                    <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <span class="align-middle"><%= entry.place %> | <%= entry.date %></span>
+                                    </a> -->
+                                <% }}) %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</main>
+
+
+<script type="text/javascript">
+
+    function convertToPlain(html){
+        var tempDivElement = document.createElement("entrymarkers");
+        tempDivElement.innerHTML = html;
+        return tempDivElement.textContent || tempDivElement.innerText || "";
+    }
+
+    var htmlString= "<entrymarkers><%=entrymarker%></entrymarkers>";
+
+    var markers = convertToPlain(htmlString)
+
+</script>
+			
+<%- include('includes/footer') %>

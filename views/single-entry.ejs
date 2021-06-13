@@ -1,0 +1,169 @@
+<%- include('includes/header') %>
+
+<title>Heimursaga | <%= entry.title %></title>
+
+<%- include('includes/sidebar') %>
+
+<%- include('includes/navbar') %>
+
+<main class="content">
+    <div class="container-fluid p-0">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    
+                    <div class="card-header">
+                        <div class="mb-2">
+                            <%- include('includes/flash') %>
+                            <h3 class="text-center"><%= entry.title %></h3>
+                          </div>
+
+                          <div class="col-md-6 offset-md-3">
+                              <hr>
+                          </div>
+
+                          <div class="mb-2">
+                            <h5 class="text-center"><%= entry.place %></h5>
+                          </div>
+
+                          <div class="mb-4">
+                            <h5 class="text-center text-muted"><%= entry.date %></h5>
+                          </div>
+
+                          <div class="body-content">
+                            <div class="text-center mb-1">
+                              <div id="singlemap" style="height: 300px;"></div>
+                              <!--<img src="https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+3C73AA(<%=entry.GeoJSONcoordinates.coordinates%>)/<%=entry.GeoJSONcoordinates.coordinates%>,6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">-->
+                            </div>
+                            <div class="mb-4 text-center">
+                              <small>Longitude: <%= entry.GeoJSONcoordinates.coordinates[0]%>, Latitude: <%= entry.GeoJSONcoordinates.coordinates[1]%></small>
+                            </div>
+
+
+                            <div class="mb-4">
+                              <%- filterUserHTML(entry.body) %>
+                            </div>
+                          </div>
+
+                      
+                          <div class="col-md-3 offset-md-3">
+                            <div class="row">
+                              <div class="col-md-4 overflow-hidden" id="single-entry-likes">
+
+                                <iframe src="single-entry-likes/<%=entry._id%>" id="single-entry-likes" height="20"></iframe>
+
+                              </div>
+                            </div>
+                          </div>
+
+
+                          <div class="col-md-6 offset-md-3 mb-4">
+                            <hr>
+                          </div>
+
+                          <div>
+                            <p class="text-muted small mb-5 text-center">
+                            <a href="/journal/<%= entry.author.username %>"><img class="avatar img-fluid rounded-circle me-1" src="<%= entry.author.avatar %>"></a>
+                            Posted by <a href="/journal/<%= entry.author.username %>"><%= entry.author.username %></a> on <%= entry.createdDate.getMonth() + 1 %>/<%= entry.createdDate.getDate() %>/<%= entry.createdDate.getFullYear() %></p>
+                          </div>
+
+                          <div class="row justify-content-between">
+                            <% if (entry.isVisitorOwner) { %>
+                                <span class="pe-2">
+                                  <a href="/entry/<%= entry._id %>/edit" class="text-primary mr-2" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>
+                                  <form class="delete-post-form d-inline" action="/entry/<%= entry._id %>/delete" method="POST">
+                                    
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                    <button class="delete-post-button text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>
+                                  </form>
+                                </span>
+                              <% } %>
+                          </div>
+                          
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+
+function convertToPlain(html){
+        var tempDivElement = document.createElement("entrymarkers");
+        tempDivElement.innerHTML = html;
+        return tempDivElement.textContent || tempDivElement.innerText || "";
+    }
+
+    var htmlString= "<entrymarkers><%=entrymarker%></entrymarkers>";
+
+    var marker = convertToPlain(htmlString)
+
+var singlemarker = JSON.parse(marker)
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
+
+const singlemap = new mapboxgl.Map({
+    container: 'singlemap',
+    style: 'mapbox://styles/mapbox/outdoors-v11',
+    center: singlemarker.geometry.coordinates,
+    zoom: 1,
+    attributionControl: false,
+    dragRotate: false,
+    touchPitch: false,
+    doubleClickZoom: false,
+    dragPan: false,
+    scrollZoom: false,
+    maxZoom: 10
+});
+
+singlemap.addControl(new mapboxgl.NavigationControl())
+
+singlemap.on('load', function () {
+    singlemap.loadImage(
+        './img/compass-marker-8.png',
+        function (error, image) {
+        if (error) throw error;
+    singlemap.addImage('custom-marker', image);
+
+    singlemap.addSource('places', {
+        'type': 'geojson',
+        'data': singlemarker
+        });
+
+    singlemap.flyTo({
+          center: singlemarker.geometry.coordinates,
+          zoom: 9,
+          speed: 0.4,
+          curve: 1,
+          essential: true,
+          })
+     
+    // Add a symbol layer
+    singlemap.addLayer({
+        'id': 'places',
+        'type': 'symbol',
+        'source': 'places',
+        'layout': {
+        'icon-image': 'custom-marker',
+        'icon-size': 0.05,
+        'icon-offset': [0,0],
+
+        // get the title name from the source's "title" property
+       // 'text-field': ['get', 'title'],
+        //'text-font': [
+        //'Open Sans Semibold',
+        //'Arial Unicode MS Bold'
+       // ],
+       // 'text-offset': [0, 1.25],
+       // 'text-anchor': 'top'
+        }
+        });
+        }
+    )})
+
+
+</script>
+			
+<%- include('includes/footer') %>
