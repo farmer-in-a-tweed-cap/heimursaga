@@ -48,7 +48,7 @@
     "tempusdominus-core": "5.19.0",
     "terser-webpack-plugin": "4.2.3",
     "url-loader": "4.1.1",
-    "webpack": "4.46.0",
+    "webpack": "^4.46.0",
     "webpack-cli": "3.3.12",
     "webpack-dev-server": "3.11.2",
     "webpack-fix-style-only-entries": "0.6.1"
