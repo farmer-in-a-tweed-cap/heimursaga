@@ -122,8 +122,14 @@
 									<label class="form-text text-muted">
 									  - in 250-1000 words - if there's more write a series!</label
 									>
-									<textarea name="body" id="post-body" class="body-content tall-textarea form-control" type="text" rows="10"><%= entry.body %></textarea>
-								  </div>
+									<textarea name="body" id="post-body" class="body-content tall-textarea form-control" word-limit="true" max-words="1000" min-words="250" type="text" rows="10"><%= entry.body %></textarea>
+									<div class="text-muted form-text">
+									Word Count: <span id="show">0</span>
+									</div>
+									<span></span>
+									<div class="writing_error form-text text-danger"></div>
+
+								</div>
 								</div>
 							  </div>
 							</div>
@@ -151,6 +157,51 @@
 			<%- include('includes/footer') %>
 
 	<script>
+
+				// Add event trigger for change to textareas with limit
+				$(document).on("input", "textarea[word-limit=true]", function() {
+
+
+// Get individual limits
+thisMin = parseInt($(this).attr("min-words"));
+thisMax = parseInt($(this).attr("max-words"));
+
+// Create array of words, skipping the blanks
+var removedBlanks = [];
+removedBlanks = $(this).val().split(/\s+/).filter(Boolean);
+
+// Get word count
+var wordCount = removedBlanks.length;
+
+// Remove extra words from string if over word limit
+if (wordCount > thisMax) {
+		
+	// Trim string, use slice to get the first 'n' values
+	var trimmed = removedBlanks.slice(0, thisMax ).join(" ");
+	
+	// Add space to ensure further typing attempts to add a new word (rather than adding to penultimate word)
+	$(this).val(trimmed + " ");
+	
+	}
+	
+
+// Compare word count to limits and print message as appropriate
+if ( wordCount < thisMin) {
+
+	$(this).parent().children(".writing_error").text("Word count under " + thisMin + ".");
+
+} else if (wordCount > thisMax) {
+
+	$(this).parent().children(".writing_error").text("Word count over " + thisMax + ".");
+
+} else {
+	
+	// No issues, remove warning message
+	$(this).parent().children(".writing_error").text("");
+
+}
+
+});
 
 function convertToPlain(html){
         var tempDivElement = document.createElement("entrymarkers");
