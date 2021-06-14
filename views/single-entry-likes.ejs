@@ -6,6 +6,7 @@
   if (!hasVisitorLiked) { %>
 
 <form action="/addLike/<%= entry._id %>" method="POST">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
   <button class="text-primary" style="background: transparent; border: none;">
     <div class="position-relative">
       <i class="align-middle fas fa-heart"></i>
@@ -17,7 +18,8 @@
 <% } else { %>
 
 <form action="/removeLike/<%= entry._id %>" method="POST">
-<button class="text-danger" style="background: transparent; border: none;">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <button class="text-danger" style="background: transparent; border: none;">
   <div class="position-relative">
     <i class="align-middle fas fa-heart"></i>
     <span class="indicator"><%= likeCount %></span>
