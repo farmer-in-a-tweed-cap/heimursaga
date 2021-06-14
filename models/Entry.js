@@ -5,7 +5,7 @@ const ObjectID = require('mongodb').ObjectID
 const User = require('./User')
 const sanitizeHTML = require('sanitize-html')
 
-//entriesCollection.createIndex({title: "text", body: "text"})
+//entriesCollection.createIndex({title: "text", body: "text", place: "text"})
 
 
 let Entry = function(data, userid, requestedEntryId) {

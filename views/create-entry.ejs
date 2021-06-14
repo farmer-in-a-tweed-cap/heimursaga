@@ -203,8 +203,8 @@
 		const entrymap = new mapboxgl.Map({
 			container: 'entrymap', // container ID
 			style: 'mapbox://styles/mapbox/cjaudgl840gn32rnrepcb9b9g', // style URL
-			center: [-105.595899,39.272346], // starting position [lng, lat]
-			zoom: 6,// starting zoom
+			center: [-33.609412,36.749601], // starting position [lng, lat]
+			zoom: 0,// starting zoom
 			attributionControl: false,
 			});
 
@@ -226,7 +226,7 @@
 			});
 
 			var marker = new mapboxgl.Marker({
-				color: '#3C73AA',
+				color: '#ac6d46',
 				draggable: false,
 				})
 				.setLngLat([-119.5591, 37.715])
@@ -250,6 +250,15 @@
 				mapboxgl: mapboxgl,
 				})
 			);
+
+			entrymap.addControl(new mapboxgl.GeolocateControl({
+				positionOptions: {
+				enableHighAccuracy: true
+				},
+				trackUserLocation: true
+				})
+			);
+			
 
 		function myFunction() {
 			var copyText = document.getElementById("coordinates").value;

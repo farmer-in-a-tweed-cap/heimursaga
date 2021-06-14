@@ -118,22 +118,20 @@ const singlemap = new mapboxgl.Map({
     doubleClickZoom: false,
     dragPan: false,
     scrollZoom: false,
+    touchZoomRotate: false,
+    touchPan: false,
     maxZoom: 10
 });
 
 singlemap.addControl(new mapboxgl.NavigationControl())
 
 singlemap.on('load', function () {
-    singlemap.loadImage(
-        './img/compass-marker-8.png',
-        function (error, image) {
-        if (error) throw error;
-    singlemap.addImage('custom-marker', image);
-
-    singlemap.addSource('places', {
-        'type': 'geojson',
-        'data': singlemarker
-        });
+  var marker = new mapboxgl.Marker({
+				color: '#ac6d46',
+				draggable: false,
+				})
+				.setLngLat(singlemarker.geometry.coordinates)
+				.addTo(singlemap);
 
     singlemap.flyTo({
           center: singlemarker.geometry.coordinates,
@@ -143,28 +141,7 @@ singlemap.on('load', function () {
           essential: true,
           })
      
-    // Add a symbol layer
-    singlemap.addLayer({
-        'id': 'places',
-        'type': 'symbol',
-        'source': 'places',
-        'layout': {
-        'icon-image': 'custom-marker',
-        'icon-size': 0.05,
-        'icon-offset': [0,0],
-
-        // get the title name from the source's "title" property
-       // 'text-field': ['get', 'title'],
-        //'text-font': [
-        //'Open Sans Semibold',
-        //'Arial Unicode MS Bold'
-       // ],
-       // 'text-offset': [0, 1.25],
-       // 'text-anchor': 'top'
-        }
-        });
-        }
-    )})
+    })
 
 
 </script>

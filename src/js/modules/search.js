@@ -107,7 +107,7 @@ export default class Search {
         <div class="search-overlay-top shadow-sm">
           <div class="container container-fluid">
             <label for="live-search-field" class="search-overlay-icon"><i class="fas fa-search"></i></label>
-            <input type="text" id="live-search-field" class="live-search-field" placeholder="What are you interested in?">
+            <input type="text" id="live-search-field" class="live-search-field" placeholder="Search entry titles, places, content...">
             <span class="close-live-search mr-6"><i class="fas fa-times-circle"></i></span>
           </div>
         </div>
