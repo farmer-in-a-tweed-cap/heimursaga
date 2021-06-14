@@ -153,7 +153,6 @@ Entry.findSingleById = function(id, visitorId) {
     ], visitorId)
 
     if (entries.length) {
-      console.log(entries[0])
       resolve(entries[0])
     } else {
       reject()

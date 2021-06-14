@@ -106,7 +106,6 @@ User.prototype.update = function() {
     return new Promise(async (resolve, reject) => {
       try {
         let user = await User.findByUsername(this.data.username)
-        console.log(user)
         if (user) {
           // actually update the db
           let status = await this.actuallyUpdate()

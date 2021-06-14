@@ -30,8 +30,6 @@ router.post('/update-user/:username', userController.ifUserExists, userControlle
 
 // profile related routes
 router.get('/journal/:username', userController.ifUserExists, userController.sharedProfileData, userController.journalScreen)
-router.get('/profile/:username/followers', userController.ifUserExists, userController.sharedProfileData, userController.profileFollowersScreen)
-router.get('/profile/:username/following', userController.ifUserExists, userController.sharedProfileData, userController.profileFollowingScreen)
 router.get('/my-feed', userController.mustBeLoggedIn, userController.myFeed)
 router.get('/settings/:username', userController.ifUserExists, userController.sharedProfileData, userController.viewSettings)
 

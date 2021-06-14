@@ -206,7 +206,7 @@ exports.journalScreen = function(req, res) {
       counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
     })}
   }).catch(function() {
-    res.render("404")
+    res.render("pages-404")
   })
 
 }
