@@ -219,28 +219,12 @@ function convertToPlain(html){
 	mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
 		const entrymap = new mapboxgl.Map({
 			container: 'entrymap', // container ID
-			style: 'mapbox://styles/mapbox/cjaudgl840gn32rnrepcb9b9g', // style URL
+			style: 'mapbox://styles/cnh1187/ckppoum2i01vk17mzb71uh331', // style URL
 			center: singlemarker.geometry.coordinates,
 			zoom: 6,// starting zoom
 			attributionControl: false,
 			});
 
-			entrymap.on('load', function () {
-				entrymap.addSource('dem', {
-				'type': 'raster-dem',
-				'url': 'mapbox://mapbox.terrain-rgb'
-				});
-				entrymap.addLayer(
-				{
-				'id': 'hillshading',
-				'source': 'dem',
-				'type': 'hillshade'
-				// insert below waterway-river-canal-shadow;
-				// where hillshading sits in the Mapbox Outdoors style
-				},
-				'waterway-river-canal-shadow'
-				);
-			});
 
 			var marker = new mapboxgl.Marker({
 				color: '#3C73AA',
