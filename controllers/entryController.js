@@ -25,7 +25,7 @@ exports.viewSingle = async function(req, res) {
         let entry = await Entry.findSingleById(req.params.id, req.visitorId)
         let likes = await Like.countLikesById(req.params.id)
         let hasVisitorLiked = await Like.hasVisitorLiked(req.params.id, req.visitorId)
-        let entryMarker = GeoJSON.parse(entry, {GeoJSON: 'GeoJSONcoordinates'})
+        let entryMarker = GeoJSON.parse(entry.GeoJSONcoordinates, {'Point': ['entry.GeoJSONcoordinates.coordinates[0]','entry.GeoJSONcoordinates.coordinates[1]']})
         res.render('single-entry', {entry: entry, pageName: "single-entry", likeCount: likes, hasVisitorLiked: hasVisitorLiked, entrymarker: JSON.stringify(entryMarker)})
     } catch {
         res.render('pages-404')
@@ -59,7 +59,7 @@ exports.viewSingleFlags = async function(req, res) {
 exports.viewEditScreen = async function(req, res) {
     try {
       let entry = await Entry.findSingleById(req.params.id, req.visitorId)
-      let entryMarker = GeoJSON.parse(entry, {GeoJSON: 'GeoJSONcoordinates'})
+      let entryMarker = GeoJSON.parse(entry.GeoJSONcoordinates, {'Point': ['entry.GeoJSONcoordinates.coordinates[0]','entry.GeoJSONcoordinates.coordinates[1]']})
       if (entry.isVisitorOwner) {
         res.render("edit-entry", {entry: entry, entrymarker: JSON.stringify(entryMarker), pageName: "edit-entry"})
       } else {

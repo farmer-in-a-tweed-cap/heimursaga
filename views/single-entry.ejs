@@ -30,6 +30,8 @@
                             <h5 class="text-center text-muted"><%= entry.date %></h5>
                           </div>
 
+                        <div class="card-body"> 
+
                           <div class="body-content">
                             <div class="text-center mb-1">
                               <div id="singlemap" style="height: 300px;"></div>
@@ -51,15 +53,10 @@
                             <div class="row">
                               <div class="col-md-4 overflow-hidden" id="single-entry-likes">
 
-                                <iframe src="single-entry-likes/<%=entry._id%>" id="single-entry-likes" height="25"></iframe>
+                                <iframe src="single-entry-likes/<%=entry._id%>" id="single-entry-likes" height="26"></iframe>
 
                               </div>
-
-                              <div class="col-md-4 offset-md-4 text-right overflow-hidden" id="single-entry-flags">
-
-                                <iframe src="single-entry-flags/<%=entry._id%>" id="single-entry-flags" height="20"></iframe>
-
-                              </div>
+                              
                             </div>
                           </div>
 
@@ -88,8 +85,17 @@
                                   </form>
                                 </span>
                               <% } %>
+
                           </div>
-                          
+
+                          <% if (!entry.isVisitorOwner) { %>
+                          <div class="col-xl-12 offset-md-2 text-center overflow-hidden" id="single-entry-flags">
+                                
+                            <iframe src="single-entry-flags/<%=entry._id%>" id="single-entry-flags" height="26"></iframe>
+
+                          </div>
+                          <% } %>
+                        </div> 
                     </div>
                 </div>
             </div>
@@ -100,14 +106,14 @@
 <script>
 
 function convertToPlain(html){
-        var tempDivElement = document.createElement("entrymarkers");
+        var tempDivElement = document.createElement('entrymarkers');
         tempDivElement.innerHTML = html;
-        return tempDivElement.textContent || tempDivElement.innerText || "";
+        return tempDivElement.textContent || tempDivElement.innerText || '';
     }
 
-    var htmlString= "<entrymarkers><%=entrymarker%></entrymarkers>";
+    var htmlString= '<entrymarkers><%= entrymarker %></entrymarkers>'
 
-    var marker = convertToPlain(htmlString)
+    var marker = (convertToPlain(htmlString))
 
 var singlemarker = JSON.parse(marker)
 
@@ -116,7 +122,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ
 const singlemap = new mapboxgl.Map({
     container: 'singlemap',
     style: 'mapbox://styles/cnh1187/ckppoum2i01vk17mzb71uh331',
-    center: singlemarker.geometry.coordinates,
+    center: singlemarker.properties.coordinates,
     zoom: 1,
     attributionControl: false,
     dragRotate: false,
@@ -136,11 +142,11 @@ singlemap.on('load', function () {
 				color: '#ac6d46',
 				draggable: false,
 				})
-				.setLngLat(singlemarker.geometry.coordinates)
+				.setLngLat(singlemarker.properties.coordinates)
 				.addTo(singlemap);
 
     singlemap.flyTo({
-          center: singlemarker.geometry.coordinates,
+          center: singlemarker.properties.coordinates,
           zoom: 9,
           speed: 0.4,
           curve: 1,

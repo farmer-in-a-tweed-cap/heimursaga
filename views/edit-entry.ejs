@@ -220,7 +220,7 @@ function convertToPlain(html){
 		const entrymap = new mapboxgl.Map({
 			container: 'entrymap', // container ID
 			style: 'mapbox://styles/cnh1187/ckppoum2i01vk17mzb71uh331', // style URL
-			center: singlemarker.geometry.coordinates,
+			center: singlemarker.properties.coordinates,
 			zoom: 6,// starting zoom
 			attributionControl: false,
 			});
