@@ -88,7 +88,7 @@
 
                           </div>
 
-                          <% if (!entry.isVisitorOwner) { %>
+                          <% if (user && !entry.isVisitorOwner) { %>
                           <div class="col-xl-12 offset-md-2 text-center overflow-hidden" id="single-entry-flags">
                                 
                             <iframe src="single-entry-flags/<%=entry._id%>" id="single-entry-flags" height="26"></iframe>

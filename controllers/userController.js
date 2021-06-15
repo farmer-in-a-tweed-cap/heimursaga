@@ -159,13 +159,13 @@ exports.journalScreen = function(req, res) {
     let following = await Follow.getFollowingById(req.profileUser._id)
     let followers = await Follow.getFollowersById(req.profileUser._id)
     let likedEntries = await Like.getLikedById(req.profileUser._id)
-    let drafts = await Draft.findByAuthorId(req.profileUser._id)
+    //let drafts = await Draft.findByAuthorId(req.profileUser._id)
     let user = await User.findByUsername(req.profileUser.username)
     if (req.isVisitorsProfile == true){
       res.render('journal', {
         pageName: "my-journal",
         entries: entries,
-        drafts: drafts,
+        //drafts: drafts,
         followers: followers,
         following: following,
         liked: likedEntries,
@@ -187,7 +187,7 @@ exports.journalScreen = function(req, res) {
     res.render('journal', {
       pageName: "journal",
       entries: entries,
-      drafts: drafts,
+      //drafts: drafts,
       followers: followers,
       following: following,
       liked: likedEntries,
@@ -206,7 +206,7 @@ exports.journalScreen = function(req, res) {
       counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
     })}
   }).catch(function() {
-    res.render("pages-404")
+    res.render("404")
   })
 
 }
