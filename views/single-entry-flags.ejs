@@ -1,0 +1,29 @@
+<%- include('includes/header') %>
+
+<div class="container" style="background: white;">
+
+  <div class="col-12 text-right">
+
+        <% if (user) {
+          if (!hasVisitorFlagged) { %>
+
+        <form action="/addFlag/<%= entry._id %>" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button class="text-danger" style="background: transparent; border: none;">
+            <div class="text-danger">
+              <small>report</small>
+            </div>
+          </button>
+        </form>
+
+        <% } else { %>
+
+        <div class="text-muted text-small">
+          <small>reported</small>
+        </div>
+
+        <% }
+        } %>  
+        
+  </div>
+</div>

@@ -5,6 +5,7 @@ const entryController = require('./controllers/entryController')
 const followController = require('./controllers/followController')
 const draftController = require('./controllers/draftController')
 const likeController = require('./controllers/likeController')
+const flagController = require('./controllers/flagController')
 const User = require('./models/User')
 const router = express.Router()
 
@@ -42,7 +43,6 @@ router.get('/entry/:id/edit', userController.mustBeLoggedIn, entryController.vie
 router.post('/entry/:id/edit', userController.mustBeLoggedIn, entryController.edit)
 router.post('/entry/:id/delete', userController.mustBeLoggedIn, entryController.delete)
 router.post('/search', entryController.search)
-router.get('/single-entry-likes/:id', entryController.viewSingleLikes)
 
 router.post('/save-draft', userController.mustBeLoggedIn, draftController.create)
 router.get('/draft/:id', draftController.viewSingle)
@@ -60,6 +60,11 @@ router.post('/removeFollow/:username', userController.mustBeLoggedIn, followCont
 // like related routes
 router.post('/addLike/:id', userController.mustBeLoggedIn, likeController.addLike)
 router.post('/removeLike/:id', userController.mustBeLoggedIn, likeController.removeLike)
+router.get('/single-entry-likes/:id', entryController.viewSingleLikes)
+
+// flag related routes
+router.post('/addFlag/:id', userController.mustBeLoggedIn, flagController.addFlag)
+router.get('/single-entry-flags/:id', entryController.viewSingleFlags)
 
 
 

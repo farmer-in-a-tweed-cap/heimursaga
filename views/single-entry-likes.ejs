@@ -2,32 +2,32 @@
 
 <div style="background: white;">
 
-<% if (user) {
-  if (!hasVisitorLiked) { %>
+        <% if (user) {
+          if (!hasVisitorLiked) { %>
 
-<form action="/addLike/<%= entry._id %>" method="POST">
-  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-  <button class="text-primary" style="background: transparent; border: none;">
-    <div class="position-relative">
-      <i class="align-middle fas fa-heart"></i>
-      <span class="indicator"><%= likeCount %></span>
-    </div>
-  </button>
-</form>
+        <form action="/addLike/<%= entry._id %>" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button class="text-primary" style="background: transparent; border: none;">
+            <div class="position-relative">
+              <i class="align-middle fas fa-heart"></i>
+              <span class="indicator"><%= likeCount %></span>
+            </div>
+          </button>
+        </form>
 
-<% } else { %>
+        <% } else { %>
 
-<form action="/removeLike/<%= entry._id %>" method="POST">
-  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-  <button class="text-danger" style="background: transparent; border: none;">
-  <div class="position-relative">
-    <i class="align-middle fas fa-heart"></i>
-    <span class="indicator"><%= likeCount %></span>
-  </div>
-</button>
-</form>
+        <form action="/removeLike/<%= entry._id %>" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button class="text-danger" style="background: transparent; border: none;">
+          <div class="position-relative">
+            <i class="align-middle fas fa-heart"></i>
+            <span class="indicator"><%= likeCount %></span>
+          </div>
+        </button>
+        </form>
 
-<% }
-} %>    
+        <% }
+        } %>    
 
 </div>

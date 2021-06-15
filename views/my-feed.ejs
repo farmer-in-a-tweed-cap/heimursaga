@@ -78,15 +78,21 @@
 
                                                     <% if (user) { %>
 
-                                                    <div class="col-md-3 offset-md-3">
-                                                        <div class="row">
-                                                          <div class="col-md-4" id="single-entry-likes">
-                            
-                                                            <iframe src="single-entry-likes/<%=entry._id%>" id="single-entry-likes" height="25"></iframe>
-                            
+                                                        <div class="col-md-6 offset-md-3">
+                                                            <div class="row">
+                                                              <div class="col-md-4 overflow-hidden" id="single-entry-likes">
+                                
+                                                                <iframe src="single-entry-likes/<%=entry._id%>" id="single-entry-likes" height="25"></iframe>
+                                
+                                                              </div>
+                                
+                                                              <div class="col-md-4 offset-md-4 text-right overflow-hidden" id="single-entry-flags">
+                                
+                                                                <iframe src="single-entry-flags/<%=entry._id%>" id="single-entry-flags" height="20"></iframe>
+                                
+                                                              </div>
+                                                            </div>
                                                           </div>
-                                                        </div>
-                                                    </div>
 
                                                     <% } %>
                           

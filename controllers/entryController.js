@@ -1,5 +1,6 @@
 const Entry = require('../models/Entry')
 const Like = require('../models/Like')
+const Flag = require('../models/Flag')
 const Draft = require('../models/Draft')
 const GeoJSON = require('geojson')
 
@@ -36,8 +37,20 @@ exports.viewSingleLikes = async function(req, res) {
         let entry = await Entry.findSingleById(req.params.id, req.visitorId)
         let likes = await Like.countLikesById(req.params.id)
         let hasVisitorLiked = await Like.hasVisitorLiked(req.params.id, req.visitorId)
+        let hasVisitorFlagged = await Flag.hasVisitorFlagged(req.params.id, req.visitorId)
         let entryMarker = GeoJSON.parse(entry, {GeoJSON: 'GeoJSONcoordinates'})
-        res.render('single-entry-likes', {entry: entry, pageName: "single-entry-likes", likeCount: likes, hasVisitorLiked: hasVisitorLiked, entrymarker: JSON.stringify(entryMarker)})
+        res.render('single-entry-likes', {entry: entry, pageName: "single-entry-likes", likeCount: likes, hasVisitorLiked: hasVisitorLiked, hasVisitorFlagged: hasVisitorFlagged, entrymarker: JSON.stringify(entryMarker)})
+    } catch {
+        res.render('pages-404')
+    }
+}
+
+exports.viewSingleFlags = async function(req, res) {
+    try {
+        let entry = await Entry.findSingleById(req.params.id, req.visitorId)
+        let hasVisitorFlagged = await Flag.hasVisitorFlagged(req.params.id, req.visitorId)
+        let entryMarker = GeoJSON.parse(entry, {GeoJSON: 'GeoJSONcoordinates'})
+        res.render('single-entry-flags', {entry: entry, pageName: "single-entry-flags", hasVisitorFlagged: hasVisitorFlagged, entrymarker: JSON.stringify(entryMarker)})
     } catch {
         res.render('pages-404')
     }
