@@ -2,7 +2,11 @@ const Entry = require('../models/Entry')
 const Like = require('../models/Like')
 const Flag = require('../models/Flag')
 const Draft = require('../models/Draft')
+const sessionsCollection = require('../db').db().collection("sessions")
 const GeoJSON = require('geojson')
+const { db } = require('../db')
+
+//sessionsCollection.deleteMany()
 
 
 exports.viewCreateScreen = function(req, res) {
@@ -119,15 +123,23 @@ exports.search = function(req, res) {
     })
 }
 
-exports.viewList = function(req, res) {
+exports.entryList = function(req, res) {
     Entry.getFeed().then(entries => {
         res.json(entries)
-        res.render('discovery', {
-            pageName: "discovery",})
     }).catch(() => {
         res.json([])
     })
 }
+
+exports.getAll = async function(req, res) {
+    let entries = await Entry.getFeed()
+    let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
+    res.render('discovery', {
+      pageName: "discovery",
+      entries: entries,
+      entrymarker: JSON.stringify(entryMarker)
+    })
+  }
 
 exports.viewAll = async function(req,res) {
     Entry.returnAll().then((entries) => {

@@ -282,13 +282,5 @@ exports.viewAll = async function(req,res) {
 }
 
 
-exports.getAll = async function(req, res) {
-    let entries = await Entry.getFeed()
-    let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
-    res.render('discovery', {
-      pageName: "discovery",
-      entries: entries,
-      entrymarker: JSON.stringify(entryMarker)
-    })
-  }
+
 

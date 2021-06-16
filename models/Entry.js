@@ -27,7 +27,6 @@ Entry.prototype.cleanUp = function() {
   var bodyExcerpt = sanitizeHTML((this.data.body.trim()).substr(0,maxLength), {allowedTags: [], allowedAttributes: {}})
   bodyExcerpt = bodyExcerpt.substr(0, Math.min(bodyExcerpt.length, bodyExcerpt.lastIndexOf(" ")))
   bodyExcerpt = bodyExcerpt.replace(/(\r\n|\n|\r)/gm," ")
-  console.log(bodyExcerpt)
 
   popup = `<strong>${sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}})}</br><i class='align-middle me-0 fas fa-fw fa-map-marker-alt text-primary'></i></strong>${sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}})}</br><p>on ${sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})}</p><p>${bodyExcerpt}...</p>`
 
@@ -207,6 +206,21 @@ Entry.getFeed = async function() {
     {$sort: {createdDate: -1}}
   ])
 }
+
+Entry.getDynamicFeed = async function(id) {
+  return Entry.reusableEntryQuery([
+    {$sort: {createdDate: -1}},
+    {$match: {_id: id}}
+  ])
+}
+
+Entry.getDynamicFeed1 = function(entryId) {
+  console.log(entryId)
+      return Entry.reusableEntryQuery([
+        {$match: {_id : new ObjectID("60ca389d9502590bf7c29481")}}
+      ], [{$sort: {createdDate: -1}}])
+}
+
 
 Entry.getFollowedFeed = async function(id) {
   // create an array of the user ids that the current user follows

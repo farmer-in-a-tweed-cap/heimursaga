@@ -2,6 +2,8 @@ import { AttributionControl } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import DOMPurify from 'dompurify'
 const mapboxgl = require('mapbox-gl');
+import axios from 'axios'
+
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
 
@@ -239,15 +241,190 @@ map.on('load', function () {
 
 // map list feed
 
+map.on('load', function(){
+    this.entryFeed = document.querySelector(".dynamic-entry-feed")
+    axios.get('/entry-list').then(response => {
+        if (response.data.length) {
+            this.entryFeed.innerHTML = `${response.data.map(entry => {
+                return `<div class="list-group list-group-flush"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">
+                <strong>${entry.title}</strong><br/>
+                <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle">${entry.place} | ${entry.date}</small><br/>
+                <small>by <strong>${entry.author.username}</strong></small>
+                </a>
+                    <div class="modal fade" id="sizedModalMd-<%= entry._id %>" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body mb-0">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="mt-0 mb-0">
+                                    <h4 class="col-12 modal-title text-center">${entry.title}</h4>
+                                </div>
 
-map.on('move', function(){
-    var bounds = map.getBounds();
-    console.log(bounds)
-    var marker = new mapboxgl.LngLat(-73.9567, 40.7789);
-    console.log(bounds.contains(marker));
+                                <div class="col-md-6 offset-md-3">
+                                    <hr>
+                                </div>
+      
+                                <div class="mb-2">
+                                  <h5 class="text-center">${entry.place}</h5>
+                                </div>
+      
+                                <div class="mb-4">
+                                  <h5 class="text-center text-muted">${entry.date}</h5>
+                                </div>
+      
+                                <div class="modal-body">
+                                  <div class="text-center mb-1 overflow-hidden">
+                                    <img src="https://api.mapbox.com/styles/v1/cnh1187/ckppoum2i01vk17mzb71uh331/static/pin-s+ac6d46(${entry.GeoJSONcoordinates.coordinates})/${entry.GeoJSONcoordinates.coordinates},6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
+                                  </div>
+                                  <div class="mb-4 text-center">
+                                    <small>Longitude: ${entry.GeoJSONcoordinates.coordinates[0]}, Latitude: ${entry.GeoJSONcoordinates.coordinates[1]}</small>
+                                  </div>
+      
+      
+                                  <div class="modal-body mb-2">
+                                    ${entry.body}
+                                  </div>
+                                </div>
+
+                       
+
+                                    <div class="col-md-6 offset-md-3">
+                                        <div class="row">
+                                          <div class="col-3 overflow-hidden" id="single-entry-likes">
+            
+                                            <iframe src="single-entry-likes/${entry._id}" id="single-entry-likes" height="26"></iframe>
+            
+                                          </div>
+            
+                                          <div class="col-3 offset-5 text-right overflow-hidden" id="single-entry-flags">
+            
+                                            <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="26"></iframe>
+            
+                                          </div>
+                                        </div>
+                                    </div>
+
+                                
+      
+      
+                                <div class="col-md-6 offset-md-3 mb-1">
+                                  <hr>
+                                </div>
+      
+                                <div>
+                                  <p class="text-muted small mb-4 text-center">
+                                  <a href="/journal/${entry.author.username}"><img class="avatar img-fluid rounded-circle me-1" src="${entry.author.avatar}"></a>
+                                  Posted by <a href="/journal/${entry.author.username}">${entry.author.username}</a> on ${entry.createdDate}</p>
+                                </div> 
+                                
+                                <div class="text-center mb-4">
+                                    <small class="text-muted">
+                                    <a href="/entry/${entry._id}">Visit entry permalink</a>
+                                    </small>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    </div>`}).join('')}`}
+        response.data.forEach(entry => {
+            var entrycoordinates = (entry.GeoJSONcoordinates.coordinates)
+            var entryPoint = new mapboxgl.LngLat(entrycoordinates[0],entrycoordinates[1]);
+            map.on('move', function(){
+                var bounds = map.getBounds();
+                var inBounds = bounds.contains(entryPoint)
+                        this.entryFeed.innerHTML = `${response.data.map(entry => {
+                            if(bounds.contains(new mapboxgl.LngLat(entry.GeoJSONcoordinates.coordinates[0],entry.GeoJSONcoordinates.coordinates[1]))) {
+                                return `<div class="list-group list-group-flush"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">
+                                <strong>${entry.title}</strong><br/>
+                                <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle">${entry.place} | ${entry.date}</small><br/>
+                                <small>by <strong>${entry.author.username}</strong></small>
+                                </a>
+                                    <div class="modal fade" id="sizedModalMd-<%= entry._id %>" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-body mb-0">
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="mt-0 mb-0">
+                                                    <h4 class="col-12 modal-title text-center">${entry.title}</h4>
+                                                </div>
+
+                                                <div class="col-md-6 offset-md-3">
+                                                    <hr>
+                                                </div>
+                      
+                                                <div class="mb-2">
+                                                  <h5 class="text-center">${entry.place}</h5>
+                                                </div>
+                      
+                                                <div class="mb-4">
+                                                  <h5 class="text-center text-muted">${entry.date}</h5>
+                                                </div>
+                      
+                                                <div class="modal-body">
+                                                  <div class="text-center mb-1 overflow-hidden">
+                                                    <img src="https://api.mapbox.com/styles/v1/cnh1187/ckppoum2i01vk17mzb71uh331/static/pin-s+ac6d46(${entry.GeoJSONcoordinates.coordinates})/${entry.GeoJSONcoordinates.coordinates},6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
+                                                  </div>
+                                                  <div class="mb-4 text-center">
+                                                    <small>Longitude: ${entry.GeoJSONcoordinates.coordinates[0]}, Latitude: ${entry.GeoJSONcoordinates.coordinates[1]}</small>
+                                                  </div>
+                      
+                      
+                                                  <div class="modal-body mb-2">
+                                                    ${entry.body}
+                                                  </div>
+                                                </div>
+
+                                       
+
+                                                    <div class="col-md-6 offset-md-3">
+                                                        <div class="row">
+                                                          <div class="col-3 overflow-hidden" id="single-entry-likes">
+                            
+                                                            <iframe src="single-entry-likes/${entry._id}" id="single-entry-likes" height="26"></iframe>
+                            
+                                                          </div>
+                            
+                                                          <div class="col-3 offset-5 text-right overflow-hidden" id="single-entry-flags">
+                            
+                                                            <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="26"></iframe>
+                            
+                                                          </div>
+                                                        </div>
+                                                    </div>
+
+                                                
+                      
+                      
+                                                <div class="col-md-6 offset-md-3 mb-1">
+                                                  <hr>
+                                                </div>
+                      
+                                                <div>
+                                                  <p class="text-muted small mb-4 text-center">
+                                                  <a href="/journal/${entry.author.username}"><img class="avatar img-fluid rounded-circle me-1" src="${entry.author.avatar}"></a>
+                                                  Posted by <a href="/journal/${entry.author.username}">${entry.author.username}</a> on ${entry.createdDate}</p>
+                                                </div> 
+                                                
+                                                <div class="text-center mb-4">
+                                                    <small class="text-muted">
+                                                    <a href="/entry/${entry._id}">Visit entry permalink</a>
+                                                    </small>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>`
+                                }}).join('')}`
+                if (this.entryFeed.innerHTML == "") {
+                    this.entryFeed.innerHTML = `<div class="text-center"><p class="text-muted">Looks like there are no journal entries in this area. Be the first to document your adventures here!</p></div>`
+                }           
+            })
+        })
+    })
 })
-
-
-
 
 

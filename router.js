@@ -11,7 +11,8 @@ const router = express.Router()
 
 
 // user related routes
-router.get('/', userController.getAll)
+router.get('/', entryController.getAll)
+router.get('/discovery', entryController.getAll)
 
 router.get('/login', function (req, res) {
   res.render('login', {pageName: 'login'})
@@ -42,7 +43,6 @@ router.get('/entry/:id', entryController.viewSingle)
 router.get('/entry/:id/edit', userController.mustBeLoggedIn, entryController.viewEditScreen)
 router.post('/entry/:id/edit', userController.mustBeLoggedIn, entryController.edit)
 router.post('/entry/:id/delete', userController.mustBeLoggedIn, entryController.delete)
-router.post('/search', entryController.search)
 
 router.post('/save-draft', userController.mustBeLoggedIn, draftController.create)
 router.get('/draft/:id', draftController.viewSingle)
@@ -51,6 +51,9 @@ router.post('/draft/:id/edit', userController.mustBeLoggedIn, draftController.ed
 router.post('/draft/:id/delete', userController.mustBeLoggedIn, draftController.delete)
 
 router.post('/search', entryController.search)
+
+router.get('/entry-list', entryController.entryList)
+//router.post('/dynamic-entry-list', entryController.getAll)
 
 
 // follow related routes
@@ -72,13 +75,6 @@ router.get('/single-entry-flags/:id', entryController.viewSingleFlags)
 router.get('/my-profile', function (req, res) {
   res.render('my-profile', {pageName: 'my-profile'})
 })
-//router.get('/settings', function (req, res) {
-//  res.render('settings', {pageName: 'settings'})
-//})
-router.get('/discovery', userController.getAll)
-
-router.get('/home', userController.viewAll)
-
 router.get('/forms-advanced-inputs', function (req, res) {
   res.render('forms-advanced-inputs', {pageName: 'forms-advanced-inputs'})
 })

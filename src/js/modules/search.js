@@ -57,6 +57,7 @@ export default class Search {
         })
     }
     
+    
 
     renderResultsHTML(entries) {
         if (entries.length) {
