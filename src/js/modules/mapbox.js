@@ -251,7 +251,7 @@ map.on('load', function(){
                 <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle">${entry.place} | ${entry.date}</small><br/>
                 <small>by <strong>${entry.author.username}</strong></small>
                 </a>
-                    <div class="modal fade" id="sizedModalMd-<%= entry._id %>" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal fade" id="sizedModalMd-${entry._id}" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-md modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-body mb-0">
@@ -341,7 +341,7 @@ map.on('load', function(){
                                 <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle">${entry.place} | ${entry.date}</small><br/>
                                 <small>by <strong>${entry.author.username}</strong></small>
                                 </a>
-                                    <div class="modal fade" id="sizedModalMd-<%= entry._id %>" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal fade" id="sizedModalMd-${entry._id}" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-md modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-body mb-0">
