@@ -26,11 +26,10 @@ Entry.prototype.cleanUp = function() {
   var maxLength = 100
   var bodyExcerpt = sanitizeHTML((this.data.body.trim()).substr(0,maxLength), {allowedTags: [], allowedAttributes: {}})
   bodyExcerpt = bodyExcerpt.substr(0, Math.min(bodyExcerpt.length, bodyExcerpt.lastIndexOf(" ")))
+  bodyExcerpt = bodyExcerpt.replace(/(\r\n|\n|\r)/gm," ")
+  console.log(bodyExcerpt)
 
-  popup = "<strong>"+sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}})+
-  "</br><i class='fas fa-fw fa-map-marker-alt text-primary'></i></strong>"+sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}})+
-  "</br><p>on "+sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})+
-  "</p><p>"+bodyExcerpt+"...</p>"
+  popup = `<strong>${sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}})}</br><i class='align-middle me-0 fas fa-fw fa-map-marker-alt text-primary'></i></strong>${sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}})}</br><p>on ${sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})}</p><p>${bodyExcerpt}...</p>`
 
 
   

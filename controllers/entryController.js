@@ -119,6 +119,16 @@ exports.search = function(req, res) {
     })
 }
 
+exports.viewList = function(req, res) {
+    Entry.getFeed().then(entries => {
+        res.json(entries)
+        res.render('discovery', {
+            pageName: "discovery",})
+    }).catch(() => {
+        res.json([])
+    })
+}
+
 exports.viewAll = async function(req,res) {
     Entry.returnAll().then((entries) => {
     res.render('journal-feed', {

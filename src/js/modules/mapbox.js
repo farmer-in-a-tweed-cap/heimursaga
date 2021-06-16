@@ -1,5 +1,6 @@
 import { AttributionControl } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import DOMPurify from 'dompurify'
 const mapboxgl = require('mapbox-gl');
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
@@ -175,7 +176,7 @@ map.on('load', function () {
          
         new mapboxgl.Popup({closeButton: false, focusAfterOpen: false})
         .setLngLat(coordinates)
-        .setHTML(popup+"<a href='/entry/"+id+"'>Visit entry</a>")
+        .setHTML(popup+`<a href="/entry/${id}">Visit entry</a>`)
         .addTo(map);
         });
          
@@ -236,7 +237,15 @@ map.on('load', function () {
         );*/
     
 
-    
+// map list feed
+
+
+map.on('move', function(){
+    var bounds = map.getBounds();
+    console.log(bounds)
+    var marker = new mapboxgl.LngLat(-73.9567, 40.7789);
+    console.log(bounds.contains(marker));
+})
 
 
 

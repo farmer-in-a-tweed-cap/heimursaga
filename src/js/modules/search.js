@@ -56,6 +56,7 @@ export default class Search {
             alert("hello the request failed")
         })
     }
+    
 
     renderResultsHTML(entries) {
         if (entries.length) {

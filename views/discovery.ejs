@@ -137,15 +137,16 @@
 <script type="text/javascript">
 
     function convertToPlain(html){
-        var tempDivElement = document.createElement("entrymarkers");
+        var tempDivElement = document.createElement('entrymarkers');
         tempDivElement.innerHTML = html;
-        return tempDivElement.textContent || tempDivElement.innerText || "";
+        return tempDivElement.textContent || tempDivElement.innerText || '';
     }
 
-    var htmlString= "<entrymarkers><%=entrymarker%></entrymarkers>";
+    var htmlString= '<entrymarkers><%= entrymarker %></entrymarkers>';
 
-    var markers = convertToPlain(htmlString)
+    var markers = (convertToPlain(htmlString))
 
+    console.log(markers)
 </script>
 			
 <%- include('includes/footer') %>
