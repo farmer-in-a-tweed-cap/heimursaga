@@ -207,20 +207,6 @@ Entry.getFeed = async function() {
   ])
 }
 
-Entry.getDynamicFeed = async function(id) {
-  return Entry.reusableEntryQuery([
-    {$sort: {createdDate: -1}},
-    {$match: {_id: id}}
-  ])
-}
-
-Entry.getDynamicFeed1 = function(entryId) {
-  console.log(entryId)
-      return Entry.reusableEntryQuery([
-        {$match: {_id : new ObjectID("60ca389d9502590bf7c29481")}}
-      ], [{$sort: {createdDate: -1}}])
-}
-
 
 Entry.getFollowedFeed = async function(id) {
   // create an array of the user ids that the current user follows
