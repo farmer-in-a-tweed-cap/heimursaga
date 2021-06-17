@@ -22,12 +22,12 @@
                               <hr>
                           </div>
 
-                          <div class="mb-2">
-                            <h5 class="text-center"><%= entry.place %></h5>
+                          <div class="mb-2 text-center">
+                            <h5><i class="align-middle mr-5 fas fa-fw fa-map-marker-alt text-primary"></i><%= entry.place %></h5>
                           </div>
-
-                          <div class="mb-4">
-                            <h5 class="text-center text-muted"><%= entry.date %></h5>
+                
+                          <div class="mb-2">
+                              <h5 class="text-center text-muted">on <%= new Date(entry.date).toLocaleString('default', { month: 'long' }) %> <%= new Date(entry.date).getDate() %>, <%= new Date(entry.date).getFullYear() %> | by <a href="/journal/${entry.author.username}"><%= entry.author.username %></a></h5>
                           </div>
 
                         <div class="card-body"> 
@@ -68,10 +68,10 @@
                           </div>
 
                           <div>
-                            <p class="text-muted small mb-5 text-center">
+                            <p class="text-muted small mb-4 text-center">
                             <a href="/journal/<%= entry.author.username %>"><img class="avatar img-fluid rounded-circle me-1" src="<%= entry.author.avatar %>"></a>
-                            Posted by <a href="/journal/<%= entry.author.username %>"><%= entry.author.username %></a> on <%= entry.createdDate.getMonth() + 1 %>/<%= entry.createdDate.getDate() %>/<%= entry.createdDate.getFullYear() %></p>
-                          </div>
+                            Posted on <%= entry.createdDate.getMonth() + 1 %>/<%= entry.createdDate.getDate() %>/<%= entry.createdDate.getFullYear() %></p>
+                          </div> 
 
                           <div class="row justify-content-between">
                             <% if (entry.isVisitorOwner) { %>

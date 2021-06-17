@@ -54,12 +54,12 @@
                                                         <hr>
                                                     </div>
                           
-                                                    <div class="mb-2">
-                                                      <h5 class="text-center"><%= entry.place %></h5>
+                                                    <div class="mb-2 text-center">
+                                                      <h5><i class="align-middle mr-5 fas fa-fw fa-map-marker-alt text-primary"></i><%= entry.place %></h5>
                                                     </div>
-                          
-                                                    <div class="mb-4">
-                                                      <h5 class="text-center text-muted"><%= entry.date %></h5>
+                                          
+                                                    <div class="mb-2">
+                                                        <h5 class="text-center text-muted">on <%= new Date(entry.date).toLocaleString('default', { month: 'long' }) %> <%= new Date(entry.date).getDate() %>, <%= new Date(entry.date).getFullYear() %> | by <a href="/journal/${entry.author.username}"><%= entry.author.username %></a></h5>
                                                     </div>
                           
                                                     <div class="modal-body">
@@ -103,8 +103,8 @@
                           
                                                     <div>
                                                       <p class="text-muted small mb-4 text-center">
-                                                      <a href="/journal/<%= entry.author.username %>"><img class="avatar img-fluid rounded-circle me-1" src="<%= entry.author.avatar %>"></a>
-                                                      Posted by <a href="/journal/<%= entry.author.username %>"><%= entry.author.username %></a> on <%= entry.createdDate.getMonth() + 1 %>/<%= entry.createdDate.getDate() %>/<%= entry.createdDate.getFullYear() %></p>
+                                                        <a href="/journal/<%= entry.author.username %>"><img class="avatar img-fluid rounded-circle me-1" src="<%= entry.author.avatar %>"></a>
+                                                        Posted on <%= entry.createdDate.getMonth() + 1 %>/<%= entry.createdDate.getDate() %>/<%= entry.createdDate.getFullYear() %></p>
                                                     </div> 
                                                     
                                                     <div class="text-center mb-4">
@@ -116,24 +116,11 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    <!--<a href="/entry/<%= entry._id %>" class="list-group-item list-group-item-action">-->
-                                   <!-- <strong><%= entry.title %></strong><br/>
-                                    <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <span class="align-middle"><%= entry.place %> | <%= entry.date %></span>
-                                    </a> -->
+
                                 <% }) %>
 
                             </div>
                             </div>
-                          <!--  <div class="tab-pane fade" id="tab-2" role="tabpanel">
-                                <div class="list-group list-group-flush">
-                                <% following.forEach(function(followedUser) { %>
-                                    <a href="/journal/<%= followedUser.username %>" class="list-group-item list-group-item-action">
-                                      <img class="avatar img-fluid rounded-circle me-2" src="<%= followedUser.avatar %>">
-                                      <%= followedUser.username %>
-                                    </a>
-                                 <% }) %>
-                                </div>
-                            </div> -->
 
                             </div>
 
