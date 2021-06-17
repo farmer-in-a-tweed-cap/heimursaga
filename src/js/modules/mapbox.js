@@ -220,7 +220,7 @@ map.on('load', function(){
                                 <div class="modal-body mb-0">
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <div class="mt-0 mb-0">
+                                <div class="col-md-10 offset-md-1 mt-0 mb-0">
                                     <h4 class="col-12 modal-title text-center">${entry.title}</h4>
                                 </div>
 
@@ -228,11 +228,11 @@ map.on('load', function(){
                                     <hr>
                                 </div>
       
-                                <div class="mb-2 text-center">
+                                <div class="col-md-8 offset-md-2 mb-2 text-center">
                                 <h5><i class="align-middle mr-5 fas fa-fw fa-map-marker-alt text-primary"></i>${entry.place}</h5>
                                 </div>
       
-                                <div class="mb-2">
+                                <div class="col-md-8 offset-md-2 mb-2">
                                   <h5 class="text-center text-muted">on ${new Date(entry.date).toLocaleString('default', { month: 'long' })} ${new Date(entry.date).getDate()}, ${new Date(entry.date).getFullYear()} | by <a href="/journal/${entry.author.username}">${entry.author.username}</a></h5>
                                 </div>
       
