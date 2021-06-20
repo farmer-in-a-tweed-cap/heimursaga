@@ -178,7 +178,7 @@ map.on('load', function () {
          
         new mapboxgl.Popup({closeButton: false, focusAfterOpen: false})
         .setLngLat(coordinates)
-        .setHTML(popup+`<a data-bs-toggle="modal" href="#sizedModalMd-${id}">Expand</a>`)
+        .setHTML(popup+`<a data-bs-toggle="modal" href="#sizedModalMd-${id}">Expand Entry</a>`)
         .addTo(map);
         });
          
