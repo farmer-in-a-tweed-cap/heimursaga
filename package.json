@@ -1,7 +1,7 @@
 {
   "name": "heimursaga",
   "version": "1.0.0",
-  "description": "Heimuraga Web Application",
+  "description": "Heimuraga - The Explorer's Journal. A social media platform for explorers and travellers.",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack -p --config webpack.config.js",
     "start": "node db.js",
