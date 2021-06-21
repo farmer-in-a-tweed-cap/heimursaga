@@ -5,6 +5,8 @@ const Draft = require('../models/Draft')
 const sessionsCollection = require('../db').db().collection("sessions")
 const GeoJSON = require('geojson')
 const { db } = require('../db')
+const sendgrid = require('@sendgrid/mail')
+sendgrid.setApiKey(process.env.SENDGRIDAPIKEY)
 
 //sessionsCollection.deleteMany()
 
@@ -16,6 +18,13 @@ exports.viewCreateScreen = function(req, res) {
 exports.create = function(req, res) {
     let entry = new Entry(req.body, req.session.user._id)
     entry.create().then(function(newId) {
+        /*sendgrid.send({
+            to: 'christopher@theperipetycompany.com',
+            from: 'admin@heimursaga.com',
+            subject: 'Congrats on Creating a New Entry',
+            text: `You did a great job creating an entry.`,
+            html: `You did a <strong>great</strong> job! `
+        })*/
         req.flash("success", "New entry successfully posted.")
         req.session.save(() => res.redirect(`/entry/${newId}`))
     }).catch(function(errors){

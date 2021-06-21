@@ -57,6 +57,7 @@
     "@babel/polyfill": "7.12.1",
     "@fortawesome/fontawesome-free": "5.15.2",
     "@popperjs/core": "2.8.6",
+    "@sendgrid/mail": "^7.4.5",
     "apexcharts": "3.25.0",
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",

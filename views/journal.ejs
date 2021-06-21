@@ -187,6 +187,21 @@
 																				<a href="/entry/<%= entry._id %>">Visit entry permalink</a>
 																				</small>
 																			</div>
+
+																			<div class="row text-center mb-1">
+																				<% if (isVisitorsProfile) { %>
+																					<span class="pe-2">
+																					  <a href="/entry/<%= entry._id %>/edit" class="text-primary mr-2" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>
+																					  <form class="delete-post-form d-inline" action="/entry/<%= entry._id %>/delete" method="POST">
+																						
+																						<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+													
+																						<button class="text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>
+																					  </form>
+																					</span>
+																				  <% } %>
+													
+																			</div>
 						
 																		</div>
 																	</div>
