@@ -16,7 +16,7 @@ exports.viewCreateScreen = function(req, res) {
 }
 
 exports.create = function(req, res) {
-    let entry = new Entry(req.body, req.session.user._id)
+    let entry = new Entry(req.body, req.session.user._id, req.session.user.username)
     entry.create().then(function(newId) {
         /*sendgrid.send({
             to: 'christopher@theperipetycompany.com',
@@ -85,7 +85,7 @@ exports.viewEditScreen = async function(req, res) {
   }
 
 exports.edit = function(req, res) {
-    let entry = new Entry(req.body, req.visitorId, req.params.id)
+    let entry = new Entry(req.body, req.visitorId, req.session.user.username, req.params.id)
     entry.update().then((status) => {
         // the entry was successfully updated in the database
         // or user did have permission, but there were validation errors

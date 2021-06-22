@@ -5,13 +5,14 @@ const ObjectID = require('mongodb').ObjectID
 const User = require('./User')
 const sanitizeHTML = require('sanitize-html')
 
-//entriesCollection.createIndex({title: "text", body: "text", place: "text"})
+//entriesCollection.createIndex({title: "text", body: "text", place: "text", authorUsername: "text"})
 
 
-let Entry = function(data, userid, requestedEntryId) {
+let Entry = function(data, userid, username, requestedEntryId) {
   this.data = data
   this.errors = []
   this.userid = userid
+  this.authorUsername = username
   this.requestedEntryId = requestedEntryId
 }
 
@@ -43,6 +44,7 @@ Entry.prototype.cleanUp = function() {
     popup: popup,
     createdDate: new Date(),
     author: ObjectID(this.userid),
+    authorUsername: this.authorUsername
   }
 }
 
@@ -93,7 +95,7 @@ Entry.prototype.actuallyUpdate = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await entriesCollection.findOneAndUpdate({_id: new ObjectID(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup, }})
+      await entriesCollection.findOneAndUpdate({_id: new ObjectID(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup}})
       resolve("success")
     } else {
       resolve("failure")

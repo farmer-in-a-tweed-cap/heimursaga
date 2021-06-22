@@ -9,6 +9,9 @@ const likesCollection = require('../db').db().collection("likes")
 const GeoJSON = require('geojson')
 const Draft = require('../models/Draft')
 const Like = require('../models/Like')
+const sendgrid = require('@sendgrid/mail')
+sendgrid.setApiKey(process.env.SENDGRIDAPIKEY)
+
 
 exports.sharedProfileData = async function(req, res, next) {
   let isVisitorsProfile = false
@@ -69,6 +72,13 @@ exports.logout = function(req, res) {
 exports.register = function(req, res) {
   let user = new User(req.body)
   user.register().then(() => {
+    sendgrid.send({
+            to: 'admin@heimursaga.com',
+            from: 'admin@heimursaga.com',
+            subject: `New Explorer Account: ${user.data.username}`,
+            text: `An explorer has signed up for a new account. Username: ${user.data.username}, Email: ${user.data.email}, Journal link: https://heimursaga.com/journal/${user.data.username}.`,
+            html: `An explorer has signed up for a new account. </p>Username: ${user.data.username} </br>Email: ${user.data.email} </br><a href="https://heimursaga.com/journal/${user.data.username}">Journal Link</a>`
+        })
     req.session.user = {username: user.data.username, avatar: user.avatar, _id: user.data._id}
     req.session.save(function() {
       res.redirect('getting-started')
