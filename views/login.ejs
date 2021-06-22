@@ -31,8 +31,29 @@
 													<input class="form-control form-control-lg" type="username" name="username" placeholder="Enter your explorer name" />
 												</div>
 												<div class="mb-3">
+													<style>
+														.form-item {
+															position: relative;
+															}
+	
+														.fas {
+															position: absolute;
+															right: 1.1rem;
+															top: 0.8rem;
+															cursor: pointer;
+															}
+													</style>
 													<label class="form-label">Password</label>
-													<input class="form-control form-control-lg" type="password" name="password" placeholder="Enter your password" />
+													<div class="form-item">
+														<input
+														  type="password"
+														  name="password"
+														  class="form-control form-control-lg"
+														  id="password"
+														  placeholder="Enter your password"
+														/>
+														<i class="fas fa-eye" id="eye"></i>
+													  </div>
 													<!--<small>
 														<a href="pages-reset-password.html">Forgot password?</a>
 			  										</small>
@@ -69,6 +90,20 @@
 	</div>
 
 	<script src="js/app.js"></script>
+	<script>
+		const password = document.querySelector("#password");
+		const eyeIcon = document.querySelector("#eye");
+
+		eyeIcon.addEventListener("click", () => {
+		if (eyeIcon.classList.contains("fa-eye")) {
+			password.setAttribute("type", "text");
+			eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
+		} else {
+			password.setAttribute("type", "password");
+			eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
+		}
+		});
+	</script>
 
 </body>
 

@@ -39,8 +39,38 @@
 												<input class="form-control form-control-lg" type="email" name="email" id="email-register" placeholder="Enter your email" />
 											</div>
 											<div class="mb-3">
+
+												<style>
+													.form-item {
+														position: relative;
+														}
+
+													.fas {
+														position: absolute;
+														right: 1.1rem;
+														top: 0.8rem;
+														cursor: pointer;
+														}
+												</style>
 												<label class="form-label">Password</label>
-												<input class="form-control form-control-lg" type="password" name="password" id="password-register" placeholder="Enter a password" />
+												<div class="form-item">
+													<input
+													  type="password"
+													  name="password"
+													  class="form-control form-control-lg"
+													  id="password-register"
+													  placeholder="Enter a password"
+													/>
+													<i class="fas fa-eye" id="eye"></i>
+												  </div>
+
+											</div>
+											<div class="mb-3">
+
+												<label class="form-label">Confirm Password</label>
+													<input class="form-control form-control-lg" type="password" name="confirm_password" id="confirm_password" placeholder="Confirm your password" />
+													<span id='message'></span>
+										
 											</div>
 											<div class="text-center mt-3">
 
@@ -68,6 +98,31 @@
 	</div>
 
 	<script src="js/app.js"></script>
+
+	<script>
+		const password = document.querySelector("#password-register");
+		const confirmpassword = document.querySelector("#confirm_password");
+		const eyeIcon = document.querySelector("#eye");
+
+		eyeIcon.addEventListener("click", () => {
+		if (eyeIcon.classList.contains("fa-eye")) {
+			password.setAttribute("type", "text");
+			confirmpassword.setAttribute("type", "text")
+			eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
+		} else {
+			password.setAttribute("type", "password");
+			confirmpassword.setAttribute("type", "password")
+			eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
+		}
+		});
+
+		$('#password-register, #confirm_password').on('keyup', function () {
+		if ($('#password-register').val() == $('#confirm_password').val()) {
+			$('#message').html('Matching').css('color', 'green');
+		} else 
+			$('#message').html('Not Matching').css('color', 'red');
+		});
+	</script>
   
 </body>
 
