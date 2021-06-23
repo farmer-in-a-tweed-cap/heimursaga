@@ -266,7 +266,7 @@ map.on('load', function(){
                                   ${JSON.parse(JSON.stringify(entry.body, null,1)).replace(/\n/g, "</p><p>")}
                                 </div>
 
-                       
+                                
 
                                     <div class="col-md-6 offset-md-3">
                                         <div class="row">
