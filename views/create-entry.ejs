@@ -208,14 +208,6 @@
 			attributionControl: false,
 			});
 
-			entrymap.addControl(new mapboxgl.GeolocateControl({
-				positionOptions: {
-				enableHighAccuracy: true
-				},
-				trackUserLocation: true
-				})
-			);
-
 			var marker = new mapboxgl.Marker({
 				color: '#ac6d46',
 				draggable: false,
@@ -286,6 +278,14 @@
 				localGeocoder: coordinatesGeocoder,
 				marker: false,
 				mapboxgl: mapboxgl,
+				})
+			);
+
+			entrymap.addControl(new mapboxgl.GeolocateControl({
+				positionOptions: {
+				enableHighAccuracy: true
+				},
+				trackUserLocation: true
 				})
 			);
 			
