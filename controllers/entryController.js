@@ -8,6 +8,7 @@ const { db } = require('../db')
 const sendgrid = require('@sendgrid/mail')
 sendgrid.setApiKey(process.env.SENDGRIDAPIKEY)
 
+
 //sessionsCollection.deleteMany()
 
 
@@ -18,13 +19,6 @@ exports.viewCreateScreen = function(req, res) {
 exports.create = function(req, res) {
     let entry = new Entry(req.body, req.session.user._id, req.session.user.username)
     entry.create().then(function(newId) {
-        /*sendgrid.send({
-            to: 'christopher@theperipetycompany.com',
-            from: 'admin@heimursaga.com',
-            subject: 'Congrats on Creating a New Entry',
-            text: `You did a great job creating an entry.`,
-            html: `You did a <strong>great</strong> job! `
-        })*/
         req.flash("success", "New entry successfully posted.")
         req.session.save(() => res.redirect(`/entry/${newId}`))
     }).catch(function(errors){
@@ -93,7 +87,7 @@ exports.edit = function(req, res) {
             // entry was updated in db
             req.flash("success", "Entry successfully updated.")
             req.session.save(function() {
-                res.redirect(`/entry/${req.params.id}/edit`)
+                res.redirect(`/entry/${req.params.id}`)
             })
         } else {
             entry.errors.forEach(function(error) {

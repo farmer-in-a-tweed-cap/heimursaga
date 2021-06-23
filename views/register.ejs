@@ -32,11 +32,11 @@
 
 											<div class="mb-3">
 												<label class="form-label">Explorer Name</label>
-												<input class="form-control form-control-lg" type="text" name="username" id="username-register" placeholder="Enter a username" />
+												<input class="form-control form-control-lg" type="text" name="username" id="username-register" maxLength="30" placeholder="Enter a username" />
 											</div>
 											<div class="mb-3">
 												<label class="form-label">Email</label>
-												<input class="form-control form-control-lg" type="email" name="email" id="email-register" placeholder="Enter your email" />
+												<input class="form-control form-control-lg" type="email" name="email" id="email-register" maxLength="100" placeholder="Enter your email" />
 											</div>
 											<div class="mb-3">
 
@@ -60,6 +60,8 @@
 													  class="form-control form-control-lg"
 													  id="password-register"
 													  placeholder="Enter a password"
+													  maxlength="50"
+													  minlength="8"
 													/>
 													<i class="fas fa-eye" id="eye"></i>
 												  </div>

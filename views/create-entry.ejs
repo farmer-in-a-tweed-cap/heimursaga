@@ -208,6 +208,13 @@
 			attributionControl: false,
 			});
 
+			entrymap.addControl(new mapboxgl.GeolocateControl({
+				positionOptions: {
+				enableHighAccuracy: true
+				},
+				trackUserLocation: true
+				})
+			);
 
 			var marker = new mapboxgl.Marker({
 				color: '#ac6d46',
@@ -218,7 +225,6 @@
 
 
 			entrymap.on('move', function (e) {
-				console.log(`Current Map Center: ${entrymap.getCenter()}`);
 				marker.setLngLat(entrymap.getCenter());
 				var lngLat = marker.getLngLat();
 				var entryCoordinates = marker.getLngLat();
@@ -226,14 +232,6 @@
 				coordinates.innerHTML = [lngLat.lng,lngLat.lat];
 				coordinates.style.display = 'block';
 			});
-
-			entrymap.addControl(
-				new MapboxGeocoder({
-				accessToken: mapboxgl.accessToken,
-				marker: false,
-				mapboxgl: mapboxgl,
-				})
-			);
 
 			var coordinatesGeocoder = function (query) {
 				// Match anything which looks like

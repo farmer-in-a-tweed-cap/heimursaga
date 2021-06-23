@@ -278,7 +278,7 @@ map.on('load', function(){
             
                                           <div class="col-3 offset-5 text-right overflow-hidden" id="single-entry-flags">
             
-                                            <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="26"></iframe>
+                                            <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="21"></iframe>
             
                                           </div>
                                         </div>
@@ -366,7 +366,7 @@ map.on('load', function(){
                     
                                                   <div class="col-3 offset-5 text-right overflow-hidden" id="single-entry-flags">
                     
-                                                    <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="26"></iframe>
+                                                    <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="21"></iframe>
                     
                                                   </div>
                                                 </div>

@@ -1,5 +1,6 @@
 const { NoEmitOnErrorsPlugin } = require('webpack')
 const Like = require('../models/Like')
+const io = require('socket.io')
 
 exports.addLike = function(req, res) {
     let like = new Like(req.params.id, req.visitorId)
