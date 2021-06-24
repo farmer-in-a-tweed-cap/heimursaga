@@ -266,19 +266,19 @@ map.on('load', function(){
                                   ${JSON.parse(JSON.stringify(entry.body, null,1)).replace(/\n/g, "</p><p>")}
                                 </div>
 
-                       
+                                
 
                                     <div class="col-md-6 offset-md-3">
                                         <div class="row">
-                                          <div class="col-3 overflow-hidden" id="single-entry-likes">
+                                          <div class="col-3 offset-1 overflow-hidden" id="single-entry-likes">
             
-                                            <iframe src="single-entry-likes/${entry._id}" id="single-entry-likes" height="26"></iframe>
+                                            <iframe src="single-entry-likes/${entry._id}" id="single-entry-likes" height="23"></iframe>
             
                                           </div>
             
-                                          <div class="col-3 offset-5 text-right overflow-hidden" id="single-entry-flags">
+                                          <div class="col-3 offset-4 text-right overflow-hidden" id="single-entry-flags">
             
-                                            <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="26"></iframe>
+                                            <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="21"></iframe>
             
                                           </div>
                                         </div>
@@ -358,15 +358,15 @@ map.on('load', function(){
         
                                             <div class="col-md-6 offset-md-3">
                                                 <div class="row">
-                                                  <div class="col-3 overflow-hidden" id="single-entry-likes">
+                                                  <div class="col-3 offset-1 overflow-hidden" id="single-entry-likes">
                     
-                                                    <iframe src="single-entry-likes/${entry._id}" id="single-entry-likes" height="26"></iframe>
+                                                    <iframe src="single-entry-likes/${entry._id}" id="single-entry-likes" height="23"></iframe>
                     
                                                   </div>
                     
-                                                  <div class="col-3 offset-5 text-right overflow-hidden" id="single-entry-flags">
+                                                  <div class="col-3 offset-4 text-right overflow-hidden" id="single-entry-flags">
                     
-                                                    <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="26"></iframe>
+                                                    <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="21"></iframe>
                     
                                                   </div>
                                                 </div>

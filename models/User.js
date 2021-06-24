@@ -29,7 +29,8 @@ User.prototype.cleanUp = function() {
         from: sanitizeHTML(this.data.from, {allowedTags: [], allowedAttributes: {}}),
         instagram: this.data.instagram,
         website: this.data.website,
-        type: "Explorer"
+        type: "Explorer",
+        settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}}
     }
 }
 
@@ -39,7 +40,7 @@ User.prototype.validate = function() {
         if (this.data.username != "" && !validator.isAlphanumeric(this.data.username)) {this.errors.push("Username can only contain letters and numbers.")}
         if (!validator.isEmail(this.data.email)) {this.errors.push("You must provide a valid email address.")}
         //if (this.data.password == "") {this.errors.push("You must provide a password.")}
-        if (this.data.password.length > 0 && this.data.password.length < 12) {this.errors.push("Password must be at least 12 characters.")}
+        if (this.data.password.length > 0 && this.data.password.length < 8) {this.errors.push("Password must be at least 8 characters.")}
         if (this.data.password.length > 50) {this.errors.push("Password cannot exceed 50 characters.")}
         if (this.data.username.length > 0 && this.data.username.length < 3) {this.errors.push("Username must be at least 3 characters.")}
         if (this.data.username.length > 30) {this.errors.push("Username cannot exceed 30 characters.")}
@@ -124,7 +125,7 @@ User.prototype.update = function() {
       this.cleanUp()
       //this.validate()
       if (!this.errors.length) {
-        await usersCollection.findOneAndUpdate({username: this.data.username}, {$set: {username: this.data.username, email: this.data.email, bio: this.data.bio, currentlyin: this.data.currentlyin, livesin: this.data.livesin, from: this.data.from, type: this.data.type}})
+        await usersCollection.findOneAndUpdate({username: this.data.username}, {$set: {username: this.data.username, email: this.data.email, bio: this.data.bio, currentlyin: this.data.currentlyin, livesin: this.data.livesin, from: this.data.from, type: this.data.type, settings: {emailNotifications: {followers: this.data.settings.emailNotifications.followers, likes: this.data.settings.emailNotifications.likes}}}})
         resolve("success")
       } else {
         resolve("failure")
@@ -152,7 +153,8 @@ User.findByUsername = function(username) {
                     from: userDoc.data.from,
                     instagram: userDoc.data.instagram,
                     website: userDoc.data.website,
-                    type: userDoc.data.type
+                    type: userDoc.data.type,
+                    settings: userDoc.data.settings
                 }
                 resolve(userDoc)
             } else {

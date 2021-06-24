@@ -208,17 +208,15 @@
 			attributionControl: false,
 			});
 
-
 			var marker = new mapboxgl.Marker({
 				color: '#ac6d46',
 				draggable: false,
 				})
-				.setLngLat([-119.5591, 37.715])
+				.setLngLat([-33.609412,36.749601])
 				.addTo(entrymap);
 
 
 			entrymap.on('move', function (e) {
-				console.log(`Current Map Center: ${entrymap.getCenter()}`);
 				marker.setLngLat(entrymap.getCenter());
 				var lngLat = marker.getLngLat();
 				var entryCoordinates = marker.getLngLat();
@@ -226,14 +224,6 @@
 				coordinates.innerHTML = [lngLat.lng,lngLat.lat];
 				coordinates.style.display = 'block';
 			});
-
-			entrymap.addControl(
-				new MapboxGeocoder({
-				accessToken: mapboxgl.accessToken,
-				marker: false,
-				mapboxgl: mapboxgl,
-				})
-			);
 
 			var coordinatesGeocoder = function (query) {
 				// Match anything which looks like
@@ -288,6 +278,14 @@
 				localGeocoder: coordinatesGeocoder,
 				marker: false,
 				mapboxgl: mapboxgl,
+				})
+			);
+
+			entrymap.addControl(new mapboxgl.GeolocateControl({
+				positionOptions: {
+				enableHighAccuracy: true
+				},
+				trackUserLocation: true
 				})
 			);
 			

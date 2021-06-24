@@ -19,82 +19,26 @@
                     
                 <li class="nav-item">
                         <div class="mt-1 me-2">
-                            <a class="btn btn-primary" href="/create-entry"><i class="fas fa-feather-alt me-2"></i>Create Entry</a>
+                            <a class="btn btn-primary" href="/create-entry"><i class="fas fa-feather-alt"></i><span class="d-none d-sm-inline">  Create Entry</span></a>
                         </div>
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-icon dropdown-toggle disabled" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
+                    <a class="nav-icon dropdown-toggle notification-icon disabled" href="#" id="alertsDropdown notification-icon" data-bs-toggle="dropdown">
                         <div class="position-relative">
-                            <i class="align-middle" data-feather="bell-off"></i>
+                            <i class="align-middle" data-feather="bell"></i>
                         </div>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0" aria-labelledby="alertsDropdown">
-                        <div class="dropdown-menu-header">
-                            4 New Notifications
-                        </div>
-                        <div class="list-group">
-                            <a href="#" class="list-group-item">
-                                <div class="row g-0 align-items-center">
-                                    <div class="col-2">
-                                        <i class="text-danger" data-feather="alert-circle"></i>
-                                    </div>
-                                    <div class="col-10">
-                                        <div class="text-dark">Update completed</div>
-                                        <div class="text-muted small mt-1">Restart server 12 to complete the update.</div>
-                                        <div class="text-muted small mt-1">2h ago</div>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#" class="list-group-item">
-                                <div class="row g-0 align-items-center">
-                                    <div class="col-2">
-                                        <i class="text-warning" data-feather="bell"></i>
-                                    </div>
-                                    <div class="col-10">
-                                        <div class="text-dark">Lorem ipsum</div>
-                                        <div class="text-muted small mt-1">Aliquam ex eros, imperdiet vulputate hendrerit et.</div>
-                                        <div class="text-muted small mt-1">6h ago</div>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#" class="list-group-item">
-                                <div class="row g-0 align-items-center">
-                                    <div class="col-2">
-                                        <i class="text-primary" data-feather="home"></i>
-                                    </div>
-                                    <div class="col-10">
-                                        <div class="text-dark">Login from 192.186.1.1</div>
-                                        <div class="text-muted small mt-1">8h ago</div>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#" class="list-group-item">
-                                <div class="row g-0 align-items-center">
-                                    <div class="col-2">
-                                        <i class="text-success" data-feather="user-plus"></i>
-                                    </div>
-                                    <div class="col-10">
-                                        <div class="text-dark">New connection</div>
-                                        <div class="text-muted small mt-1">Anna accepted your request.</div>
-                                        <div class="text-muted small mt-1">12h ago</div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="dropdown-menu-footer">
-                            <a href="#" class="text-muted">Show all notifications</a>
-                        </div>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0 shadow" aria-labelledby="alertsDropdown">
+                        <div class="user-notifications shadow" id="user-notifications"></div>
+                        <script src="/socket.io/socket.io.js"></script>
                     </div>
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-bs-toggle="dropdown">
-                        <i class="align-middle" data-feather="settings"></i>
-                    </a>
 
-                    <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                        <img src="<%= user.avatar %>" class="avatar img-fluid rounded-circle me-1" alt="<%= user.username %>" /> <span class="text-dark"><%= user.username %></span>
+                    <a class="nav-link dropdown-toggle d-sm-inline-block" href="#" data-bs-toggle="dropdown">
+                        <img src="<%= user.avatar %>" class="avatar img-fluid rounded-circle me-1" alt="<%= user.username %>" /> <span class="text-dark d-none d-sm-inline"><%= user.username %></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
                         <a class="dropdown-item" href="/journal/<%= user.username %>"><i class="align-middle me-1" data-feather="user"></i>My Journal</a>
