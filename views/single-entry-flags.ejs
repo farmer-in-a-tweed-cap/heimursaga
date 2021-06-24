@@ -7,7 +7,7 @@
         <% if (user) {
           if (!hasVisitorFlagged) { %>
 
-        <form onsubmit="return confirm('Are you sure you want to report this entry for violating The Explorer Code? This action is irreversible.');" action="/addFlag/<%= entry._id %>" method="POST">
+        <form action="/addFlag/<%= entry._id %>" method="POST">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button class="text-danger" style="background: transparent; border: none;">
             <div class="text-danger">

@@ -225,8 +225,6 @@ function convertToPlain(html){
 			attributionControl: false,
 			});
 
-
-
 			var coordinatesGeocoder = function (query) {
 				// Match anything which looks like
 				// decimal degrees coordinate pair.
@@ -282,14 +280,7 @@ function convertToPlain(html){
 				mapboxgl: mapboxgl,
 				})
 			);
-			
-			entrymap.addControl(new mapboxgl.GeolocateControl({
-				positionOptions: {
-				enableHighAccuracy: true
-				},
-				trackUserLocation: true
-				})
-			);
+
 
 			var marker = new mapboxgl.Marker({
 				color: '#ac6d46',
@@ -309,6 +300,14 @@ function convertToPlain(html){
 				coordinates.style.display = 'block';
 			});
 
+
+			entrymap.addControl(new mapboxgl.GeolocateControl({
+				positionOptions: {
+				enableHighAccuracy: true
+				},
+				trackUserLocation: true
+				})
+			);
 
 		function myFunction() {
 			var copyText = document.getElementById("coordinates").value;

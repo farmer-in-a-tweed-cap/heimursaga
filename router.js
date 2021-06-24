@@ -24,6 +24,9 @@ router.post('/register', userController.register)
 router.post('/login', userController.login)
 router.get('/logout', userController.logout)
 
+router.get('/single-entry', function (req, res) {
+  res.render('single-entry copy', {pageName: 'single'})
+})
 
 router.post('/update-user/:username', userController.ifUserExists, userController.sharedProfileData, userController.edit)
 

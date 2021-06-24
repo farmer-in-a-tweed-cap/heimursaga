@@ -1,7 +1,6 @@
 const User = require('../models/User')
 const Entry = require('../models/Entry')
 const Follow = require('../models/Follow')
-const Flag = require('../models/Flag')
 const entriesCollection = require('../db').db().collection("entries")
 const followsCollection = require('../db').db().collection("follows")
 const usersCollection = require('../db').db().collection("users")
@@ -78,15 +77,8 @@ exports.register = function(req, res) {
             from: 'admin@heimursaga.com',
             subject: `New Explorer Account: ${user.data.username}`,
             text: `An explorer has signed up for a new account. Username: ${user.data.username}, Email: ${user.data.email}, Journal link: https://heimursaga.com/journal/${user.data.username}.`,
-            html: `An explorer has signed up for a new account. </p>Username: ${user.data.username} </br>Email: ${user.data.email} </br>Journal Link: <a href="https://heimursaga.com/journal/${user.data.username}">https://heimursaga.com/journal/${user.data.username}</a>`
+            html: `An explorer has signed up for a new account. </p>Username: ${user.data.username} </br>Email: ${user.data.email} </br><a href="https://heimursaga.com/journal/${user.data.username}">Journal Link</a>`
         })
-      sendgrid.send({
-            to: `${user.data.email}`,
-            from: 'explorer1@heimursaga.com',
-            subject: `Welcome to Heimursaga, ${user.data.username}!`,
-            text: `Greetings ${user.data.username}, I wanted to personally welcome you to Heimursaga. We're so excited you've decided to join this community. Please read The Explorer Code (https://heimursaga.com/explorer-code) before posting any entries, and don't forget to follow and support your favorite explorers! Regards, explorer1`,
-            html: `<p>Greetings ${user.data.username},</p><p>I want to personally welcome you to Heimursaga! We're so excited you've decided to join this community.</p><p>Please read <a href="https://heimursaga.com/explorer-code">The Explorer Code</a> before posting any entries, and don't forget to follow and support your favorite explorers!</p><br><p>Regards, <br>explorer1</p>`
-      })
     req.session.user = {username: user.data.username, avatar: user.avatar, _id: user.data._id}
     req.session.save(function() {
       res.redirect('getting-started')
@@ -234,14 +226,12 @@ exports.myFeed = async function(req, res) {
   // ask our post model for posts by a certain author id
   let entries = await Entry.getFollowedFeed(req.session.user._id)
   let following = await Follow.getFollowingById(req.session.user._id)
-  let hasVisitorFlagged = await Flag.hasVisitorFlagged(entries._id, req.visitorId)
   let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
       res.render('my-feed', {
         pageName: "my-feed",
         entries: entries,
         following: following,
         entrymarker: JSON.stringify(entryMarker),
-        hasVisitorFlagged: hasVisitorFlagged
       })
     } else {
     res.render('discover', {

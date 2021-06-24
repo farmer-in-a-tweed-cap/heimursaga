@@ -6,11 +6,14 @@ import "./modules/feather";
 import "./modules/moment";
 import "./modules/sidebar";
 import "./modules/notyf";
-import Notification from "./modules/notification";
+//import RegistrationForm from "./modules/registrationForm";
 import Search from './modules/search';
-if (document.querySelector(".header-search-icon")) {new Search()}
-if (document.querySelector("#user-notifications")) {new Notification()}
-
+//if (document.querySelector(".registration-form")) {
+  //  new RegistrationForm
+//}
+if (document.querySelector(".header-search-icon")) {
+    new Search()
+}
 
 // Charts
 import "./modules/chartjs";
