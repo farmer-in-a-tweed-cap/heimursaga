@@ -9,8 +9,7 @@
 			<main class="content">
 				<div class="container-fluid p-0">
 
-					<h1 class="h3 mb-3 offset-2">Settings</h1>
-					
+					<h1 class="h3 mb-3 text-center">Settings</h1>					
 
 					<div class="row">
 						<!--<div class="col-md-3 col-xl-2">
@@ -229,38 +228,6 @@
 									</div>
 								</div>-->
 							</div>
-
-								<div class="tab-pane fade" id="notifications" role="tabpanel">
-									<%- include('includes/flash') %>
-									<div class="card">
-										<div class="card-header">
-											<h5 class="card-title mb-0">Email Notifications</h5>
-										</div>
-										<div class="card-body col-md-10 offset-md-1">
-											<form action="/update-user/<%= user.username %>" method="POST">
-													<div>
-														<div class="mb-3">
-															<div class="form-check form-switch">
-																<input class="form-check-input" type="checkbox" name="likesemailnotifications" id="likesemailnotifications" checked>
-																<label class="form-check-label">email notification for new entry likes</label>
-															</div>
-														</div>
-														<div class="mb-5">
-															<div class="form-check form-switch">
-																<input class="form-check-input" type="checkbox" name="followersemailnotifications" id="followersemailnotifications" checked>
-																<label class="form-check-label">email notification for new followers</label>
-															</div>
-														</div>
-													</div>
-
-												<input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-												<button type="submit" class="btn btn-primary">Save Settings</button>
-
-											</form>		
-										</div>
-									</div>
-								</div>
 
 
 							</div>
