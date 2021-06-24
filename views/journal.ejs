@@ -92,11 +92,13 @@
 											<li class="nav-item">
 												<a class="nav-link" data-bs-toggle="tab" href="#tab-3"><i class="fas fa-user-check" style="color: #3C73AA;"></i></a>
 											</li>
+
+											<% if (user && isVisitorsProfile) { %>
 											<li class="nav-item">
 												<a class="nav-link" data-bs-toggle="tab" href="#tab-4"><i class="fas fa-users" style="color: #3C73AA;"></i></a>
 											</li>
 
-											<% if (user && isVisitorsProfile) { %>
+											
 											<li class="nav-item">
 												<a class="nav-link" data-bs-toggle="tab" href="#tab-5"><i class="fas fa-heart" style="color: #3C73AA;"></i></a>
 											</li>
@@ -220,6 +222,9 @@
 												 <% }) %>
 												</div>
 											</div>
+
+											<% if (user && isVisitorsProfile) { %>
+
 											<div class="tab-pane fade" id="tab-4" role="tabpanel">
 												<h5 class="card-title text-center pb-2">Followers</h5>
 												<div class="list-group list-group-flush">
@@ -231,7 +236,7 @@
 												 <% }) %>
 												</div>
 											</div>
-											<% if (user && isVisitorsProfile) { %>
+											
 											<div class="tab-pane fade" id="tab-5" role="tabpanel">
 												<h5 class="card-title text-center pb-2">Liked Entries</h5>
 												<div class="list-group list-group-flush">
