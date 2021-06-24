@@ -141,7 +141,7 @@ exports.edit = function(req, res) {
       // or user did have permission, but there were validation errors
       if (status == "success") {
           // user was updated in db
-          req.flash("success", "User successfully updated.")
+          req.flash("success", "Profile successfully updated.")
           req.session.save(function() {
               res.redirect(`/settings/${req.params.username}`)
           })

@@ -7,11 +7,10 @@
 <%- include('includes/navbar') %>
 
 			<main class="content">
-				<div class="container-fluid p-0">
+				<div class="container-fluid">
 
-					<h1 class="h3 mb-3 text-center">Settings</h1>					
+						<h1 class="h3 mb-3 text-center">Settings</h1>					
 
-					<div class="row">
 						<!--<div class="col-md-3 col-xl-2">
 
 							<div class="card">
@@ -48,191 +47,96 @@
 							<div class="tab-content">
 								<div class="tab-pane fade show active" id="account" role="tabpanel">
 									<%- include('includes/flash') %>
-									<form action="/update-user/<%= user.username %>" method="POST">
-									<div class="card">
-										<div class="card-header">
-											<h5 class="card-title mb-0">Public info</h5>
-										</div>
-										<div class="card-body col-md-10 offset-md-1">
+									
+												<form action="/update-user/<%= user.username %>" method="POST">
+													<div class="card">
+														<div class="card-header">
+															<h5 class="card-title mb-0">Public info</h5>
+														</div>
+														<div class="card-body col-md-10 offset-md-1">
 
-														<div class="mb-5">
-															<label class="form-label text-dark">Explorer Avatar</label>
-															<div class="">
-															<img src="<%= user.avatar %>" class="img-fluid rounded-circle mb-2" width="128" height="128" />
-															</div>
-															<label class="form-text text-muted">Heimursaga uses the Gravatar service for profile avatars. Your avatar is linked to the email you used to register your Heimursaga account. Please visit <a href="https://en.gravatar.com" target="_blank">gravatar.com</a> to update or set your explorer avatar.</label>
-														</div>
-														<div class="mb-3">
-															<input type="text" class="form-control" id="username-register" name="username" maxlength="30" value="<%= user.username %>"hidden>
-														</div>
-														<div class="mb-3">
-															<input type="email" class="form-control" id="email-register" name="email" value="<%= email %>" hidden>
-														</div>
-														<div class="mb-3">
-															<label class="form-label text-dark">Bio</label>
-															<label class="form-text text-muted">- a little bit about you (200 char.)</label>
-															<textarea rows="3" class="form-control" id="bio" name="bio" maxlength="200"><%= bio %></textarea>
-														</div>
-														<div class="mb-3">
-															<label class="form-label text-dark">Currently In</label>
-															<label class="form-text text-muted">- where are you currently? (50 char.)</label>
-															<input class="form-control" id="currentlyin" name="currentlyin" maxlength="50" value="<%= currentlyin %>">
-														</div>
-														<div class="mb-3">
-															<label class="form-label text-dark">Lives In</label>
-															<label class="form-text text-muted">- where do you call home? (50 char.)</label>
-															<input class="form-control" id="livesin" name="livesin" value="<%= livesin %>" maxlength="50">
-														</div>
-														<div class="mb-5">
-															<label class="form-label text-dark">From</label>
-															<label class="form-text text-muted">- where are you from? (50 char.)</label>
-															<input class="form-control" id="from" name="from" value="<%= from %>" maxlength="50">
-														</div>
-														<!--<div class="mb-3">
-															<label class="form-label">Instagram</label>
-															<label class="form-text text-muted">- if you want to link your instagram on your profile</label>
-															<input class="form-control" id="instagram" name="instagram" placeholder="<%= user.instagram %>" maxlength="50">
-														</div>
-														<div class="mb-3">
-															<label class="form-label">Website</label>
-															<label class="form-text text-muted">- if you want to link a blog or personal website</label>
-															<input class="form-control" id="website" name="website" placeholder="<%= user.website %>" maxlength="50">
-														</div>-->
-													</div>
-												</div>
-
-									<div class="card">
-										<div class="card-header">
-											<h5 class="card-title mb-0">Notifications</h5>
-										</div>
-											<div class="card-body col-md-10 offset-md-1">
-														<div>
-															<div class="mb-3">
-																<div class="form-check form-switch">
-																	<input class="form-check-input" type="checkbox" value="true" name="followersemailnotifications" id="followersemailnotifications"<% if (settings.emailNotifications.followers == "true") { %> checked <% } %>/>
-																	<label class="form-check-label">email notifications for new followers</label>
+															<div class="mb-5">
+																<label class="form-label text-dark">Explorer Avatar</label>
+																<div class="">
+																<img src="<%= user.avatar %>" class="img-fluid rounded-circle mb-2" width="128" height="128" />
 																</div>
+																<label class="form-text text-muted">Heimursaga uses the Gravatar service for profile avatars. Your avatar is linked to the email you used to register your Heimursaga account. Please visit <a href="https://en.gravatar.com" target="_blank">gravatar.com</a> to update or set your explorer avatar.</label>
+															</div>
+															<div class="mb-3">
+																<input type="text" class="form-control" id="username-register" name="username" maxlength="30" value="<%= user.username %>"hidden>
+															</div>
+															<div class="mb-3">
+																<input type="email" class="form-control" id="email-register" name="email" value="<%= email %>" hidden>
+															</div>
+															<div class="mb-3">
+																<label class="form-label text-dark">Bio</label>
+																<label class="form-text text-muted">- a little bit about you (200 char.)</label>
+																<textarea rows="3" class="form-control" id="bio" name="bio" maxlength="200"><%= bio %></textarea>
+															</div>
+															<div class="mb-3">
+																<label class="form-label text-dark">Currently In</label>
+																<label class="form-text text-muted">- where are you currently? (50 char.)</label>
+																<input class="form-control" id="currentlyin" name="currentlyin" maxlength="50" value="<%= currentlyin %>">
+															</div>
+															<div class="mb-3">
+																<label class="form-label text-dark">Lives In</label>
+																<label class="form-text text-muted">- where do you call home? (50 char.)</label>
+																<input class="form-control" id="livesin" name="livesin" value="<%= livesin %>" maxlength="50">
 															</div>
 															<div class="mb-5">
-																<div class="form-check form-switch">
-																	<input class="form-check-input" type="checkbox" value="true" name="likesemailnotifications" id="likesemailnotifications" <% if (settings.emailNotifications.likes == "true") { %> checked <% } %>/>
-																	<label class="form-check-label">email notifications for new entry likes</label>
+																<label class="form-label text-dark">From</label>
+																<label class="form-text text-muted">- where are you from? (50 char.)</label>
+																<input class="form-control" id="from" name="from" value="<%= from %>" maxlength="50">
+															</div>
+															<!--<div class="mb-3">
+																<label class="form-label">Instagram</label>
+																<label class="form-text text-muted">- if you want to link your instagram on your profile</label>
+																<input class="form-control" id="instagram" name="instagram" placeholder="<%= user.instagram %>" maxlength="50">
+															</div>
+															<div class="mb-3">
+																<label class="form-label">Website</label>
+																<label class="form-text text-muted">- if you want to link a blog or personal website</label>
+																<input class="form-control" id="website" name="website" placeholder="<%= user.website %>" maxlength="50">
+															</div>-->
+														</div>
+													</div>
+
+													<div class="card">
+														<div class="card-header">
+															<h5 class="card-title mb-0">Notifications</h5>
+														</div>
+														<div class="card-body col-md-10 offset-md-1">
+															<div>
+																<div class="mb-3">
+																	<div class="form-check form-switch">
+																		<input class="form-check-input" type="checkbox" value="true" name="followersemailnotifications" id="followersemailnotifications"<% if (settings.emailNotifications.followers == "true") { %> checked <% } %>/>
+																		<label class="form-check-label">email notifications for new followers</label>
+																	</div>
+																</div>
+																<div class="mb-5">
+																	<div class="form-check form-switch">
+																		<input class="form-check-input" type="checkbox" value="true" name="likesemailnotifications" id="likesemailnotifications" <% if (settings.emailNotifications.likes == "true") { %> checked <% } %>/>
+																		<label class="form-check-label">email notifications for new entry likes</label>
+																	</div>
 																</div>
 															</div>
 														</div>
 													</div>
-												</div>
-											</div>
 
-										</div>	
-												<div class="card card-body col-md-12">
+													<div class="card card-body col-md-12">
 
-												<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+														<input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-												<button type="submit" class="col-md-4 offset-md-4 btn btn-primary">Save changes</button>
+														<button type="submit" class="col-md-4 offset-md-4 btn btn-primary">Save changes</button>
 
-												</div>
-											</form>
-
-										</div>
-									</div>
-
-									<!--<div class="card">
-										<div class="card-header">
-											<div class="card-actions float-end">
-												<div class="dropdown show">
-													<a href="#" data-bs-toggle="dropdown" data-bs-display="static">
-                  									<i class="align-middle" data-feather="more-horizontal"></i>
-                									</a>
-
-													<div class="dropdown-menu dropdown-menu-end">
-														<a class="dropdown-item" href="#">Action</a>
-														<a class="dropdown-item" href="#">Another action</a>
-														<a class="dropdown-item" href="#">Something else here</a>
 													</div>
-												</div>
-											</div>
-											<h5 class="card-title mb-0">Private info</h5>
-										</div>
-										<div class="card-body">
-											<form>
-												<div class="row">
-													<div class="mb-3 col-md-6">
-														<label for="inputFirstName" class="form-label">First name</label>
-														<input type="text" class="form-control" id="inputFirstName" placeholder="First name">
-													</div>
-													<div class="mb-3 col-md-6">
-														<label for="inputLastName" class="form-label">Last name</label>
-														<input type="text" class="form-control" id="inputLastName" placeholder="Last name">
-													</div>
-												</div>
-												<div class="mb-3">
-													<label for="inputEmail4" class="form-label">Email</label>
-													<input type="email" class="form-control" id="inputEmail4" placeholder="Email">
-												</div>
-												<div class="mb-3">
-													<label for="inputAddress" class="form-label">Address</label>
-													<input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-												</div>
-												<div class="mb-3">
-													<label for="inputAddress2" class="form-label">Address 2</label>
-													<input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
-												</div>
-												<div class="row">
-													<div class="mb-3 col-md-6">
-														<label for="inputCity" class="form-label">City</label>
-														<input type="text" class="form-control" id="inputCity">
-													</div>
-													<div class="mb-3 col-md-4">
-														<label for="inputState" class="form-label">State</label>
-														<select id="inputState" class="form-control">
-                    									<option selected>Choose...</option>
-                    									<option>...</option>
-                  									</select>
-													</div>
-													<div class="mb-3 col-md-2">
-														<label for="inputZip" class="form-label">Zip</label>
-														<input type="text" class="form-control" id="inputZip">
-													</div>
-												</div>
-												<button type="submit" class="btn btn-primary">Save changes</button>
-											</form>
-
-										</div>
-									</div>
-
-									</div>
-									<div class="tab-pane fade" id="password" role="tabpanel">
-									<div class="card">
-										<div class="card-body">
-											<h5 class="card-title">Password</h5>
-
-											<form>
-												<div class="mb-3">
-													<label for="inputPasswordCurrent" class="form-label">Current password</label>
-													<input type="password" class="form-control" id="inputPasswordCurrent">
-													<small><a href="#">Forgot your password?</a></small>
-												</div>
-												<div class="mb-3">
-													<label for="inputPasswordNew" class="form-label">New password</label>
-													<input type="password" class="form-control" id="inputPasswordNew">
-												</div>
-												<div class="mb-3">
-													<label for="inputPasswordNew2" class="form-label">Verify password</label>
-													<input type="password" class="form-control" id="inputPasswordNew2">
-												</div>
-												<button type="submit" class="btn btn-primary">Save changes</button>
-											</form>
-
-										</div>
-									</div>
-								</div>-->
-							</div>
+												</form>
 
 
+								</div>
 							</div>
 						</div>
-					</div>
+					
 
 				</div>
 			</main>
