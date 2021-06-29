@@ -287,7 +287,7 @@ map.on('load', function(){
                                 
       
       
-                                <div class="col-md-6 offset-md-3 mb-1">
+                                <div class="modal-body col-md-6 offset-md-3 mb-1">
                                   <hr>
                                 </div>
       
@@ -375,7 +375,7 @@ map.on('load', function(){
                                         
               
               
-                                        <div class="col-md-6 offset-md-3 mb-1">
+                                        <div class="modal-body col-md-6 offset-md-3 mb-1">
                                           <hr>
                                         </div>
               
