@@ -272,13 +272,13 @@ map.on('load', function(){
                                         <div class="row">
                                           <div class="col-3 offset-1 overflow-hidden" id="single-entry-likes">
             
-                                            <iframe src="single-entry-likes/${entry._id}" id="single-entry-likes" height="23"></iframe>
+                                            <iframe src="single-entry-likes/${entry._id}" id="single-entry-likes" height="23" allowTransparency="true"></iframe>
             
                                           </div>
             
                                           <div class="col-3 offset-4 text-right overflow-hidden" id="single-entry-flags">
             
-                                            <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="21"></iframe>
+                                            <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="21" allowTransparency="true"></iframe>
             
                                           </div>
                                         </div>
@@ -360,13 +360,13 @@ map.on('load', function(){
                                                 <div class="row">
                                                   <div class="col-3 offset-1 overflow-hidden" id="single-entry-likes">
                     
-                                                    <iframe src="single-entry-likes/${entry._id}" id="single-entry-likes" height="23"></iframe>
+                                                    <iframe src="single-entry-likes/${entry._id}" id="single-entry-likes" height="23" allowTransparency="true"></iframe>
                     
                                                   </div>
                     
                                                   <div class="col-3 offset-4 text-right overflow-hidden" id="single-entry-flags">
                     
-                                                    <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="21"></iframe>
+                                                    <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="21" allowTransparency="true"></iframe>
                     
                                                   </div>
                                                 </div>
