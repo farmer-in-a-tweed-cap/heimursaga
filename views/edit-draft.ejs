@@ -1,6 +1,6 @@
 <%- include('includes/header') %>
 
-<title>Heimursaga | Edit Draft</title>
+<title>Heimursaga | Edit Draft Entry</title>
 
 <%- include('includes/sidebar') %>
 
@@ -10,14 +10,13 @@
 			<main class="content">
 				<div class="container-fluid p-0">
 
-					<h1 class="h3 mb-3 text-center">Edit Draft</h1>
+					<h1 class="h3 mb-3 text-center">Edit Draft Entry</h1>
 
 					<div class="row">
+						<!--<a class="small font-weight-bold mb-3 ml-3 col-md-8 offset-md-2" href="/draft/<%= draft._id %>">&laquo; Back to draft permalink</a>-->
 
-						<div class="col-12 col-xl-12">
+						<div class="col-md-8 offset-md-2">
 							<div class="card">
-
-								<a class="small font-weight-bold mt-3" href="/draft/<%= draft._id %>">&laquo; Back to draft permalink</a>
 
 								<div class="card-header">
 									<%- include('includes/flash') %>
@@ -31,7 +30,7 @@
 						</div>
 
 						<form method="POST">
-							<div class="col-12 col-xl-12">
+							<div class="col-md-8 offset-md-2">
 							  <div class="card">
 								<div class="card-header">
 								  <h5 class="card-title mb-0">2. Log marker coordinates</h5>
@@ -76,7 +75,7 @@
 							  </div>
 							</div>
 						  
-							<div class="col-12 col-xl-12">
+							<div class="col-md-8 offset-md-2">
 							  <div class="card">
 								<div class="card-header">
 								  <h5 class="card-title mb-0">3. Write entry content</h5>
@@ -123,24 +122,29 @@
 									<label class="form-text text-muted">
 									  - in 250-1000 words - if there's more write a series!</label
 									>
-									<textarea name="body" id="post-body" class="body-content tall-textarea form-control" type="text" rows="10"><%= draft.body %></textarea>
-								  </div>
+									<textarea name="body" id="post-body" class="body-content tall-textarea form-control" word-limit="true" max-words="1000" min-words="250" type="text" rows="10"><%= draft.body %></textarea>
+									<div class="text-muted form-text">
+									Word Count: <span id="show">0</span>
+									</div>
+									<span></span>
+									<div class="writing_error form-text text-danger"></div>
+
+								</div>
 								</div>
 							  </div>
 							</div>
 						  
-							<div class="col-12 col-xl-12">
+							<div class="col-md-8 offset-md-2">
 							  <div class="card">
 								<div class="card-header">
-								  <h5 class="card-title mb-0">4. Upload optional photo and post entry</h5>
+								  <h5 class="card-title mb-0">4. Update or post draft as entry</h5>
 								</div>
 								<div class="card-body">
-								  <div class="mb-3">
-									<input type="file" />
-									<small class="form-text text-muted">photo formats: _</small>
-								  </div>
+
+								  <input type="hidden" name="_csrf" value="<%= csrfToken %>"> 
+								  <button type="submit" onclick="return confirm('Are you sure you want to delete this draft? This action is irreversible.');" formaction="/draft/<%= draft._id %>/delete" class="btn btn-danger">Delete Draft</button>
 								  <button type="submit" formaction="/draft/<%= draft._id %>/edit" class="btn btn-secondary">Update Draft</button>
-								  <button type="submit" formaction="/create-entry" class="btn btn-primary">Post Entry</button>
+								  <button type="submit" formaction="/draft/<%= draft._id %>/post-entry" class="btn btn-primary">Post Entry</button>
 								</div>
 							  </div>
 							</div>
@@ -155,34 +159,141 @@
 
 	<script>
 
+				// Add event trigger for change to textareas with limit
+				$(document).on("input", "textarea[word-limit=true]", function() {
+
+
+				// Get individual limits
+				thisMin = parseInt($(this).attr("min-words"));
+				thisMax = parseInt($(this).attr("max-words"));
+
+				// Create array of words, skipping the blanks
+				var removedBlanks = [];
+				removedBlanks = $(this).val().split(/\s+/).filter(Boolean);
+
+				// Get word count
+				var wordCount = removedBlanks.length;
+
+				// Remove extra words from string if over word limit
+				if (wordCount > thisMax) {
+						
+					// Trim string, use slice to get the first 'n' values
+					var trimmed = removedBlanks.slice(0, thisMax ).join(" ");
+					
+					// Add space to ensure further typing attempts to add a new word (rather than adding to penultimate word)
+					$(this).val(trimmed + " ");
+					
+					}
+					
+
+				// Compare word count to limits and print message as appropriate
+				if ( wordCount < thisMin) {
+
+					$(this).parent().children(".writing_error").text("Word count under " + thisMin + ".");
+
+				} else if (wordCount > thisMax) {
+
+					$(this).parent().children(".writing_error").text("Word count over " + thisMax + ".");
+
+				} else {
+					
+					// No issues, remove warning message
+					$(this).parent().children(".writing_error").text("");
+
+				}
+
+				});
+
+				function convertToPlain(html){
+						var tempDivElement = document.createElement("entrymarkers");
+						tempDivElement.innerHTML = html;
+						return tempDivElement.textContent || tempDivElement.innerText || "";
+    }
+
+    var htmlString= "<entrymarkers><%=entrymarker%></entrymarkers>";
+
+    var marker = convertToPlain(htmlString)
+
+	var singlemarker = JSON.parse(marker)
+
+
 	mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
 		const entrymap = new mapboxgl.Map({
 			container: 'entrymap', // container ID
-			style: 'mapbox://styles/mapbox/cjaudgl840gn32rnrepcb9b9g', // style URL
-			center: [-105.595899,39.272346], // starting position [lng, lat]
+			style: 'mapbox://styles/cnh1187/ckppoum2i01vk17mzb71uh331', // style URL
+			center: singlemarker.properties.coordinates,
 			zoom: 6,// starting zoom
 			attributionControl: false,
 			});
 
-			entrymap.on('load', function () {
-				entrymap.addSource('dem', {
-				'type': 'raster-dem',
-				'url': 'mapbox://mapbox.terrain-rgb'
-				});
-				entrymap.addLayer(
-				{
-				'id': 'hillshading',
-				'source': 'dem',
-				'type': 'hillshade'
-				// insert below waterway-river-canal-shadow;
-				// where hillshading sits in the Mapbox Outdoors style
-				},
-				'waterway-river-canal-shadow'
+
+
+			var coordinatesGeocoder = function (query) {
+				// Match anything which looks like
+				// decimal degrees coordinate pair.
+				var matches = query.match(
+				/^[ ]*(?:Lat: )?(-?\d+\.?\d*)[, ]+(?:Lng: )?(-?\d+\.?\d*)[ ]*$/i
 				);
-			});
+				if (!matches) {
+				return null;
+				}
+				
+				function coordinateFeature(lng, lat) {
+				return {
+				center: [lng, lat],
+				geometry: {
+				type: 'Point',
+				coordinates: [lng, lat]
+				},
+				place_name: 'Lat: ' + lat + ' Lng: ' + lng,
+				place_type: ['coordinate'],
+				properties: {},
+				type: 'Feature'
+				};
+				}
+				
+				var coord1 = Number(matches[1]);
+				var coord2 = Number(matches[2]);
+				var geocodes = [];
+				
+				if (coord1 < -90 || coord1 > 90) {
+				// must be lng, lat
+				geocodes.push(coordinateFeature(coord1, coord2));
+				}
+				
+				if (coord2 < -90 || coord2 > 90) {
+				// must be lat, lng
+				geocodes.push(coordinateFeature(coord2, coord1));
+				}
+				
+				if (geocodes.length === 0) {
+				// else could be either lng, lat or lat, lng
+				geocodes.push(coordinateFeature(coord1, coord2));
+				geocodes.push(coordinateFeature(coord2, coord1));
+				}
+				
+				return geocodes;
+				};
+
+			entrymap.addControl(
+				new MapboxGeocoder({
+				accessToken: mapboxgl.accessToken,
+				localGeocoder: coordinatesGeocoder,
+				marker: false,
+				mapboxgl: mapboxgl,
+				})
+			);
+			
+			entrymap.addControl(new mapboxgl.GeolocateControl({
+				positionOptions: {
+				enableHighAccuracy: true
+				},
+				trackUserLocation: true
+				})
+			);
 
 			var marker = new mapboxgl.Marker({
-				color: '#3C73AA',
+				color: '#ac6d46',
 				draggable: false,
 				})
 				.setLngLat([-119.5591, 37.715])
@@ -199,13 +310,6 @@
 				coordinates.style.display = 'block';
 			});
 
-			entrymap.addControl(
-				new MapboxGeocoder({
-				accessToken: mapboxgl.accessToken,
-				marker: false,
-				mapboxgl: mapboxgl,
-				})
-			);
 
 		function myFunction() {
 			var copyText = document.getElementById("coordinates").value;

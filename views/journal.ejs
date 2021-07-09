@@ -94,22 +94,31 @@
 
 							<div class="col-12 col-lg-3 d-flex">
 								<div class="card w-100" style="height: 80vh;">
-									<div class="card-header">
-										<ul class="nav nav-tabs card-header-tabs pull-right" role="tablist">
-											<li class="nav-item">
+									<div class="card-header p-0 mt-1 text-center">
+										<ul class="nav nav-tabs card-header-tabs pull-right overflow-hidden justify-content-center pr-0 m-0" role="tablist">
+											<li class="nav-item p-0">
 												<a class="nav-link active" data-bs-toggle="tab" href="#tab-1"><i class="fas fa-feather-alt" style="color: #3C73AA;"></i></a>
 											</li>
-											<li class="nav-item">
+
+											<% if (user && isVisitorsProfile) { %>
+
+											<li class="nav-item p-0">
+												<a class="nav-link" data-bs-toggle="tab" href="#tab-2"><i class="fas fa-edit" style="color: #3C73AA;"></i></a>
+											</li>
+
+											<% } %>
+
+											<li class="nav-item p-0">
 												<a class="nav-link" data-bs-toggle="tab" href="#tab-3"><i class="fas fa-user-check" style="color: #3C73AA;"></i></a>
 											</li>
 
 											<% if (user && isVisitorsProfile) { %>
-											<li class="nav-item">
+
+											<li class="nav-item p-0">
 												<a class="nav-link" data-bs-toggle="tab" href="#tab-4"><i class="fas fa-users" style="color: #3C73AA;"></i></a>
 											</li>
-
 											
-											<li class="nav-item">
+											<li class="nav-item p-0">
 												<a class="nav-link" data-bs-toggle="tab" href="#tab-5"><i class="fas fa-heart" style="color: #3C73AA;"></i></a>
 											</li>
 											<% } %>
@@ -221,6 +230,19 @@
 												   	<% }) %>
 												</div>
 											</div>
+
+											<div class="tab-pane fade" id="tab-2" role="tabpanel">
+												<h5 class="card-title text-center pb-2">Drafts</h5>
+												<div class="list-group list-group-flush">
+												<% drafts.forEach(function(draft) { %>
+													<a href="/draft/<%= draft._id %>/edit" class="list-group-item list-group-item-action">
+														<strong><%= draft.title %></strong><br/>
+														<i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle"><%= draft.place %> | <%= draft.date %></small>
+													  </a>
+												 <% }) %>
+												</div>
+											</div>
+
 											<div class="tab-pane fade" id="tab-3" role="tabpanel">
 												<h5 class="card-title text-center pb-2">Following</h5>
 												<div class="list-group list-group-flush">

@@ -132,14 +132,16 @@
 							<div class="col-12 col-xl-12">
 							  <div class="card">
 								<div class="card-header">
-								  <h5 class="card-title mb-0">4. Post entry</h5>
+								  <h5 class="card-title mb-0">4. Post or save entry</h5>
 								</div>
 								<div class="card-body">
-								  <!--<button type="submit" formaction="/save-draft" class="btn btn-secondary">Save to Drafts</button>-->
+
+									<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+									<button type="submit" formaction="/save-draft" class="btn btn-secondary">Save to Drafts</button>
 								 
-								 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-								 
-								  <button type="submit" formaction="/create-entry" class="btn btn-primary">Post Entry</button>
+									<button type="submit" formaction="/create-entry" class="btn btn-primary">Post Entry</button>
+
 								</div>
 							  </div>
 							</div>

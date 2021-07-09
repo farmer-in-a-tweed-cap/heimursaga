@@ -46,6 +46,7 @@ router.get('/draft/:id', draftController.viewSingle)
 router.get('/draft/:id/edit', userController.mustBeLoggedIn, draftController.viewEditScreen)
 router.post('/draft/:id/edit', userController.mustBeLoggedIn, draftController.edit)
 router.post('/draft/:id/delete', userController.mustBeLoggedIn, draftController.delete)
+router.post('/draft/:id/post-entry', userController.mustBeLoggedIn, draftController.postEntry)
 
 router.post('/search', entryController.search)
 

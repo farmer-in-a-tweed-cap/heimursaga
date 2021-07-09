@@ -6,11 +6,11 @@ const User = require('./User')
 const sanitizeHTML = require('sanitize-html')
 
 
-let Draft = function(data, userid, username, requestedEntryId) {
+let Draft = function(data, userid, username, requestedDraftId) {
   this.data = data
   this.errors = []
   this.userid = userid
-  this.requestedEntryId = requestedEntryId
+  this.requestedDraftId = requestedDraftId
   this.username = username
 }
 
@@ -21,18 +21,6 @@ Draft.prototype.cleanUp = function() {
 
   coordinatesString = sanitizeHTML(this.data.lnglatcoordinates.trim(), {allowedTags: [], allowedAttributes: {}}),
   coordinates = coordinatesString.split(',').map(Number)
-
-  var maxLength = 100
-  var bodyExcerpt = sanitizeHTML((this.data.body.trim()).substr(0,maxLength), {allowedTags: [], allowedAttributes: {}})
-  bodyExcerpt = bodyExcerpt.substr(0, Math.min(bodyExcerpt.length, bodyExcerpt.lastIndexOf(" ")))
-
-  popup = "<strong>"+sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}})+
-  "</strong><p>"+sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}})+
-  "</p><p>on "+sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})+
-  "</p><p>"+bodyExcerpt+"...</p>"
-
-  console.log(this.ObjectID)
-
   
 
   // get rid of any bogus properties
@@ -42,7 +30,6 @@ Draft.prototype.cleanUp = function() {
     date: sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}}),
     body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
     GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
-    popup: popup,
     createdDate: new Date(),
     author: ObjectID(this.userid),
   }
@@ -60,7 +47,7 @@ Draft.prototype.create = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      // save entry into database
+      // save draft into database
       draftsCollection.insertOne(this.data).then((info) => {
         resolve(info.ops[0]._id)
       }).catch(() => {
@@ -95,7 +82,7 @@ Draft.prototype.actuallyUpdate = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await draftsCollection.findOneAndUpdate({_id: new ObjectID(this.requestedDraftId)}, {$set: {title: this.data.title, body: this.data.body}})
+      await draftsCollection.findOneAndUpdate({_id: new ObjectID(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, body: this.data.body, data: this.data.date}})
       resolve("success")
     } else {
       resolve("failure")
