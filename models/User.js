@@ -4,6 +4,8 @@ const validator = require("validator")
 const md5 = require('md5')
 const { get } = require('../router')
 const sanitizeHTML = require('sanitize-html')
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 let User = function(data, getAvatar, username) {
     this.data = data
@@ -30,7 +32,9 @@ User.prototype.cleanUp = function() {
         instagram: this.data.instagram,
         website: this.data.website,
         type: "Explorer",
-        settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}}
+        settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}},
+        resetPasswordToken: {type: String, required: false},
+        resetPasswordExpires: {type: Date, required: false}
     }
 }
 
@@ -39,7 +43,7 @@ User.prototype.validate = function() {
         if (this.data.username == "") {this.errors.push("You must provide a username.")}
         if (this.data.username != "" && !validator.isAlphanumeric(this.data.username)) {this.errors.push("Username can only contain letters and numbers.")}
         if (!validator.isEmail(this.data.email)) {this.errors.push("You must provide a valid email address.")}
-        //if (this.data.password == "") {this.errors.push("You must provide a password.")}
+        if (this.data.password == "") {this.errors.push("You must provide a password.")}
         if (this.data.password.length > 0 && this.data.password.length < 8) {this.errors.push("Password must be at least 8 characters.")}
         if (this.data.password.length > 50) {this.errors.push("Password cannot exceed 50 characters.")}
         if (this.data.username.length > 0 && this.data.username.length < 3) {this.errors.push("Username must be at least 3 characters.")}
@@ -57,6 +61,24 @@ User.prototype.validate = function() {
             let emailExists = await usersCollection.findOne({email: this.data.email})
             if (emailExists) {this.errors.push("That email is already taken.")}
         }
+        resolve()
+    })
+}
+
+User.prototype.passwordCleanUp = function() {
+    if (typeof(this.data.PasswordNew) != "string") {this.data.PasswordNew = ""}
+
+    // get rid of any bogus properties
+    this.data = {
+        password: this.data.PasswordNew,
+    }
+}
+
+User.prototype.passwordValidate = async function() {
+    return new Promise(async (resolve, reject) => {
+        if (this.data.password == "") {this.errors.push("You must provide a password.")}
+        if (this.data.password.length > 0 && this.data.password.length < 8) {this.errors.push("Password must be at least 8 characters.")}
+        if (this.data.password.length > 50) {this.errors.push("Password cannot exceed 50 characters.")}
         resolve()
     })
 }
@@ -133,6 +155,29 @@ User.prototype.update = function() {
     })
   }
 
+User.prototype.updatePassword = function() {
+    return new Promise(async (resolve, reject) => {
+        username = this.data.username
+        this.passwordCleanUp()
+        this.passwordValidate()
+        if (!this.errors.length) {
+            let salt = bcrypt.genSaltSync(10)
+            this.data.password = bcrypt.hashSync(this.data.password, salt)
+            await usersCollection.findOneAndUpdate({username: username}, {$set: {password: this.data.password}})
+            resolve("success")
+        } else {
+            resolve("failure")
+        }
+    })
+}
+
+User.prototype.updateNotifications = function() {
+    return new Promise(async (resolve, reject) => {
+        await usersCollection.findOneAndUpdate({username: this.data.username}, {$set: {settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}}}})
+            resolve("success")
+    })
+}
+
 User.findByUsername = function(username) {
     return new Promise(function(resolve, reject) {
         if (typeof(username) != "string") {
@@ -172,5 +217,23 @@ User.returnAll = function() {
       resolve(users)
     })
   }
+
+User.prototype.generateJWT = function() {
+    const today = new Date();
+    const expirationDate = new Date(today);
+    expirationDate.setDate(today.getDate() + 60);
+
+    let payload = {
+        id: this._id,
+        email: this.email,
+        username: this.username,
+        firstName: this.firstName,
+        lastName: this.lastName,
+    };
+
+    return jwt.sign(payload, process.env.JWT_SECRET, {
+        expiresIn: parseInt(expirationDate.getTime() / 1000, 10)
+    });
+}
 
 module.exports = User

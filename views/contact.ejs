@@ -15,7 +15,9 @@
 								<div class="card-body text-center col-md-8 offset-md-2 mb-5 mt-3">
 									Experiencing technical issues? Have questions or feedback? Want to chat about how to find Atlantis? Fill out the form below.
 									<div class="mt-6 col-md-6 offset-md-3">
-										<form>
+										<form action="/contact-form" method="POST">
+											<%- include('includes/flash') %>
+
 											<div class="mb-2">
 												<label class="form-label">Your Email</label>
 												<input
@@ -30,8 +32,8 @@
 												<label class="form-label">Your Name</label>
 												<input
 												  required
-												  name="email"
-												  id="email"
+												  name="name"
+												  id="name"
 												  class="form-control"
 												  type="text"
 												/>
@@ -40,8 +42,8 @@
 												<label class="form-label">Subject</label>
 												<input
 												  required
-												  name="email"
-												  id="email"
+												  name="subject"
+												  id="subject"
 												  class="form-control"
 												  type="text"
 												/>
@@ -50,8 +52,8 @@
 												<label class="form-label">Body</label>
 												<textarea
 												  required
-												  name="email"
-												  id="email"
+												  name="body"
+												  id="body"
 												  class="form-control body-content tall-textarea"
 												  rows="5"
 												  type="text"

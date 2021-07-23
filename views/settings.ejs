@@ -7,11 +7,11 @@
 <%- include('includes/navbar') %>
 
 			<main class="content">
-				<div class="container-fluid">
+				<div class="container-fluid p-0">
+						
+						<div class="row">
 
-						<h1 class="h3 mb-3 text-center">Settings</h1>					
-
-						<!--<div class="col-md-3 col-xl-2">
+						<div class="col-md-3 col-xl-2">
 
 							<div class="card">
 								<div class="card-header">
@@ -20,33 +20,31 @@
 
 								<div class="list-group list-group-flush" role="tablist">
 									<a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#account" role="tab">
-          							Account
+          							Public Info
         							</a>
 									<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#notifications" role="tab">
           							Notifications
         							</a>
-									<a class="list-group-item list-group-item-action disabled" data-bs-toggle="list" href="#" role="tab">
-									Privacy and safety
+									<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#password" role="tab">
+									Password
 		  							</a>
-									<a class="list-group-item list-group-item-action disabled" data-bs-toggle="list" href="#" role="tab">
-          							Web notifications
-        							</a>
-									<a class="list-group-item list-group-item-action disabled" data-bs-toggle="list" href="#" role="tab">
+									<!--<a class="list-group-item list-group-item-action disabled" data-bs-toggle="list" href="#" role="tab">
           							Your data
         							</a>
 									<a class="list-group-item list-group-item-action disabled" data-bs-toggle="list" href="#" role="tab">
           							Delete account
-        							</a>
+        							</a>-->
 								</div>
 							</div>
-						</div>-->
+						</div>
 
 						
 
-						<div class="col-md-8 offset-md-2">
+						<div class="col-md-9 col-xl-10">
+							<%- include('includes/flash') %>
 							<div class="tab-content">
 								<div class="tab-pane fade show active" id="account" role="tabpanel">
-									<%- include('includes/flash') %>
+									
 									
 												<form action="/update-user/<%= user.username %>" method="POST">
 													<div class="card">
@@ -98,47 +96,171 @@
 																<label class="form-text text-muted">- if you want to link a blog or personal website</label>
 																<input class="form-control" id="website" name="website" placeholder="<%= user.website %>" maxlength="50">
 															</div>-->
-														</div>
-													</div>
 
-													<div class="card">
-														<div class="card-header">
-															<h5 class="card-title mb-0">Notifications</h5>
-														</div>
-														<div class="card-body col-md-10 offset-md-1">
 															<div>
-																<div class="mb-3">
-																	<div class="form-check form-switch">
-																		<input class="form-check-input" type="checkbox" value="true" name="followersemailnotifications" id="followersemailnotifications"<% if (settings.emailNotifications.followers == "true") { %> checked <% } %>/>
-																		<label class="form-check-label">email notifications for new followers</label>
-																	</div>
-																</div>
-																<div class="mb-5">
-																	<div class="form-check form-switch">
-																		<input class="form-check-input" type="checkbox" value="true" name="likesemailnotifications" id="likesemailnotifications" <% if (settings.emailNotifications.likes == "true") { %> checked <% } %>/>
-																		<label class="form-check-label">email notifications for new entry likes</label>
-																	</div>
-																</div>
+
+																<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+		
+																<button type="submit" class="btn btn-primary">Save changes</button>
+		
 															</div>
+
 														</div>
-													</div>
-
-													<div class="card card-body col-md-12">
-
-														<input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-														<button type="submit" class="col-md-4 offset-md-4 btn btn-primary">Save changes</button>
-
 													</div>
 												</form>
 
 
 								</div>
+
+								<div class="tab-pane fade" id="password" role="tabpanel">
+									<form action="/update-password/<%= user.username %>" method="POST">
+										<div class="card">
+											<div class="card-header">
+												<h5 class="card-title mb-0">Change Password</h5>
+											</div>
+
+											<div class="card-body col-md-10 offset-md-1">
+
+													<div class="mb-3">
+														<input type="text" class="form-control" id="username-register" name="username" maxlength="30" value="<%= user.username %>"hidden>
+													</div>
+
+													<div class="mb-3">
+														<input type="email" class="form-control" id="email-register" name="email" value="<%= email %>" hidden>
+													</div>
+			
+													<!--<div class="mb-5">
+														<label for="inputPasswordCurrent" class="form-label">Current password</label>
+														<input type="password" name="CurrentPassword" class="form-control form-control-lg" id="CurrentPassword">
+														<small><a href="#">Forgot your password?</a></small>
+													</div>-->
+
+													<div class="mb-3">
+
+														<style>
+															.form-item {
+																position: relative;
+																}
+		
+															.fas-eye {
+																position: absolute;
+																right: 1.1rem;
+																top: 0.8rem;
+																cursor: pointer;
+																}
+														</style>
+														<label class="form-label">New Password</label>
+														<div class="form-item">
+															<input type="password" name="PasswordNew" class="form-control form-control-lg" id="PasswordNew" maxlength="50" minlength="8"/>
+															<i class="fas-eye fas fa-eye" id="eye"></i>
+														  </div>
+		
+													</div>
+													<div class="mb-5">
+														<label class="form-label">Confirm Password</label>
+															<input class="form-control form-control-lg" type="password" name="confirm_password" id="confirm_password"/>
+															<span id='message'></span>
+													</div>
+
+													<div>
+
+														<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+														<button id="pass-submit" type="submit" class="btn btn-primary">Save changes</button>
+
+													</div>
+
+											</div>
+										</div>
+									</form>	
+								</div>
+
+								<div class="tab-pane fade" id="notifications" role="tabpanel">
+									<form action="/update-notifications/<%= user.username %>" method="POST">
+										<div class="card">
+											<div class="card-header">
+												<h5 class="card-title mb-0">Update Notifications</h5>
+											</div>
+
+											<div class="card-body col-md-10 offset-md-1">
+
+													<div class="mb-3">
+														<input type="text" class="form-control" id="username-register" name="username" maxlength="30" value="<%= user.username %>"hidden>
+													</div>
+
+													<div class="mb-3">
+														<input type="email" class="form-control" id="email-register" name="email" value="<%= email %>" hidden>
+													</div>
+			
+													<div class="mb-3">
+														<div class="form-check form-switch">
+															<input class="form-check-input" type="checkbox" value="true" name="followersemailnotifications" id="followersemailnotifications"<% if (settings.emailNotifications.followers == "true") { %> checked <% } %>/>
+															<label class="form-check-label">email notifications for new followers</label>
+														</div>
+													</div>
+													<div class="mb-5">
+														<div class="form-check form-switch">
+															<input class="form-check-input" type="checkbox" value="true" name="likesemailnotifications" id="likesemailnotifications" <% if (settings.emailNotifications.likes == "true") { %> checked <% } %>/>
+															<label class="form-check-label">email notifications for new entry likes</label>
+														</div>
+													</div>
+
+													<div>
+
+														<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+														<button type="submit" class="btn btn-primary">Save changes</button>
+
+													</div>
+
+											</div>
+										</div>
+
+									</form>	
+								</div>
+
 							</div>
+
 						</div>
-					
+
+					</div>
 
 				</div>
 			</main>
 
 <%- include('includes/footer') %>
+
+<script>
+	const password = document.querySelector("#PasswordNew");
+	const confirmpassword = document.querySelector("#confirm_password");
+	const eyeIcon = document.querySelector("#eye");
+	const submit = document.querySelector("#pass-submit")
+
+	eyeIcon.addEventListener("click", () => {
+	if (eyeIcon.classList.contains("fa-eye")) {
+		password.setAttribute("type", "text");
+		confirmpassword.setAttribute("type", "text")
+		eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
+	} else {
+		password.setAttribute("type", "password");
+		confirmpassword.setAttribute("type", "password")
+		eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
+	}
+	});
+
+	$('#PasswordNew, #confirm_password').on('keyup', function () {
+	if ($('#PasswordNew').val() == $('#confirm_password').val()) {
+		$('#message').html('Matching').css('color', 'green');
+	} else 
+		$('#message').html('Not Matching').css('color', 'red');
+	}); 
+
+	$('#PasswordNew, #confirm_password').on('keyup', function () {
+	if ($('#PasswordNew').val() == $('#confirm_password').val()) {
+		submit.removeAttribute("disabled");
+	} else 
+		submit.setAttribute("disabled", true);
+	}); 
+
+
+</script>

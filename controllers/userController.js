@@ -11,7 +11,10 @@ const GeoJSON = require('geojson')
 const Draft = require('../models/Draft')
 const Like = require('../models/Like')
 const sendgrid = require('@sendgrid/mail')
+const { TouchPitchHandler } = require('mapbox-gl')
 sendgrid.setApiKey(process.env.SENDGRIDAPIKEY)
+const sanitizeHTML = require('sanitize-html')
+const validator = require("validator")
 
 
 exports.sharedProfileData = async function(req, res, next) {
@@ -142,6 +145,62 @@ exports.edit = function(req, res) {
       if (status == "success") {
           // user was updated in db
           req.flash("success", "Profile successfully updated.")
+          req.session.save(function() {
+              res.redirect(`/settings/${req.params.username}`)
+          })
+      } else {
+          user.errors.forEach(function(error) {
+              req.flash("errors", error)
+          })
+          req.session.save(function() {
+              res.redirect(`/settings/${req.params.username}`)
+          })
+      }
+  }).catch(() => {
+      // if user with requested id doesn't exist
+      req.flash("errors", "You do not have permission to perform that action.")
+      req.session.save(function() {
+          res.redirect(`/settings/${req.params.username}`)
+      })
+  })
+}
+
+exports.updatePassword = function(req, res) {
+  let user = new User(req.body, req.params.username)
+  user.updatePassword().then((status) => {
+      // the user was successfully updated in the database
+      // or user did have permission, but there were validation errors
+      if (status == "success") {
+          // user was updated in db
+          req.flash("success", "Password successfully updated.")
+          req.session.save(function() {
+              res.redirect(`/settings/${req.params.username}`)
+          })
+      } else {
+          user.errors.forEach(function(error) {
+              req.flash("errors", error)
+          })
+          req.session.save(function() {
+              res.redirect(`/settings/${req.params.username}`)
+          })
+      }
+  }).catch(() => {
+      // if user with requested id doesn't exist
+      req.flash("errors", "You do not have permission to perform that action.")
+      req.session.save(function() {
+          res.redirect(`/settings/${req.params.username}`)
+      })
+  })
+}
+
+exports.updateNotifications = function(req, res) {
+  let user = new User(req.body, req.params.username)
+  user.updateNotifications().then((status) => {
+      // the user was successfully updated in the database
+      // or user did have permission, but there were validation errors
+      if (status == "success") {
+          // user was updated in db
+          req.flash("success", "Notifications successfully updated.")
           req.session.save(function() {
               res.redirect(`/settings/${req.params.username}`)
           })
@@ -301,6 +360,30 @@ exports.viewAll = async function(req,res) {
     entrymarker: JSON.stringify(entryMarker)
 })
 }
+
+/*exports.contactForm = function(req, res) {
+  this.data = req.body
+  this.data = {
+    name: sanitizeHTML(this.data.name, {allowedTags: [], allowedAttributes: {}}),
+    email: this.data.email.trim().toLowerCase(),
+    subject: sanitizeHTML(this.data.subject, {allowedTags: [], allowedAttributes: {}}),
+    body: sanitizeHTML(this.data.body, {allowedTags: [], allowedAttributes: {}})
+  }
+  //if (!validator.isEmail(this.data.email)) {this.errors.push("You must provide a valid email address.")}
+  //if (!this.errors.length){
+  sendgrid.send({
+    to: 'admin@heimursaga.com',
+    from: 'admin@heimursaga.com',
+    subject: `New Contact Form Submitted: ${this.data.subject}`,
+    text: `From: ${this.data.name}, Email: ${this.data.email}, Body: ${this.data.body}`, 
+    html: `From: ${this.data.name}, Email: ${this.data.email} <br><br> Body: ${this.data.body}`
+})
+req.flash("success", "contact form submitted")
+req.session.save(function() {
+    res.redirect('discovery')})} //else { 
+  //res.redirect('/contact', {regErrors: req.flash('regErrors')})
+//}
+//}*/
 
 
 

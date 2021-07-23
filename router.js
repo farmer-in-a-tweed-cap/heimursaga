@@ -25,12 +25,14 @@ router.post('/login', userController.login)
 router.get('/logout', userController.logout)
 
 
-router.post('/update-user/:username', userController.ifUserExists, userController.sharedProfileData, userController.edit)
-
 // profile related routes
 router.get('/journal/:username', userController.ifUserExists, userController.sharedProfileData, userController.journalScreen)
 router.get('/my-feed', userController.mustBeLoggedIn, userController.myFeed)
 router.get('/settings/:username', userController.ifUserExists, userController.sharedProfileData, userController.viewSettings)
+
+router.post('/update-user/:username', userController.ifUserExists, userController.sharedProfileData, userController.edit)
+router.post('/update-password/:username', userController.ifUserExists, userController.sharedProfileData, userController.updatePassword)
+router.post('/update-notifications/:username', userController.ifUserExists, userController.sharedProfileData, userController.updateNotifications)
 
 
 // entry related routes
@@ -51,7 +53,6 @@ router.post('/draft/:id/post-entry', userController.mustBeLoggedIn, draftControl
 router.post('/search', entryController.search)
 
 router.get('/entry-list', entryController.entryList)
-//router.post('/dynamic-entry-list', entryController.getAll)
 
 
 // follow related routes
@@ -73,27 +74,6 @@ router.get('/single-entry-flags/:id', entryController.viewSingleFlags)
 router.get('/my-profile', function (req, res) {
   res.render('my-profile', {pageName: 'my-profile'})
 })
-router.get('/forms-advanced-inputs', function (req, res) {
-  res.render('forms-advanced-inputs', {pageName: 'forms-advanced-inputs'})
-})
-router.get('/forms-basic-inputs', function (req, res) {
-  res.render('forms-basic-inputs', {pageName: 'forms-basic-inputs'})
-})
-router.get('/forms-editors', function (req, res) {
-  res.render('forms-editors', {pageName: 'forms-editors'})
-})
-router.get('/forms-floating-labels', function (req, res) {
-  res.render('forms-floating-labels', {pageName: 'forms-floating-labels'})
-})
-router.get('/forms-input-groups', function (req, res) {
-  res.render('forms-input-groups', {pageName: 'forms-input-groups'})
-})
-router.get('/forms-layouts', function (req, res) {
-  res.render('forms-layouts', {pageName: 'forms-layouts'})
-})
-router.get('/forms-validation', function (req, res) {
-  res.render('forms-validation', {pageName: 'forms-validation'})
-})
 
 router.get('/getting-started', function (req, res) {
   res.render('getting-started', {pageName: 'getting-started'})
@@ -107,27 +87,11 @@ router.get('/about', function (req, res) {
   res.render('about', {pageName: 'about'})
 })
 
-router.get('/contact', function (req, res) {
+/*router.get('/contact', function (req, res) {
   res.render('contact', {pageName: 'contact'})
-})
+})*/
 
-// template routes (delete before publishing)
-router.get('/dashboard-default', function (req, res) {
-  res.render('dashboard-default', {pageName: 'dashboard-default'})
-})
-router.get('/ui-buttons', function (req, res) {
-  res.render('ui-buttons', {pageName: 'ui-buttons'})
-})
-router.get('/tables-bootstrap', function (req, res) {
-  res.render('tables-bootstrap', {pageName: 'tables-bootstrap'})
-})
-router.get('/icons-feather', function (req, res) {
-  res.render('icons-feather', {pageName: 'icons-feather'})
-})
-router.get('/icons-font-awesome', function (req, res) {
-  res.render('icons-font-awesome', {pageName: 'icons-font-awesome'})
-})
-
+//router.post('/contact-form', userController.contactForm)
 
 
 module.exports = router
