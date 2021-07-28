@@ -24,14 +24,15 @@
 
 											<form>
 												<div class="mb-3">
-													<input class="form-control form-control-lg" type="email" name="email" placeholder="Enter your email" />
+													<label class="form-label">Enter the email associated with your Explorer account</label>
+													<input class="form-control form-control-lg" type="email" name="email"/>
 												</div>
 												
 												<div class="text-center mt-3">
 
 													<input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-													<button type="submit" class="btn btn-lg btn-primary">Send Password Reset Email</button>
+													<button type="submit" class="btn btn-lg btn-primary">Submit</button>
 												</div>
 											</form>
 									</div>
@@ -47,20 +48,6 @@
 	</div>
 
 	<script src="js/app.js"></script>
-	<script>
-		const password = document.querySelector("#password");
-		const eyeIcon = document.querySelector("#eye");
-
-		eyeIcon.addEventListener("click", () => {
-		if (eyeIcon.classList.contains("fa-eye")) {
-			password.setAttribute("type", "text");
-			eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
-		} else {
-			password.setAttribute("type", "password");
-			eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
-		}
-		});
-	</script>
 
 </body>
 

@@ -71,6 +71,7 @@ User.prototype.passwordCleanUp = function() {
     // get rid of any bogus properties
     this.data = {
         password: this.data.PasswordNew,
+        email: this.data.email
     }
 }
 
@@ -211,6 +212,32 @@ User.findByUsername = function(username) {
     })
 }
 
+User.findByEmail = function(email) {
+    return new Promise(function(resolve, reject) {
+        if (!validator.isEmail(email)) {
+            reject("Please enter a valid email")
+            return
+        }
+        usersCollection.findOne({email: email}).then(function(userDoc) {
+            if (userDoc) {
+                userDoc = new User(userDoc, true)
+                userDoc = {
+                    _id: userDoc.data._id,
+                    username: userDoc.data.username,
+                    email: userDoc.data.email,
+                    resetPasswordToken: userDoc.data.resetPasswordToken,
+                    resetPasswordExpires: userDoc.data.resetPasswordExpires
+                }
+                resolve(userDoc)
+            } else {
+                reject("Email not found. Please try again.")
+            }
+        }).catch(function() {
+            reject("404")
+        })
+    })
+}
+
 User.returnAll = function() {
     return new Promise(async function(resolve,reject) {
       let users = usersCollection.find({}).toArray()
@@ -234,6 +261,55 @@ User.prototype.generateJWT = function() {
     return jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: parseInt(expirationDate.getTime() / 1000, 10)
     });
+}
+
+User.prototype.generatePasswordReset = function() {
+    this.resetPasswordToken = crypto.randomBytes(20).toString('hex');
+    this.resetPasswordExpires = Date.now() + 3600000; //expires in an hour
+};
+
+User.prototype.updateTokens = function() {
+    return new Promise(async (resolve, reject) => {
+        await usersCollection.findOneAndUpdate({email: this.data.email}, {$set: {resetPasswordToken: this.resetPasswordToken, resetPasswordExpires: this.resetPasswordExpires}})
+            resolve()
+    })
+}
+
+User.findByToken = function(token) {
+    return new Promise(function(resolve, reject) {
+        usersCollection.findOne({resetPasswordToken: token, resetPasswordExpires: {$gt: Date.now()}}).then(function(userDoc) {
+            if (userDoc) {
+                userDoc = new User(userDoc, true)
+                userDoc = {
+                    _id: userDoc.data._id,
+                    username: userDoc.data.username,
+                    email: userDoc.data.email,
+                    resetPasswordToken: userDoc.data.resetPasswordToken,
+                    resetPasswordExpires: userDoc.data.resetPasswordExpires
+                }
+                resolve(userDoc)
+            } else {
+                reject("Invalid or expired token.")
+            }
+        }).catch(function() {
+            reject("404")
+        })
+    })
+}
+
+User.prototype.resetPassword = function() {
+    return new Promise(async (resolve, reject) => {
+        this.passwordCleanUp()
+        this.passwordValidate()
+        if (!this.errors.length) {
+            let salt = bcrypt.genSaltSync(10)
+            this.data.password = bcrypt.hashSync(this.data.password, salt)
+            await usersCollection.findOneAndUpdate({email: this.data.email}, {$set: {password: this.data.password, resetPasswordToken: undefined, resetPasswordExpires: undefined}})
+            resolve("success")
+        } else {
+            resolve("failure")
+        }
+    })
 }
 
 module.exports = User

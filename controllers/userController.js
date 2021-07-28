@@ -361,30 +361,63 @@ exports.viewAll = async function(req,res) {
 })
 }
 
-/*exports.contactForm = function(req, res) {
-  this.data = req.body
-  this.data = {
-    name: sanitizeHTML(this.data.name, {allowedTags: [], allowedAttributes: {}}),
-    email: this.data.email.trim().toLowerCase(),
-    subject: sanitizeHTML(this.data.subject, {allowedTags: [], allowedAttributes: {}}),
-    body: sanitizeHTML(this.data.body, {allowedTags: [], allowedAttributes: {}})
+
+
+exports.recover = function(req, res) {
+  User.findByEmail(req.body.email).then((foundUser) => {
+    if (foundUser) {
+      let user = new User(req.body)
+      user.generatePasswordReset()
+      user.updateTokens().then(function(result) {
+        let link = "http://localhost:8080/reset-password/"+user.resetPasswordToken;
+        sendgrid.send({
+          to: foundUser.email,
+          from: 'admin@heimursaga.com',
+          subject: "Password Change Request",
+          text: `Greetings ${foundUser.username}, \n 
+          Please click on the following link to reset your password.\n\n ${link}  \n\n 
+          If you did not request this, ignore this email and your password will remain unchanged.\n`})  
+          req.flash('success', "A password reset email has been sent. Please check your inbox.")
+          res.redirect('/login')
+      }).catch(function(e) {
+        req.flash('errors', e)
+        res.redirect('/login')
+      })
+    }
+  }).catch(function(e) {
+    req.flash('errors', e)
+    res.redirect('/login')
+  })
+}
+
+exports.reset = (req, res) => {
+  User.findByToken(req.params.token)
+      .then((user) => {
+          //Redirect user to form with the email address
+          res.render('reset', {user});
+      })
+      .catch(function(e) {
+        req.flash('errors', e)
+        res.redirect('/login');
+  })
+}
+
+
+exports.resetPassword = function(req, res) {
+  User.findByToken(req.params.token).then((foundUser) => {
+    console.log(req.body)
+      let user = new User(req.body)
+      user.resetPassword(req.body).then(function(result) {
+        sendgrid.send({
+          to: foundUser.email,
+          from: 'admin@heimursaga.com',
+          subject: "Your password has been changed",
+          text: `Greetings ${foundUser.username}, This is confirmation that the password for the account associated with this email address has been changed.`})
+          req.flash('success', "Your password has been successfully changed. Please login.")
+          res.redirect('/login')
+      }).catch(function(e) {
+        req.flash('errors', e)
+        res.redirect('/login')
+      })
+    })
   }
-  //if (!validator.isEmail(this.data.email)) {this.errors.push("You must provide a valid email address.")}
-  //if (!this.errors.length){
-  sendgrid.send({
-    to: 'admin@heimursaga.com',
-    from: 'admin@heimursaga.com',
-    subject: `New Contact Form Submitted: ${this.data.subject}`,
-    text: `From: ${this.data.name}, Email: ${this.data.email}, Body: ${this.data.body}`, 
-    html: `From: ${this.data.name}, Email: ${this.data.email} <br><br> Body: ${this.data.body}`
-})
-req.flash("success", "contact form submitted")
-req.session.save(function() {
-    res.redirect('discovery')})} //else { 
-  //res.redirect('/contact', {regErrors: req.flash('regErrors')})
-//}
-//}*/
-
-
-
-

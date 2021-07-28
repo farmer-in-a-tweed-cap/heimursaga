@@ -231,36 +231,36 @@
 <%- include('includes/footer') %>
 
 <script>
-	const password = document.querySelector("#PasswordNew");
-	const confirmpassword = document.querySelector("#confirm_password");
-	const eyeIcon = document.querySelector("#eye");
-	const submit = document.querySelector("#pass-submit")
+		const password = document.querySelector("#PasswordNew");
+		const confirmpassword = document.querySelector("#confirm_password");
+		const eyeIcon = document.querySelector("#eye");
+		const submit = document.querySelector("#pass-submit")
 
-	eyeIcon.addEventListener("click", () => {
-	if (eyeIcon.classList.contains("fa-eye")) {
-		password.setAttribute("type", "text");
-		confirmpassword.setAttribute("type", "text")
-		eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
-	} else {
-		password.setAttribute("type", "password");
-		confirmpassword.setAttribute("type", "password")
-		eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
-	}
-	});
+		eyeIcon.addEventListener("click", () => {
+		if (eyeIcon.classList.contains("fa-eye")) {
+			password.setAttribute("type", "text");
+			confirmpassword.setAttribute("type", "text")
+			eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
+		} else {
+			password.setAttribute("type", "password");
+			confirmpassword.setAttribute("type", "password")
+			eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
+		}
+		});
 
-	$('#PasswordNew, #confirm_password').on('keyup', function () {
-	if ($('#PasswordNew').val() == $('#confirm_password').val()) {
-		$('#message').html('Matching').css('color', 'green');
-	} else 
-		$('#message').html('Not Matching').css('color', 'red');
-	}); 
+		$('#PasswordNew, #confirm_password').on('keyup', function () {
+		if ($('#PasswordNew').val() == $('#confirm_password').val()) {
+			submit.removeAttribute("disabled");
+		} else 
+			submit.setAttribute("disabled", true);
+		});
 
-	$('#PasswordNew, #confirm_password').on('keyup', function () {
-	if ($('#PasswordNew').val() == $('#confirm_password').val()) {
-		submit.removeAttribute("disabled");
-	} else 
-		submit.setAttribute("disabled", true);
-	}); 
+		$('#PasswordNew, #confirm_password').on('keyup', function () {
+		if ($('#PasswordNew').val() == $('#confirm_password').val()) {
+			$('#message').html('Matching').css('color', 'green');
+		} else 
+			$('#message').html('Not Matching').css('color', 'red');
+		});
 
 
 </script>

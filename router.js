@@ -24,6 +24,14 @@ router.post('/register', userController.register)
 router.post('/login', userController.login)
 router.get('/logout', userController.logout)
 
+router.get('/recover', function(req, res) {
+  res.render('recover', {pageName: "recover-password"})
+})
+
+router.post('/recover', userController.recover)
+router.get('/reset-password/:token', userController.reset)
+router.post('/reset-password/:token', userController.resetPassword)
+
 
 // profile related routes
 router.get('/journal/:username', userController.ifUserExists, userController.sharedProfileData, userController.journalScreen)

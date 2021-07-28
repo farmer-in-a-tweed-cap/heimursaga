@@ -67,15 +67,67 @@
 									<hr class="my-0" />
 									
 									<div class="card-body">
-										<%= bio %>
+										<% if (bio == "undefined" && isVisitorsProfile) { %>
+
+											<a href="/settings/<%= profileUsername %>">Add Bio</a>
+
+										<% } if (bio == "undefined" && !isVisitorsProfile) { %>
+
+											<i>This explorer has not yet added a bio</i>
+
+										<% } else { %>
+
+											<%= bio %>
+
+										<% } %>
+
 									</div>
 									<hr class="my-0" />
 									
 									<div class="card-body">
 										<ul class="list-unstyled mb-0">
-											<li class="mb-1"><span data-feather="briefcase" class="feather-sm me-1"></span> Currently in <strong><%= currentlyin %></strong></li>
-											<li class="mb-1"><span data-feather="home" class="feather-sm me-1"></span> Lives in <strong><%= livesin %></strong></li>
-											<li class="mb-1"><span data-feather="map-pin" class="feather-sm me-1"></span> From <strong><%= from %></strong></li>
+											<li class="mb-1"><span data-feather="briefcase" class="feather-sm me-1"></span> Currently in <strong>										
+											<% if (currentlyin == "undefined" && isVisitorsProfile) { %>
+
+												<a href="/settings/<%= profileUsername %>">Add Location</a>
+	
+											<% } if (currentlyin == "undefined" && !isVisitorsProfile) { %>
+	
+												<i>unknown</i>
+	
+											<% } else { %>
+	
+												<%= currentlyin %>
+	
+											<% } %></strong></li>
+											<li class="mb-1"><span data-feather="home" class="feather-sm me-1"></span> Lives in <strong>											
+											<% if (livesin == "undefined" && isVisitorsProfile) { %>
+
+												<a href="/settings/<%= profileUsername %>">Add Location</a>
+	
+											<% } if (livesin == "undefined" && !isVisitorsProfile) { %>
+	
+												<i>unknown</i>
+	
+											<% } else { %>
+	
+												<%= livesin %>
+	
+											<% } %></strong></li>
+											<li class="mb-1"><span data-feather="map-pin" class="feather-sm me-1"></span> From <strong>											
+											<% if (from == "undefined" && isVisitorsProfile) { %>
+
+												<a href="/settings/<%= profileUsername %>">Add Location</a>
+	
+											<% } if (from == "undefined" && !isVisitorsProfile) { %>
+	
+												<i>unknown</i>
+	
+											<% } else { %>
+	
+												<%= from %>
+	
+											<% } %></strong></li>
 										</ul>
 									</div>
 								</div>

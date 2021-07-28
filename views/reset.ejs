@@ -1,5 +1,5 @@
 <%- include('includes/header') %>
-<title>Heimursaga | Login</title>
+<title>Heimursaga | Password Reset</title>
 
 <body data-theme="default" data-layout="fluid" data-sidebar-position="left" data-sidebar-behavior="sticky">
 	<div class="main d-flex justify-content-center w-100">
@@ -17,66 +17,49 @@
 								<div class="card-body">
 									<%- include('includes/flash') %>
 									<div class="text-center mt-2 mb-4">
-										<h1 class="h3">Welcome back, Explorer</h1>
-										<p class="text-muted">
-											<a href="/register" class="text-blue">I need to create an account</a>
-										</p>
+										<h1 class="h3">Password Reset</h1>
 									</div>
 									<div class="m-sm-3">
-										<form action="/login" method="POST">
+											<form action="/reset-password/<%= user.resetPasswordToken %>" method="POST">
 
-											<form>
 												<div class="mb-3">
-													<label class="form-label">Explorer Name</label>
-													<input class="form-control form-control-lg" type="username" name="username" placeholder="Enter your explorer name" />
+													<input type="email" class="form-control" id="email-register" name="email" value="<%= user.email %>" hidden>
 												</div>
+
 												<div class="mb-3">
+
 													<style>
 														.form-item {
 															position: relative;
 															}
 	
-														.fas {
+														.fas-eye {
 															position: absolute;
 															right: 1.1rem;
 															top: 0.8rem;
 															cursor: pointer;
 															}
 													</style>
-													<label class="form-label">Password</label>
+													<label class="form-label">New Password</label>
 													<div class="form-item">
-														<input
-														  type="password"
-														  name="password"
-														  class="form-control form-control-lg"
-														  id="password"
-														  placeholder="Enter your password"
-														/>
-														<i class="fas fa-eye" id="eye"></i>
+														<input type="password" name="PasswordNew" class="form-control form-control-lg" id="PasswordNew" maxlength="50" minlength="8"/>
+														<i class="fas-eye fas fa-eye" id="eye"></i>
 													  </div>
-													<small>
-														<a href="/recover">Forgot password?</a>
-			  										</small>
-												<!--</div>
-												<div>
-													<div class="form-check align-items-center">
-														<input id="customControlInline" type="checkbox" class="form-check-input" value="remember-me" name="remember-me" checked>
-														<label class="form-check-label text-small" for="customControlInline">Remember me next time</label>
-													</div>-->
+	
 												</div>
+												<div class="mb-5">
+													<label class="form-label">Confirm Password</label>
+														<input class="form-control form-control-lg" type="password" name="confirm_password" id="confirm_password"/>
+														<span id='message'></span>
+												</div>
+												
 												<div class="text-center mt-3">
 
 													<input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-													<button type="submit" class="btn btn-lg btn-primary">Login</button>
+													<button id="submit" type="submit" class="btn btn-lg btn-primary">Submit</button>
 												</div>
 											</form>
-									</div>
-
-									<div class="text-center mt-3">
-										<p class="mb-0">
-											<a href="/" class="text-muted">Visit Heimursaga as a guest</a>
-										</p>
 									</div>
 
 								</div>
@@ -91,17 +74,35 @@
 
 	<script src="js/app.js"></script>
 	<script>
-		const password = document.querySelector("#password");
+		const password = document.querySelector("#PasswordNew");
+		const confirmpassword = document.querySelector("#confirm_password");
 		const eyeIcon = document.querySelector("#eye");
+		const submit = document.querySelector("#submit")
 
 		eyeIcon.addEventListener("click", () => {
 		if (eyeIcon.classList.contains("fa-eye")) {
 			password.setAttribute("type", "text");
+			confirmpassword.setAttribute("type", "text")
 			eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
 		} else {
 			password.setAttribute("type", "password");
+			confirmpassword.setAttribute("type", "password")
 			eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
 		}
+		});
+
+		$('#PasswordNew, #confirm_password').on('keyup', function () {
+		if ($('#PasswordNew').val() == $('#confirm_password').val()) {
+			submit.removeAttribute("disabled");
+		} else 
+			submit.setAttribute("disabled", true);
+		});
+
+		$('#PasswordNew, #confirm_password').on('keyup', function () {
+		if ($('#PasswordNew').val() == $('#confirm_password').val()) {
+			$('#message').html('Matching').css('color', 'green');
+		} else 
+			$('#message').html('Not Matching').css('color', 'red');
 		});
 	</script>
 
