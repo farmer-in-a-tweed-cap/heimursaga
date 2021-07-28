@@ -782,3 +782,13 @@ $jsvectormap-zoom-btn: $dark !default;
   outline: none;
   font-size: .75rem;
 }
+
+.card-columns {
+  column-count: 2;
+}
+
+@media (max-width: 400px) {
+  .card-columns {
+    column-count: 1;
+  }
+}

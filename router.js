@@ -95,6 +95,10 @@ router.get('/about', function (req, res) {
   res.render('about', {pageName: 'about'})
 })
 
+router.get('/upgrade', function (req, res) {
+  res.render('upgrade', {pageName: 'upgrade'})
+})
+
 /*router.get('/contact', function (req, res) {
   res.render('contact', {pageName: 'contact'})
 })*/
