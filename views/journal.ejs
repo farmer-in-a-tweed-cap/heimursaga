@@ -9,6 +9,9 @@
 			<main class="content">
 				<div class="container-fluid">
 					<div class="row">
+						<% if (isVisitorsProfile) { %>
+							<h3 class="text-center d-lg-none pb-3">My Journal</h3>
+						<% } %>
 						<%- include('includes/flash') %>
 					  <div class="">
 						  <div class="container-fluid p-0">
@@ -77,7 +80,14 @@
 
 										<% } else { %>
 
-											<%= bio %>
+											<% if (bio == "undefined") { %>
+
+
+											<% } else { %>
+
+												<%= bio %>
+
+											<% } %>
 
 										<% } %>
 
@@ -97,7 +107,14 @@
 	
 											<% } else { %>
 	
-												<%= currentlyin %>
+												<% if (currentlyin == "undefined") { %>
+
+
+													<% } else { %>
+		
+														<%= currentlyin %>
+		
+													<% } %>
 	
 											<% } %></strong></li>
 											<li class="mb-1"><span data-feather="home" class="feather-sm me-1"></span> Lives in <strong>											
@@ -111,7 +128,14 @@
 	
 											<% } else { %>
 	
-												<%= livesin %>
+												<% if (livesin == "undefined") { %>
+
+
+													<% } else { %>
+		
+														<%= livesin %>
+		
+													<% } %>
 	
 											<% } %></strong></li>
 											<li class="mb-1"><span data-feather="map-pin" class="feather-sm me-1"></span> From <strong>											
@@ -125,7 +149,14 @@
 	
 											<% } else { %>
 	
-												<%= from %>
+												<% if (from == "undefined") { %>
+
+
+													<% } else { %>
+		
+														<%= from %>
+		
+													<% } %>
 	
 											<% } %></strong></li>
 										</ul>
