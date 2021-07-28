@@ -369,7 +369,7 @@ exports.recover = function(req, res) {
       let user = new User(req.body)
       user.generatePasswordReset()
       user.updateTokens().then(function(result) {
-        let link = "http://localhost:8080/reset-password/"+user.resetPasswordToken;
+        let link = "https://heimursaga.com/reset-password/"+user.resetPasswordToken;
         sendgrid.send({
           to: foundUser.email,
           from: 'admin@heimursaga.com',
@@ -405,7 +405,6 @@ exports.reset = (req, res) => {
 
 exports.resetPassword = function(req, res) {
   User.findByToken(req.params.token).then((foundUser) => {
-    console.log(req.body)
       let user = new User(req.body)
       user.resetPassword(req.body).then(function(result) {
         sendgrid.send({
