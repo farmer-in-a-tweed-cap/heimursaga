@@ -46,7 +46,7 @@ exports.mustBeLoggedIn = function(req, res, next) {
   } else {
     req.flash("errors", "You must be logged in to perform that action.")
     req.session.save(function() {
-      res.redirect('/')
+      res.redirect('login')
     })
   }
 }
@@ -71,6 +71,10 @@ exports.logout = function(req, res) {
   req.session.destroy(function() {
     res.redirect('/')
   })
+}
+
+exports.upgrade = function(req, res) {
+    res.render('upgrade', {pageName: "upgrade"})
 }
 
 exports.register = function(req, res) {
