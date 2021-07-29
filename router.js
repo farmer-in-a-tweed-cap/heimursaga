@@ -97,9 +97,9 @@ router.get('/about', function (req, res) {
 
 router.get('/upgrade', userController.mustBeLoggedIn, userController.upgrade)
 
-/*router.get('/contact', function (req, res) {
+router.get('/contact', function (req, res) {
   res.render('contact', {pageName: 'contact'})
-})*/
+})
 
 //router.post('/contact-form', userController.contactForm)
 
