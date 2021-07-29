@@ -49,16 +49,21 @@
 
                           <% if (user) { %>
                       
-                          <div class="col-md-6 offset-md-3">
-                            <div class="row">
-                              <div class="col-md-4 overflow-hidden" id="single-entry-likes">
-
-                                <iframe src="single-entry-likes/<%=entry._id%>" id="single-entry-likes" height="26"></iframe>
-
+                            <div class="col-md-6 offset-md-3">
+                              <div class="row">
+                                <div class="col-3 offset-1 overflow-hidden" id="single-entry-likes">
+  
+                                  <iframe src="single-entry-likes/<%=entry._id%>" id="single-entry-likes" height="23"></iframe>
+  
+                                </div>
+  
+                                <div class="col-3 offset-4 text-right overflow-hidden" id="single-entry-flags">
+  
+                                  <iframe src="single-entry-flags/<%=entry._id%>" id="single-entry-flags" height="21"></iframe>
+  
+                                </div>
                               </div>
-                              
                             </div>
-                          </div>
 
                           <% } %>
 
@@ -88,13 +93,13 @@
 
                           </div>
 
-                          <% if (user && !entry.isVisitorOwner) { %>
+                          <!--<% if (user && !entry.isVisitorOwner) { %>
                           <div class="col-xl-12 offset-md-2 text-center overflow-hidden" id="single-entry-flags">
                                 
                             <iframe src="single-entry-flags/<%=entry._id%>" id="single-entry-flags" height="21"></iframe>
 
                           </div>
-                          <% } %>
+                          <% } %>-->
                         </div> 
                     </div>
                 </div>
