@@ -225,6 +225,34 @@ exports.updateNotifications = function(req, res) {
   })
 }
 
+exports.updateType = function(req, res) {
+  let user = new User(req.body, req.params.username)
+  user.updateType().then((status) => {
+      // the user was successfully updated in the database
+      // or user did have permission, but there were validation errors
+      if (status == "success") {
+          // user was updated in db
+          req.flash("success", "Account level successfully updated.")
+          req.session.save(function() {
+              res.redirect(`/settings/${req.params.username}`)
+          })
+      } else {
+          user.errors.forEach(function(error) {
+              req.flash("errors", error)
+          })
+          req.session.save(function() {
+              res.redirect(`/settings/${req.params.username}`)
+          })
+      }
+  }).catch(() => {
+      // if user with requested id doesn't exist
+      req.flash("errors", "You do not have permission to perform that action.")
+      req.session.save(function() {
+          res.redirect(`/settings/${req.params.username}`)
+      })
+  })
+}
+
 exports.ifUserExists = function(req, res, next) {
   User.findByUsername(req.params.username).then(function(userDoc) {
     req.profileUser = userDoc

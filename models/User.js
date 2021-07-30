@@ -179,6 +179,13 @@ User.prototype.updateNotifications = function() {
     })
 }
 
+User.prototype.updateType = function() {
+    return new Promise(async (resolve, reject) => {
+        await usersCollection.findOneAndUpdate({username: this.data.username}, {$set: {type: this.data.type}})
+            resolve("success")
+    })
+}
+
 User.findByUsername = function(username) {
     return new Promise(function(resolve, reject) {
         if (typeof(username) != "string") {
