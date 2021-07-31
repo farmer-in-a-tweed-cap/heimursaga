@@ -60,11 +60,11 @@
 									  the coordinates</label
 									>
 									<input
-									  class="form-control"
+									  required
+									  class="form-control readonly"
 									  type="text"
 									  name="lnglatcoordinates"
 									  id="lnglatcoordinates"
-									  readonly
 									/>
 								  </div>
 								</div>
@@ -116,9 +116,9 @@
 								  <div class="mb-3">
 									<label class="form-label">Tell Your Story</label>
 									<label class="form-text text-muted">
-									  - in 250-1000 words - if there's more write a series! </label>
+									  - in 150-1000 words - if there's more write a series! </label>
 									
-									<textarea name="body" id="post-body" class="body-content tall-textarea form-control" word-limit="true" max-words="1000" min-words="250" type="text" rows="10"></textarea>
+									<textarea name="body" id="post-body" class="body-content tall-textarea form-control" word-limit="true" max-words="1000" min-words="150" type="text" rows="10"></textarea>
 									<div class="text-muted form-text">
 									Word Count: <span id="show">0</span>
 									</div>
@@ -136,11 +136,13 @@
 								</div>
 								<div class="card-body">
 
+									<div class="submit_error form-text text-danger"></div>
+
 									<input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
 									<button type="submit" formaction="/save-draft" class="btn btn-secondary">Save to Drafts</button>
 								 
-									<button type="submit" formaction="/create-entry" class="btn btn-primary">Post Entry</button>
+									<button type="submit" id="submit-entry" formaction="/create-entry" class="btn btn-primary">Post Entry</button>
 
 								</div>
 							  </div>
@@ -156,6 +158,13 @@
 
 	<script>
 
+
+			$(".readonly").on('keydown paste focus mousedown', function(e){
+				if(e.keyCode != 9) // ignore tab
+					e.preventDefault();
+			});
+
+
 		// Add event trigger for change to textareas with limit
 		$(document).on("input", "textarea[word-limit=true]", function() {
 
@@ -163,6 +172,8 @@
 		// Get individual limits
 		thisMin = parseInt($(this).attr("min-words"));
 		thisMax = parseInt($(this).attr("max-words"));
+		const submit = document.querySelector("#submit-entry")
+		const coordinates = document.querySelector('#lnglatcoordinates')
 
 		// Create array of words, skipping the blanks
 		var removedBlanks = [];
@@ -197,6 +208,27 @@
 			// No issues, remove warning message
 			$(this).parent().children(".writing_error").text("");
 
+		}
+
+		if ( wordCount < thisMin) {
+		
+			submit.setAttribute("disabled", true);
+	
+		} else if (wordCount > thisMax) {
+
+			submit.setAttribute("disabled", true);
+		
+		} else {
+			
+			// No issues, remove warning message
+			submit.removeAttribute("disabled");
+
+		}
+
+		if (coordinates.value() == "") {
+			submit.setAttribute("disabled", true);
+		} else {
+			submit.removeAttribute("disabled");
 		}
 
 		});
