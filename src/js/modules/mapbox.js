@@ -321,8 +321,12 @@ map.on('load', function(){
                     </div>`}).join('')}`}
         response.data.forEach(entry => {
             map.on('move', function(){
+                var feed = document.getElementById("entry-div")
+                var mapdiv = document.getElementById("map-div")
                 var overlay = document.getElementById('overlay');
                 overlay.style.display = "none";
+                //mapdiv.style.display = "block"
+                feed.style.display = "block"
                 var bounds = map.getBounds();
                         this.entryFeed.innerHTML = `${response.data.map(entry => {
                             if(bounds.contains(new mapboxgl.LngLat(entry.GeoJSONcoordinates.coordinates[0],entry.GeoJSONcoordinates.coordinates[1])) && map.getZoom() >= 3) {
