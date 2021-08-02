@@ -70,8 +70,9 @@ var map = new mapboxgl.Map({
         marker: false,
         mapboxgl: mapboxgl
         });
-         
+
         document.getElementById('start-geocoder').appendChild(geocoder.onAdd(map))
+      
 
    map.addControl(
       new MapboxGeocoder({
@@ -109,7 +110,7 @@ map.on('load', function () {
     id: 'clusters',
     type: 'circle',
     source: 'entrymarkers',
-    minzoom: 1,
+    minzoom: 0.5,
     filter: ['has', 'point_count'],
     paint: {
     // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
@@ -144,7 +145,7 @@ map.on('load', function () {
     id: 'cluster-count',
     type: 'symbol',
     source: 'entrymarkers',
-    minzoom: 1,
+    minzoom: 0.5,
     filter: ['has', 'point_count'],
     layout: {
     'text-field': '{point_count_abbreviated}',
@@ -160,7 +161,7 @@ map.on('load', function () {
     id: 'unclustered-point',
     type: 'circle',
     source: 'entrymarkers',
-    minzoom: 1,
+    minzoom: 0.5,
     filter: ['!', ['has', 'point_count']],
     paint: {
     'circle-color': '#ac6d46',
@@ -235,10 +236,12 @@ map.on('load', function () {
 
 // map list feed
 
+if (document.title === "Heimursaga | Discovery") {
+
 map.on('load', function(){
     this.entryFeed = document.querySelector(".dynamic-entry-feed")
     axios.get('/entry-list').then(response => {
-        if (response.data.length && map.getZoom() >= 5) {
+        if (response.data.length && map.getZoom() >= 3) {
             this.entryFeed.innerHTML = `${response.data.map(entry => {
                 return `<div class="list-group list-group-flush"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">
                 <strong>${entry.title}</strong><br/>
@@ -426,7 +429,7 @@ map.on('load', function(){
         })
     })
 })
-
+}
 
 
 
