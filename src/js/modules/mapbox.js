@@ -109,6 +109,7 @@ map.on('load', function () {
     id: 'clusters',
     type: 'circle',
     source: 'entrymarkers',
+    minzoom: 1,
     filter: ['has', 'point_count'],
     paint: {
     // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
@@ -143,7 +144,7 @@ map.on('load', function () {
     id: 'cluster-count',
     type: 'symbol',
     source: 'entrymarkers',
-    minzoom: 1.5,
+    minzoom: 1,
     filter: ['has', 'point_count'],
     layout: {
     'text-field': '{point_count_abbreviated}',
@@ -159,6 +160,7 @@ map.on('load', function () {
     id: 'unclustered-point',
     type: 'circle',
     source: 'entrymarkers',
+    minzoom: 1,
     filter: ['!', ['has', 'point_count']],
     paint: {
     'circle-color': '#ac6d46',
@@ -321,12 +323,14 @@ map.on('load', function(){
                     </div>`}).join('')}`}
         response.data.forEach(entry => {
             map.on('move', function(){
+              map.on('zoom', function(){
                 var feed = document.getElementById("entry-div")
-                var mapdiv = document.getElementById("map-div")
+                //var mapdiv = document.getElementById("map-div")
                 var overlay = document.getElementById('overlay');
                 overlay.style.display = "none";
                 //mapdiv.style.display = "block"
                 feed.style.display = "block"
+              })
                 var bounds = map.getBounds();
                         this.entryFeed.innerHTML = `${response.data.map(entry => {
                             if(bounds.contains(new mapboxgl.LngLat(entry.GeoJSONcoordinates.coordinates[0],entry.GeoJSONcoordinates.coordinates[1])) && map.getZoom() >= 3) {
