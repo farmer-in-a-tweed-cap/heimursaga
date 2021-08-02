@@ -64,8 +64,16 @@ var map = new mapboxgl.Map({
       
       return geocodes;
       };
+      var geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        localGeocoder: coordinatesGeocoder,
+        marker: false,
+        mapboxgl: mapboxgl
+        });
+         
+        document.getElementById('start-geocoder').appendChild(geocoder.onAdd(map))
 
-    map.addControl(
+   map.addControl(
       new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       localGeocoder: coordinatesGeocoder,
@@ -95,6 +103,7 @@ map.on('load', function () {
     clusterMaxZoom: 14, // Max zoom to cluster points on
     clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
     });
+
      
     map.addLayer({
     id: 'clusters',
@@ -134,6 +143,7 @@ map.on('load', function () {
     id: 'cluster-count',
     type: 'symbol',
     source: 'entrymarkers',
+    minzoom: 1.5,
     filter: ['has', 'point_count'],
     layout: {
     'text-field': '{point_count_abbreviated}',
@@ -157,7 +167,7 @@ map.on('load', function () {
     'circle-stroke-color': '#fff'
     }
     });
-     
+
     // inspect a cluster on click
     map.on('click', 'clusters', function (e) {
     var features = map.queryRenderedFeatures(e.point, {
@@ -185,6 +195,7 @@ map.on('load', function () {
         var coordinates = e.features[0].geometry.coordinates.slice();
         var popup = e.features[0].properties.popup;
         var id = e.features[0].properties._id;
+
          
         // Ensure that if the map is zoomed out such that multiple
         // copies of the feature are visible, the popup appears
@@ -219,12 +230,13 @@ map.on('load', function () {
     });
     });
 
+
 // map list feed
 
 map.on('load', function(){
     this.entryFeed = document.querySelector(".dynamic-entry-feed")
     axios.get('/entry-list').then(response => {
-        if (response.data.length) {
+        if (response.data.length && map.getZoom() >= 5) {
             this.entryFeed.innerHTML = `${response.data.map(entry => {
                 return `<div class="list-group list-group-flush"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">
                 <strong>${entry.title}</strong><br/>
@@ -308,11 +320,12 @@ map.on('load', function(){
                     </div>
                     </div>`}).join('')}`}
         response.data.forEach(entry => {
-            var entrycoordinates = (entry.GeoJSONcoordinates.coordinates)
             map.on('move', function(){
+                var overlay = document.getElementById('overlay');
+                overlay.style.display = "none";
                 var bounds = map.getBounds();
                         this.entryFeed.innerHTML = `${response.data.map(entry => {
-                            if(bounds.contains(new mapboxgl.LngLat(entry.GeoJSONcoordinates.coordinates[0],entry.GeoJSONcoordinates.coordinates[1]))) {
+                            if(bounds.contains(new mapboxgl.LngLat(entry.GeoJSONcoordinates.coordinates[0],entry.GeoJSONcoordinates.coordinates[1])) && map.getZoom() >= 3) {
                                 return `<div class="list-group list-group-flush"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">
                                 <strong>${entry.title}</strong><br/>
                                 <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle">${entry.place} | ${entry.date}</small><br/>
@@ -396,12 +409,16 @@ map.on('load', function(){
                             </div>
                                 </div>`
                                 }}).join('')}`
-                if (this.entryFeed.innerHTML == "") {
+                if (this.entryFeed.innerHTML == "" && map.getZoom() < 3) {
+                    this.entryFeed.innerHTML = `<div class="text-center"><p class="text-muted">The map is currently at zoom level <strong>${Math.round(map.getZoom()*100)/100}</strong>. Zoom in past level 3 to populate the entry feed.</p></div>`
+                } else if (this.entryFeed.innerHTML == "") {
                     this.entryFeed.innerHTML = `<div class="text-center"><p class="text-muted">Looks like there are no journal entries in this area. Be the first to document your adventures here!</p></div>`
-                }           
+                }     
             })
         })
     })
 })
+
+
 
 
