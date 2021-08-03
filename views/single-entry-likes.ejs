@@ -11,10 +11,10 @@
 
         <form action="/addLike/<%= entry._id %>" method="POST">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <button class="text-primary" style="background: transparent; border: none;">
+          <button id="blue-heart" class="text-primary" style="background: transparent; border: none;">
             <div class="position-relative">
-              <i class="align-middle fas fa-heart"></i>
-              <span class="indicator"><%= likeCount %></span>
+              <i onclick="logHeart()" class="align-middle fas fa-heart"></i>
+              <span id="like-count" class="indicator"><%= likeCount %></span>
             </div>
           </button>
         </form>
@@ -35,3 +35,16 @@
         } %>    
 
 </div>
+
+<script>
+
+  var heart = document.getElementById('blue-heart')
+  var likes = document.getElementById('like-count')
+
+  function logHeart() {
+    heart.classList.remove('text-primary')
+    heart.classList.add('text-danger')
+    //parseInt(likes.innerHTML, 10)+1
+  }
+
+</script>
