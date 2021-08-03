@@ -71,7 +71,9 @@ var map = new mapboxgl.Map({
         mapboxgl: mapboxgl
         });
 
+
         document.getElementById('start-geocoder').appendChild(geocoder.onAdd(map))
+
       
 
    map.addControl(
