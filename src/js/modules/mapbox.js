@@ -196,6 +196,7 @@ map.on('load', function () {
     // the unclustered-point layer, open a popup at
     // the location of the feature, with
     // description HTML from its properties.
+
     map.on('click', 'unclustered-point', function (e) {
         var coordinates = e.features[0].geometry.coordinates.slice();
         var popup = e.features[0].properties.popup;
@@ -208,13 +209,12 @@ map.on('load', function () {
         while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
         }
-         
-        new mapboxgl.Popup({closeButton: false, focusAfterOpen: false})
-        .setLngLat(coordinates)
-        .setHTML(popup+`<a data-bs-toggle="modal" href="#sizedModalMd-${id}">Expand</a>`)
-        .addTo(map);
+          new mapboxgl.Popup({closeButton: false, focusAfterOpen: false})
+          .setLngLat(coordinates)
+          .setHTML(popup+`<a data-bs-toggle="modal" href="#sizedModalMd-${id}">Expand</a>`)
+          .addTo(map);
         });
-         
+
         // Change the cursor to a pointer when the mouse is over the places layer.
         map.on('mouseenter', 'unclustered-point', function () {
         map.getCanvas().style.cursor = 'pointer';
@@ -224,7 +224,7 @@ map.on('load', function () {
         map.on('mouseleave', 'unclustered-point', function () {
         map.getCanvas().style.cursor = '';
         });
-
+    
    
      
     map.on('mouseenter', 'clusters', function () {
@@ -234,6 +234,8 @@ map.on('load', function () {
     map.getCanvas().style.cursor = '';
     });
     });
+
+
 
 
 // map list feed
@@ -423,7 +425,7 @@ map.on('load', function(){
                                 </div>`
                                 }}).join('')}`
                 if (this.entryFeed.innerHTML == "" && map.getZoom() < 3) {
-                    this.entryFeed.innerHTML = `<div class="text-center"><p class="text-muted">The map is currently at zoom level <strong>${Math.round(map.getZoom()*100)/100}</strong>. Zoom in past level 3 to populate the entry feed.</p></div>`
+                    this.entryFeed.innerHTML = `<div class="text-center"><p class="text-muted">The map is currently at zoom level <strong>${Math.round(map.getZoom()*100)/100}</strong>. Zoom in past level 3 to populate the entry feed and read full entries.</p></div>`
                 } else if (this.entryFeed.innerHTML == "") {
                     this.entryFeed.innerHTML = `<div class="text-center"><p class="text-muted">Looks like there are no journal entries in this area. Be the first to document your adventures here!</p></div>`
                 }     
