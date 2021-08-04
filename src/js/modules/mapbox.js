@@ -18,7 +18,7 @@ var map = new mapboxgl.Map({
 });
 
 
-    var coordinatesGeocoder = function (query) {
+var coordinatesGeocoder = function (query) {
       // Match anything which looks like
       // decimal degrees coordinate pair.
       var matches = query.match(
@@ -64,26 +64,26 @@ var map = new mapboxgl.Map({
       
       return geocodes;
       };
-      var geocoder = new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        localGeocoder: coordinatesGeocoder,
-        marker: false,
-        mapboxgl: mapboxgl
-        });
-
-
-        document.getElementById('start-geocoder').appendChild(geocoder.onAdd(map))
-
       
+var geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    localGeocoder: coordinatesGeocoder,
+    marker: false,
+    mapboxgl: mapboxgl
+  });
 
-   map.addControl(
-      new MapboxGeocoder({
-      accessToken: mapboxgl.accessToken,
-      localGeocoder: coordinatesGeocoder,
-      marker: false,
-      mapboxgl: mapboxgl,
-      })
-    );
+document.getElementById('start-geocoder').appendChild(geocoder.onAdd(map))      
+
+map.addControl(
+    new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    localGeocoder: coordinatesGeocoder,
+    marker: false,
+    mapboxgl: mapboxgl,
+    })
+  );
+
+map.addControl(new mapboxgl.NavigationControl())
 
 map.addControl(new mapboxgl.GeolocateControl({
     positionOptions: {
@@ -208,7 +208,7 @@ map.on('load', function () {
         
         map.easeTo({
           center: coordinates,
-          offset: [0, 100],
+          offset: [0, 50],
           zoom: 7
         })
          
