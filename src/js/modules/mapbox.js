@@ -95,6 +95,8 @@ map.addControl(new mapboxgl.GeolocateControl({
 
 var mapmarkers = JSON.parse(markers)
 
+var entryzoom = 3
+
 map.on('load', function () {
     // Add a new source from our GeoJSON data and
     // set the 'cluster' option to true. GL-JS will
@@ -201,9 +203,13 @@ map.on('load', function () {
         var coordinates = e.features[0].geometry.coordinates.slice();
         var popup = e.features[0].properties.popup;
         var id = e.features[0].properties._id;
+
+        console.log(map.getZoom())
+        
         map.easeTo({
           center: coordinates,
-          zoom: 3
+          offset: [0, 50],
+          zoom: 7
         })
          
         // Ensure that if the map is zoomed out such that multiple
@@ -248,7 +254,7 @@ if (document.title === "Heimursaga | Discovery") {
 map.on('load', function(){
     this.entryFeed = document.querySelector(".dynamic-entry-feed")
     axios.get('/entry-list').then(response => {
-        if (response.data.length && map.getZoom() >= 3) {
+        if (response.data.length && map.getZoom() >= entryzoom) {
             this.entryFeed.innerHTML = `${response.data.map(entry => {
                 return `<div class="list-group list-group-flush"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">
                 <strong>${entry.title}</strong><br/>
@@ -343,7 +349,7 @@ map.on('load', function(){
               })
                 var bounds = map.getBounds();
                         this.entryFeed.innerHTML = `${response.data.map(entry => {
-                            if(bounds.contains(new mapboxgl.LngLat(entry.GeoJSONcoordinates.coordinates[0],entry.GeoJSONcoordinates.coordinates[1])) && map.getZoom() >= 3) {
+                            if(bounds.contains(new mapboxgl.LngLat(entry.GeoJSONcoordinates.coordinates[0],entry.GeoJSONcoordinates.coordinates[1])) && map.getZoom() >= entryzoom) {
                                 return `<div class="list-group list-group-flush"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">
                                 <strong>${entry.title}</strong><br/>
                                 <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle">${entry.place} | ${entry.date}</small><br/>
@@ -427,8 +433,8 @@ map.on('load', function(){
                             </div>
                                 </div>`
                                 }}).join('')}`
-                if (this.entryFeed.innerHTML == "" && map.getZoom() < 3) {
-                    this.entryFeed.innerHTML = `<div class="text-center"><p class="text-muted">The map is currently at zoom level <strong>${Math.round(map.getZoom()*100)/100}</strong>. Zoom in past level 3 to populate the entry feed and read full entries.</p></div>`
+                if (this.entryFeed.innerHTML == "" && map.getZoom() < entryzoom) {
+                    this.entryFeed.innerHTML = `<div class="text-center"><p class="text-muted">The map is currently at zoom level <strong>${Math.round(map.getZoom()*10)/10}</strong>. Zoom in past level 3 to populate the entry feed and read full entries.</p></div>`
                 } else if (this.entryFeed.innerHTML == "") {
                     this.entryFeed.innerHTML = `<div class="text-center"><p class="text-muted">Looks like there are no journal entries in this area. Be the first to document your adventures here!</p></div>`
                 }     
