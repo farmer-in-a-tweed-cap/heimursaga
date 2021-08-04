@@ -208,7 +208,7 @@ map.on('load', function () {
         
         map.easeTo({
           center: coordinates,
-          offset: [0, 50],
+          offset: [0, 100],
           zoom: 7
         })
          
