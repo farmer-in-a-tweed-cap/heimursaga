@@ -201,7 +201,10 @@ map.on('load', function () {
         var coordinates = e.features[0].geometry.coordinates.slice();
         var popup = e.features[0].properties.popup;
         var id = e.features[0].properties._id;
-
+        map.easeTo({
+          center: coordinates,
+          zoom: 3
+        })
          
         // Ensure that if the map is zoomed out such that multiple
         // copies of the feature are visible, the popup appears
