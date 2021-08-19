@@ -31,7 +31,7 @@ User.prototype.cleanUp = function() {
         from: sanitizeHTML(this.data.from, {allowedTags: [], allowedAttributes: {}}),
         instagram: this.data.instagram,
         website: this.data.website,
-        type: "Explorer",
+        type: this.data.type,
         settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}},
         resetPasswordToken: {type: String, required: false},
         resetPasswordExpires: {type: Date, required: false}

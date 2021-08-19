@@ -32,6 +32,10 @@ router.post('/recover', userController.recover)
 router.get('/reset-password/:token', userController.reset)
 router.post('/reset-password/:token', userController.resetPassword)
 
+router.get('/upgrade', userController.mustBeLoggedIn, userController.upgrade)
+router.get('/account-type/:username', userController.mustBeLoggedIn, userController.ifUserExists, userController.sharedProfileData, userController.accounttype)
+router.post('/select-type/:username', userController.mustBeLoggedIn, userController.ifUserExists, userController.sharedProfileData, userController.selectType)
+
 
 // profile related routes
 router.get('/journal/:username', userController.ifUserExists, userController.sharedProfileData, userController.journalScreen)
@@ -42,7 +46,7 @@ router.post('/update-user/:username', userController.ifUserExists, userControlle
 router.post('/update-password/:username', userController.ifUserExists, userController.sharedProfileData, userController.updatePassword)
 router.post('/update-notifications/:username', userController.ifUserExists, userController.sharedProfileData, userController.updateNotifications)
 
-router.post('update-type/:username', userController.ifUserExists, userController.sharedProfileData, userController.updateType)
+router.post('/update-type/:username', userController.ifUserExists, userController.sharedProfileData, userController.updateType)
 
 
 
@@ -98,11 +102,10 @@ router.get('/about', function (req, res) {
   res.render('about', {pageName: 'about'})
 })
 
-router.get('/upgrade', userController.mustBeLoggedIn, userController.upgrade)
-
 router.get('/contact', function (req, res) {
   res.render('contact', {pageName: 'contact'})
 })
+
 
 //router.post('/contact-form', userController.contactForm)
 

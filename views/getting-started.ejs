@@ -11,6 +11,9 @@
 					<div class="row">
 						<h1 class="h3 mb-3 text-center">Getting Started</h1>
 						<div class="col-12">
+							
+							<%- include('includes/flash') %>
+
 							<div class="card">
 								<div class="card-body text-center col-md-8 offset-md-2 mb-5 mt-3">
 									Welcome to Heimursaga, The Explorer's Journal!</p>
@@ -54,6 +57,10 @@
 									Be sure to review <a href="/explorer-code">The Explorer Code</a> before posting, and stay adventurous!</p>
 									Regards,<br>
 									<div>explorer1</div>
+									</div>
+
+									<div class="text-center mt-5">
+										<a href="/journal/<%= user.username %>"><strong class="text-primary">Take Me To My Journal</strong></a>
 									</div>
 							</div>
 						</div>

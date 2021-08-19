@@ -73,8 +73,22 @@ exports.logout = function(req, res) {
   })
 }
 
-exports.upgrade = function(req, res) {
-    res.render('upgrade', {pageName: "upgrade"})
+exports.upgrade = async function(req, res) {
+    User.findByUsername(req.profileUser.username).then(function(user){
+    res.render('upgrade', {
+      pageName: "upgrade",
+      email: user.email,
+    })
+    })
+}
+
+exports.accounttype = async function(req, res) {
+    User.findByUsername(req.profileUser.username).then(function(user){
+    res.render('account-type', {
+      pageName: "account-type",
+      email: user.email,
+    })
+    })
 }
 
 exports.register = function(req, res) {
@@ -96,7 +110,7 @@ exports.register = function(req, res) {
       })
     req.session.user = {username: user.data.username, avatar: user.avatar, _id: user.data._id}
     req.session.save(function() {
-      res.redirect('getting-started')
+      res.redirect(`/account-type/${user.data.username}`)
     })
   }).catch(function(e) {
     req.flash('errors', e)
@@ -232,7 +246,7 @@ exports.updateType = function(req, res) {
       // or user did have permission, but there were validation errors
       if (status == "success") {
           // user was updated in db
-          req.flash("success", "Account level successfully updated.")
+          req.flash("success", "Account type successfully updated.")
           req.session.save(function() {
               res.redirect(`/settings/${req.params.username}`)
           })
@@ -249,6 +263,34 @@ exports.updateType = function(req, res) {
       req.flash("errors", "You do not have permission to perform that action.")
       req.session.save(function() {
           res.redirect(`/settings/${req.params.username}`)
+      })
+  })
+}
+
+exports.selectType = function(req, res) {
+  let user = new User(req.body, req.params.username)
+  user.updateType().then((status) => {
+      // the user was successfully updated in the database
+      // or user did have permission, but there were validation errors
+      if (status == "success") {
+          // user was updated in db
+          req.flash("success", "Welcome to Heimursaga!")
+          req.session.save(function() {
+              res.redirect(`/getting-started`)
+          })
+      } else {
+          user.errors.forEach(function(error) {
+              req.flash("errors", error)
+          })
+          req.session.save(function() {
+              res.redirect(`/account-type/`)
+          })
+      }
+  }).catch(() => {
+      // if user with requested id doesn't exist
+      req.flash("errors", "You do not have permission to perform that action.")
+      req.session.save(function() {
+          res.redirect(`/`)
       })
   })
 }
