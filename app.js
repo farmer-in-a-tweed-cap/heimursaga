@@ -57,7 +57,7 @@ app.use(function(req, res, next) {
 app.use('/', router)
 
 
-/*app.use(function(err, req, res, next){
+app.use(function(err, req, res, next){
     if(err) {
         if(err.code == "EBADCSRFTOKEN") {
             req.flash('errors', "Cross-site request forgery detected.")
@@ -67,7 +67,7 @@ app.use('/', router)
             res.render("404")
         }
     }
-})*/
+})
 
 const server = require('http').createServer(app)
 
