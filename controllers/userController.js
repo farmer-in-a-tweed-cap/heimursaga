@@ -274,7 +274,6 @@ exports.selectType = function(req, res) {
       // or user did have permission, but there were validation errors
       if (status == "success") {
           // user was updated in db
-          req.flash("success", "Welcome to Heimursaga!")
           req.session.save(function() {
               res.redirect(`/getting-started`)
           })
