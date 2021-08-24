@@ -791,3 +791,14 @@ $jsvectormap-zoom-btn: $dark !default;
     column-count: 1;
   }
 }
+
+#overlay {
+  position: absolute; /* Sit on top of the page content */
+  /* display: none;  Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */ 
+  background-color: rgb(244, 247, 252); /* Black background with opacity */
+  z-index: 3; /* Specify a stack order in case you're using a different order for other elements */
+  box-shadow: inset 0 0 2rem rgba(0, 0, 0, .1)
+
+}
