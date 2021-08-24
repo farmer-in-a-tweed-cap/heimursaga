@@ -83,13 +83,18 @@ exports.upgrade = async function(req, res) {
 }
 
 exports.accounttype = async function(req, res) {
+  if (req.isVisitorsProfile == true) {
     User.findByUsername(req.profileUser.username).then(function(user){
     res.render('account-type', {
       pageName: "account-type",
       email: user.email,
     })
     })
-}
+} else {
+  req.session.save(function() {
+    res.redirect(`/`)
+  })
+}}
 
 exports.register = function(req, res) {
   let user = new User(req.body)
@@ -135,6 +140,7 @@ exports.home = async function(req, res) {
 
 exports.viewSettings = async function(req, res) {
   if (req.isVisitorsProfile == true) {
+
     User.findByUsername(req.profileUser.username).then(function(user){
     res.render('settings', {
       pageName: "settings",
