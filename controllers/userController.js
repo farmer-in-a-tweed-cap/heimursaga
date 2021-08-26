@@ -115,7 +115,8 @@ exports.register = function(req, res) {
       })
     req.session.user = {username: user.data.username, avatar: user.avatar, _id: user.data._id}
     req.session.save(function() {
-      res.redirect(`/account-type/${user.data.username}`)
+      //res.redirect(`/account-type/${user.data.username}`)
+      res.redirect('/getting-started')
     })
   }).catch(function(e) {
     req.flash('errors', e)
