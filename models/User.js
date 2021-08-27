@@ -34,7 +34,8 @@ User.prototype.cleanUp = function() {
         type: this.data.type,
         settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}},
         resetPasswordToken: {type: String, required: false},
-        resetPasswordExpires: {type: Date, required: false}
+        resetPasswordExpires: {type: Date, required: false},
+        registeredDate: new Date(),
     }
 }
 

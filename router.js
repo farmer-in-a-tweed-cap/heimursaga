@@ -6,6 +6,7 @@ const followController = require('./controllers/followController')
 const draftController = require('./controllers/draftController')
 const likeController = require('./controllers/likeController')
 const flagController = require('./controllers/flagController')
+const adminController = require('./controllers/adminController')
 const User = require('./models/User')
 const router = express.Router()
 
@@ -98,6 +99,10 @@ router.get('/about', function (req, res) {
 router.get('/contact', function (req, res) {
   res.render('contact', {pageName: 'contact'})
 })
+
+
+//Admin Routes
+router.get('/admin-dashboard', adminController.viewAdminDashboard)
 
 
 //Explorer Pro Routes

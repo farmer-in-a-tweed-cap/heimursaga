@@ -1,6 +1,6 @@
 const entriesCollection = require('../db').db().collection("entries")
 const flagsCollection = require('../db').db().collection("flags")
-const { ObjectID } = require('mongodb').ObjectID
+const ObjectID = require('mongodb').ObjectID
 const Entry = require('./Entry')
 
 let Flag = function(id, authorId) {
@@ -37,7 +37,7 @@ Flag.prototype.create = function() {
         this.cleanUp()
         await this.validate("create")
         if (!this.errors.length) {
-            await flagsCollection.insertOne({flaggedEntryId: this.flaggedEntryId, authorId: new ObjectID(this.authorId)})
+            await flagsCollection.insertOne({flaggedEntryId: this.flaggedEntryId, authorId: new ObjectID(this.authorId), createdDate: new Date()})
             resolve()
         } else {
             reject(this.errors)
@@ -53,5 +53,6 @@ Flag.hasVisitorFlagged = async function(flaggedEntryId, visitorId) {
         return false
     }
 }
+
 
 module.exports = Flag
