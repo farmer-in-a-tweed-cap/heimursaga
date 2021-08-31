@@ -102,7 +102,7 @@ router.get('/contact', function (req, res) {
 
 
 //Admin Routes
-router.get('/admin-dashboard', adminController.viewAdminDashboard)
+router.get('/admin-dashboard', userController.mustBeLoggedIn, adminController.viewAdminDashboard)
 
 
 //Explorer Pro Routes
