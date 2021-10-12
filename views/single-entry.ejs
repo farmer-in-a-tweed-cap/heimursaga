@@ -29,7 +29,7 @@
                           </div>
                 
                           <div class="mb-2">
-                              <h5 class="text-center text-muted">on <%= new Date(entry.date).toLocaleString('default', { month: 'long' }) %> <%= new Date(entry.date).getDate() %>, <%= new Date(entry.date).getFullYear() %> | by <a href="/journal/${entry.author.username}"><%= entry.author.username %></a></h5>
+                              <h5 class="text-center text-muted">on <%= new Date(entry.date).toLocaleString('default', { month: 'long' }) %> <%= new Date(entry.date).getDate() %>, <%= new Date(entry.date).getFullYear() %> | by <a href="/journal/<%= entry.author.username %>"><%= entry.author.username %></a></h5>
                           </div>
 
                         <div class="card-body"> 
