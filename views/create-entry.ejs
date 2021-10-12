@@ -26,6 +26,8 @@
 							</div>
 						</div>
 
+						<!--INCLUDE THIS IN FORM TAG WHEN PHOTO UPLOAD ENABLED: enctype="multipart/form-data"-->
+
 						<form method="POST">
 							<div class="col-12 col-xl-12">
 							  <div class="card">
@@ -128,11 +130,47 @@
 								</div>
 							  </div>
 							</div>
+
+							<!--<div class="col-12 col-xl-12">
+								<div class="card">
+								  <div class="card-header">
+									<h5 class="card-title mb-0">4. Upload a photo</h5>
+									</div>
+								  <div class="card-body">
+  
+									<label class="form-label" for="file1">Default file input example</label>
+									<div id="upload-demo" style="width:350px; height: 400px;"></div>
+									<input type="file" class="form-control" name="upload" id="upload" />
+									<button class="upload-result">Result</button>
+
+									<div class="demo-wrap upload-demo">
+										<div class="actions">
+											<a class="btn file-btn">
+												<span>Upload</span>
+												<input type="file" id="upload" value="Choose a file" accept="image/*" />
+											</a>
+											<button class="upload-result">Result</button>
+										</div>
+										<div>
+											<img id="profile-image" src="./img/brands/Heimursaga White.png" width="100px" height="100px" alt="">
+										</div>
+										<div class="upload-msg">
+											Upload a file to start cropping
+										</div>
+										<div class="upload-demo-wrap">
+											<div id="upload-demo"></div>
+										</div>
+							
+									</div>
+
+								  </div>
+								</div>
+							</div>-->
 						  
 							<div class="col-12 col-xl-12">
 							  <div class="card">
 								<div class="card-header">
-								  <h5 class="card-title mb-0">4. Post or save entry</h5>
+								  <h5 class="card-title mb-0">5. Post or save entry</h5>
 								</div>
 								<div class="card-body">
 
@@ -140,9 +178,9 @@
 
 									<input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-									<button type="submit" formaction="/save-draft" class="btn btn-secondary">Save to Drafts</button>
+									<button type="submit" formaction="/save-draft/?_csrf=<%=csrfToken%>" class="btn btn-secondary">Save to Drafts</button>
 								 
-									<button type="submit" id="submit-entry" formaction="/create-entry" class="btn btn-primary">Post Entry</button>
+									<button type="submit" id="submit-entry" formaction="/create-entry/?_csrf=<%=csrfToken%>" class="btn btn-primary">Post Entry</button>
 
 								</div>
 							  </div>
@@ -156,13 +194,7 @@
 
 			<%- include('includes/footer') %>
 
-	<script>
-
-
-			$(".readonly").on('keydown paste focus mousedown', function(e){
-				if(e.keyCode != 9) // ignore tab
-					e.preventDefault();
-			});
+<script>
 
 
 		// Add event trigger for change to textareas with limit
@@ -341,10 +373,6 @@
 			});
 		document.querySelector("#show").innerText = res.length;
 		});
-
-
-		
-
 
 		document.addEventListener("DOMContentLoaded", function() {
 			// Select2
