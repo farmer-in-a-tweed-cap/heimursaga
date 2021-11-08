@@ -23,7 +23,7 @@ Draft.prototype.cleanUp = function() {
   coordinatesString = sanitizeHTML(this.data.lnglatcoordinates.trim(), {allowedTags: [], allowedAttributes: {}}),
   coordinates = coordinatesString.split(',').map(Number)
   
-  if (this.photo.length) {this.photo = true} else {this.photo = false}
+  if (this.photo.length || !this.data.photoindicator.length) {this.photo = true} else {this.photo = false}
 
   // get rid of any bogus properties
   this.data = {
