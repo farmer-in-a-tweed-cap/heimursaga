@@ -17,8 +17,8 @@
 					<div class="spinner-border" role="status">
 					  <span class="sr-only">Loading...</span>
 					</div>
-					<div class="row mt-3 text-center" >
-						"A ship in harbor is safe, but that is not what ships are built for."</br>- John A. Shedd
+					<div class="row text-center p-4" >
+						"In wisdom gathered over time I have found that every experience is a form of exploration."</br>- Ansel Adams
 					</div>
 				</div>
 			</div>
@@ -44,7 +44,7 @@
 							</div>
 						</div>
 
-						<form method="POST" enctype="multipart/form-data">
+						<form id="edit-entry" method="POST" enctype="multipart/form-data">
 							<div class="col-md-8 offset-md-2">
 							  <div class="card">
 								<div class="card-header">
@@ -270,8 +270,11 @@
 		
 
 		function showLoader() {
+			const form = document.getElementById("edit-entry")
 			const overlay = document.getElementById("overlay")
-			overlay.removeAttribute("hidden")
+			if (form.checkValidity()) {
+				overlay.removeAttribute("hidden")
+			}
 		}
 
 
@@ -451,7 +454,7 @@
 
 
 			entrymap.on('move', function (e) {
-				console.log(`Current Map Center: ${entrymap.getCenter()}`);
+				//console.log(`Current Map Center: ${entrymap.getCenter()}`);
 				marker.setLngLat(entrymap.getCenter());
 				var lngLat = marker.getLngLat();
 				var entryCoordinates = marker.getLngLat();

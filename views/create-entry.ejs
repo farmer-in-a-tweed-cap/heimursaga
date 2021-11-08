@@ -16,7 +16,7 @@
 								<div class="spinner-border" role="status">
 								  <span class="sr-only">Loading...</span>
 								</div>
-								<div class="row mt-3 text-center" >
+								<div class="row text-center p-4" >
 									"We shall not cease from exploration"</br>- T.S. Eliot
 								</div>
 							</div>
@@ -41,7 +41,7 @@
 
 						<!--INCLUDE THIS IN FORM TAG WHEN PHOTO UPLOAD ENABLED: enctype="multipart/form-data"-->
 
-						<form method="POST" enctype="multipart/form-data">
+						<form id="create-entry" method="POST" enctype="multipart/form-data">
 							<div class="col-12 col-xl-12">
 							  <div class="card">
 								<div class="card-header">
@@ -235,7 +235,7 @@
 									<div class="submit_error form-text text-danger"></div>
 
 
-									<button type="submit" formaction="/save-draft/?_csrf=<%=csrfToken%>" onclick="showLoader()" class="btn btn-secondary">Save to Drafts</button>
+									<button type="submit" id="save-draft" formaction="/save-draft/?_csrf=<%=csrfToken%>" onclick="showLoader()" class="btn btn-secondary">Save to Drafts</button>
 								 
 									<button type="submit" id="submit-entry" formaction="/create-entry/?_csrf=<%=csrfToken%>" class="btn btn-primary" onClick="showLoader()" disabled>Post Entry</button>
 
@@ -256,8 +256,11 @@
 
 
 		function showLoader() {
+			const form = document.getElementById("create-entry")
 			const overlay = document.getElementById("overlay")
-			overlay.removeAttribute("hidden")
+			if (form.checkValidity()) {
+				overlay.removeAttribute("hidden")
+			}
 		}
 
 
@@ -350,7 +353,7 @@
 				marker.setLngLat(entrymap.getCenter());
 				var lngLat = marker.getLngLat();
 				var entryCoordinates = marker.getLngLat();
-				console.log(document.getElementById('coordinates').value);
+				//console.log(document.getElementById('coordinates').value);
 				coordinates.innerHTML = [lngLat.lng,lngLat.lat];
 				coordinates.style.display = 'block';
 			});

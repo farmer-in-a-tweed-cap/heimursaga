@@ -10,14 +10,14 @@
 <main class="content" style="padding: 0rem !important;">
 	<div class="container-fluid p-0" style="position: relative;">
 
-		<div class="col-12" style="padding: 0rem;" class="overlay" id="overlay" style="z-index: 2; position: fixed;" hidden>
+		<div class="col-12" style="padding: 0rem;" class="overlay" id="overlay" style="z-index: 2; position: fixed;" >
 			<div class="d-flex flex-column align-items-center justify-content-center" style="position: absolute; left: 50%;">
 				<div class="d-flex flex-column align-items-center justify-content-center" style="position:fixed; top: 50%; margin-top: -100px;">
 					<div class="spinner-border" role="status">
 					  <span class="sr-only">Loading...</span>
 					</div>
-					<div class="row mt-3 text-center" >
-						"A ship in harbor is safe, but that is not what ships are built for."</br>- John A. Shedd
+					<div class="row text-center p-4" >
+						"A nomad I will remain for life, in love with distant and uncharted places."</br>- Isabelle Eberhardt
 					</div>
 				</div>
 			</div>
@@ -43,7 +43,7 @@
 							</div>
 						</div>
 
-						<form method="POST" enctype="multipart/form-data">
+						<form id="edit-draft" method="POST" enctype="multipart/form-data">
 							<div class="col-md-8 offset-md-2">
 							  <div class="card">
 								<div class="card-header">
@@ -158,7 +158,6 @@
 									</div>
 								  <div class="card-body">
 
-									<% console.log(draft.hasPhoto) %>
 
 									<% if (draft.hasPhoto) { %>
 
@@ -275,8 +274,11 @@
 	<script>
 
 		function showLoader() {
+			const form = document.getElementById("edit-draft")
 			const overlay = document.getElementById("overlay")
-			overlay.removeAttribute("hidden")
+			if (form.checkValidity()) {
+				overlay.removeAttribute("hidden")
+			}
 		}
 
 
@@ -288,7 +290,6 @@
 			uploadModule.hidden = false
 			photoModule.hidden = true
 			document.getElementById('photoindicator').value = 'delete'
-			console.log(document.getElementById('photoindicator').value)
 		}
 
 				// Add event trigger for change to textareas with limit
@@ -524,11 +525,11 @@
 
 
 			entrymap.on('move', function (e) {
-				console.log(`Current Map Center: ${entrymap.getCenter()}`);
+				//console.log(`Current Map Center: ${entrymap.getCenter()}`);
 				marker.setLngLat(entrymap.getCenter());
 				var lngLat = marker.getLngLat();
 				var entryCoordinates = marker.getLngLat();
-				console.log(document.getElementById('coordinates').value);
+				//console.log(document.getElementById('coordinates').value);
 				coordinates.innerHTML = [lngLat.lng,lngLat.lat];
 				coordinates.style.display = 'block';
 			});
