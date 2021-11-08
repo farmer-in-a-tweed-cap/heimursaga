@@ -73,7 +73,7 @@
 
                                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                                    <div id="dynamic-entry-feed" class="dynamic-entry-feed" style='height: 80vh;'></div>
+                                    <div id="dynamic-entry-feed" class="dynamic-entry-feed" style="height: 75vh;"></div>
                                     
 
                                 </div>
@@ -89,6 +89,12 @@
 
 
 <script type="text/javascript">
+
+    document.querySelectorAll('img').forEach((img) => {
+            img.onerror = function() {
+                this.style.display = 'none';
+            }
+        })
 
     var overlay = document.getElementById("overlay");
     var feed = document.getElementById("entry-div")

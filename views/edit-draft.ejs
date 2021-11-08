@@ -2,15 +2,27 @@
 
 <title>Heimursaga | Edit Draft Entry</title>
 
-</head>
-
 <%- include('includes/sidebar') %>
 
 <%- include('includes/navbar') %>
 
 
-			<main class="content">
-				<div class="container-fluid p-0">
+<main class="content" style="padding: 0rem !important;">
+	<div class="container-fluid p-0" style="position: relative;">
+
+		<div class="col-12" style="padding: 0rem;" class="overlay" id="overlay" style="z-index: 2; position: fixed;" hidden>
+			<div class="d-flex flex-column align-items-center justify-content-center" style="position: absolute; left: 50%;">
+				<div class="d-flex flex-column align-items-center justify-content-center" style="position:fixed; top: 50%; margin-top: -100px;">
+					<div class="spinner-border" role="status">
+					  <span class="sr-only">Loading...</span>
+					</div>
+					<div class="row mt-3 text-center" >
+						"A ship in harbor is safe, but that is not what ships are built for."</br>- John A. Shedd
+					</div>
+				</div>
+			</div>
+		</div>
+	<div style="padding: 2.5rem 2.5rem 1.5rem !important;">
 
 					<h1 class="h3 mb-3 text-center">Edit Draft Entry</h1>
 
@@ -31,7 +43,7 @@
 							</div>
 						</div>
 
-						<form method="POST">
+						<form method="POST" enctype="multipart/form-data">
 							<div class="col-md-8 offset-md-2">
 							  <div class="card">
 								<div class="card-header">
@@ -122,9 +134,9 @@
 								  <div class="mb-3">
 									<label class="form-label">Tell Your Story</label>
 									<label class="form-text text-muted">
-									  - in 250-1000 words - if there's more write a series!</label
+									  - in 150-1000 words - if there's more write a series!</label
 									>
-									<textarea name="body" id="post-body" class="body-content tall-textarea form-control" word-limit="true" max-words="1000" min-words="250" type="text" rows="10"><%= draft.body %></textarea>
+									<textarea name="body" id="post-body" class="body-content tall-textarea form-control" word-limit="true" max-words="1000" min-words="150" type="text" rows="10"><%= draft.body %></textarea>
 									<div class="text-muted form-text">
 									Word Count: <span id="show">0</span>
 									</div>
@@ -137,16 +149,117 @@
 							</div>
 						  
 							<div class="col-md-8 offset-md-2">
+								<div class="card">
+								  <div class="card-header">
+									<h5 class="card-title mb-0">4. Upload your photo</h5>
+									<label class="form-text text-muted pt-3">
+										Your photo will automatically be cropped to an aspect ratio of 3:2 and resized to 900x600px. For best results, crop/edit your photo before uploading. Photo uploads are optional.</label>
+
+									</div>
+								  <div class="card-body">
+
+									<% console.log(draft.hasPhoto) %>
+
+									<% if (draft.hasPhoto) { %>
+
+									<div id="photo-module">
+										<div class="mb-5 col-md-8 offset-md-2">
+											<img src="<%= photo %>" class="img-fluid" alt="entry image">
+										</div>
+									</div>
+
+									<% } %>
+
+
+									<button id="photo-button" type="button" class="btn btn-secondary text-center mt-1" onclick="deletePhoto()">Update photo</button>
+
+									
+									<div id="upload-module" class="col-12 col-md-10 offset-md-1" hidden>
+
+											<style>
+												.filepond--root {
+													z-index: 1 !important;
+												}
+
+												.filepond--drop-label {
+													color: #4c4e53;
+												}
+
+												.filepond--label-action {
+													text-decoration-color: #babdc0;
+												}
+
+												.filepond--panel-root {
+													background-color: transparent;
+
+												}
+
+												.filepond--item-panel {
+													background: transparent;
+													border-radius: 0em;
+													border-width: 0em;
+												}
+
+												.filepond--image-preview {
+													background: white;
+													height: 100%;
+													width: 100%;
+												}
+
+												.filepond--item > .filepond--panel .filepond--panel-bottom {
+													box-shadow: none;
+													}
+
+												.filepond--image-preview-overlay svg {
+													display: none;
+												}
+
+												.filepond--file-info {
+													display: none;
+													top: 10em;
+													color: black;
+												}
+
+												.filepond--file-status {
+													display: none;
+												}
+												
+												.filepond--file-action-button filepond--action-remove-item {
+													display: none;
+												}
+
+
+												
+											</style>
+											
+											<input type="file" 
+												class="filepond"
+												name="filepond"
+												accept="image/png, image/jpeg"
+											/>
+									</div>
+
+									<input type="text" id="photoindicator" name="photoindicator" hidden>
+
+
+								  </div>
+								</div>
+							</div>
+
+							<div class="col-md-8 offset-md-2">
 							  <div class="card">
 								<div class="card-header">
 								  <h5 class="card-title mb-0">4. Update or post draft as entry</h5>
 								</div>
 								<div class="card-body">
 
-								  <input type="hidden" name="_csrf" value="<%= csrfToken %>"> 
-								  <button type="submit" onclick="return confirm('Are you sure you want to delete this draft? This action is irreversible.');" formaction="/draft/<%= draft._id %>/delete" class="btn btn-danger">Delete</button>
-								  <button type="submit" formaction="/draft/<%= draft._id %>/edit" class="btn btn-secondary">Update</button>
-								  <button type="submit" id="submit-entry" formaction="/draft/<%= draft._id %>/post-entry" class="btn btn-primary" disabled>Post as Entry</button>
+
+								  <button type="submit" onclick="return confirm('Are you sure you want to delete this draft? This action is irreversible.');" formaction="/draft/<%= draft._id %>/delete?_csrf=<%= csrfToken %>" class="btn btn-danger">Delete</button>
+								 
+								  <button type="submit" onclick="showLoader()" formaction="/draft/<%= draft._id %>/edit?_csrf=<%= csrfToken %>" class="btn btn-secondary">Update</button>
+								  
+								  <button type="submit" onclick="showLoader()" id="submit-entry" formaction="/draft/<%= draft._id %>/post-entry?_csrf=<%= csrfToken %>" class="btn btn-primary" disabled>Post as Entry</button>
+								
 								</div>
 							  </div>
 							</div>
@@ -160,6 +273,23 @@
 			<%- include('includes/footer') %>
 
 	<script>
+
+		function showLoader() {
+			const overlay = document.getElementById("overlay")
+			overlay.removeAttribute("hidden")
+		}
+
+
+		function deletePhoto() {
+			let photoModule = document.getElementById('photo-module')
+			let uploadModule = document.getElementById('upload-module')
+			let photoButton = document.getElementById('photo-button')
+			photoButton.hidden = true
+			uploadModule.hidden = false
+			photoModule.hidden = true
+			document.getElementById('photoindicator').value = 'delete'
+			console.log(document.getElementById('photoindicator').value)
+		}
 
 				// Add event trigger for change to textareas with limit
 				$(document).on("input", "textarea[word-limit=true]", function() {
@@ -227,6 +357,75 @@
 				}
 
 				});
+
+				$(document).ready(function() {
+
+					var inputVal=$("#post-body")
+
+					// Get individual limits
+					thisMin = 150;
+					thisMax = 1000;
+					const submit = document.querySelector("#submit-entry")
+					const coordinates = document.querySelector('#lnglatcoordinates')
+
+					// Create array of words, skipping the blanks
+					var removedBlanks = [];
+					removedBlanks = $(inputVal).val().split(/\s+/).filter(Boolean);
+
+					// Get word count
+					var wordCount = removedBlanks.length;
+
+					// Remove extra words from string if over word limit
+					if (wordCount > thisMax) {
+							
+						// Trim string, use slice to get the first 'n' values
+						var trimmed = removedBlanks.slice(0, thisMax ).join(" ");
+						
+						// Add space to ensure further typing attempts to add a new word (rather than adding to penultimate word)
+						$(inputVal).val(trimmed + " ");
+						
+						}
+						
+
+					// Compare word count to limits and print message as appropriate
+					if ( wordCount < thisMin) {
+
+						$(inputVal).parent().children(".writing_error").text("Word count under " + thisMin + ".");
+
+					} else if (wordCount > thisMax) {
+
+						$(inputVal).parent().children(".writing_error").text("Word count over " + thisMax + ".");
+
+					} else {
+						
+						// No issues, remove warning message
+						$(inputVal).parent().children(".writing_error").text("");
+
+					}
+					if ( wordCount < thisMin) {
+
+						submit.setAttribute("disabled", true);
+
+					} else if (wordCount > thisMax) {
+
+						submit.setAttribute("disabled", true);
+
+					} else {
+						
+						// No issues, remove warning message
+						submit.removeAttribute("disabled");
+
+					}
+
+					if (coordinates.value() == "") {
+						submit.setAttribute("disabled", true);
+					} else {
+						submit.removeAttribute("disabled");
+					}
+
+					});
+
+
 
 	function convertToPlain(html){
 						var tempDivElement = document.createElement("entrymarkers");
@@ -353,30 +552,6 @@
 			document.getElementById("lnglatcoordinates").value = copyText;
 			}
 
-		document.addEventListener("DOMContentLoaded", function() {
-			if (!window.Quill) {
-				return $("#quill-editor,#quill-toolbar,#quill-bubble-editor,#quill-bubble-toolbar").remove();
-			}
-			var editor = new Quill("#quill-editor", {
-				modules: {
-					toolbar: "#quill-toolbar"
-				},
-				placeholder: "Type something",
-				theme: "snow"
-			});
-			var bubbleEditor = new Quill("#quill-bubble-editor", {
-				placeholder: "",
-				modules: {
-					toolbar: "#quill-bubble-toolbar",
-				},
-				theme: "bubble"
-			});
-		});
-		var form = document.querySelector('form');
-			form.onsubmit = function() {
-			var text = document.querySelector('input[name=body]');
-			text.value = quill.root.innerHTML;
-			};
 
 		document.addEventListener("DOMContentLoaded", function() {
 			// Select2

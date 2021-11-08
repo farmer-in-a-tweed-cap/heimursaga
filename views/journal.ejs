@@ -224,7 +224,7 @@
 															<i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle"><%= entry.place %> | <%= entry.date %></small><br/>
 															<small>by <strong><%= entry.author.username %></strong></small>
 															</a>
-																<div class="modal fade" id="sizedModalMd-<%= entry._id %>" tabindex="-1" role="dialog" aria-hidden="true">
+																<div class="modal fade" id="sizedModalMd-<%= entry._id %>" data-bs-target="#sizedModalMd" data-bs-whatever="<%= entry._id %>" tabindex="-1" role="dialog" aria-hidden="true">
 																	<div class="modal-dialog modal-md modal-dialog-centered" role="document">
 																		<div class="modal-content">
 																			<div class="modal-body mb-0">
@@ -258,6 +258,15 @@
 																			  <div class="modal-body mb-2">
 																				<%- filterUserHTML(entry.body) %>
 																			  </div>
+
+																			  <% if (entry.hasPhoto) { %>
+
+																			  <div id="photoDiv" class="photoDiv modal-body">
+																				<img id="photo" src="https://f002.backblazeb2.com/file/heimursaga-entry-photos/<%= entry._id %>" class="photo img-fluid mb-3" alt="entry image">
+																			  </div>
+
+																			  <% } %>
+
 																			</div>
 						
 																			<% if (user) { %>
@@ -382,6 +391,7 @@
 			</main>
 
 			<script type="text/javascript">
+
 
 				function convertToPlain(html){
 					var tempDivElement = document.createElement("entrymarkers");

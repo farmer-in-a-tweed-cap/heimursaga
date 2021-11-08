@@ -6,10 +6,15 @@ const sessionsCollection = require('../db').db().collection("sessions")
 const GeoJSON = require('geojson')
 const { db } = require('../db')
 const sendgrid = require('@sendgrid/mail')
+const { Photo } = require('../models/Photo')
 sendgrid.setApiKey(process.env.SENDGRIDAPIKEY)
+const { Notyf } = require('notyf')
+const ObjectID = require('mongodb').ObjectID
+
 
 
 //sessionsCollection.deleteMany()
+
 
 
 exports.viewCreateScreen = function(req, res) {
@@ -17,25 +22,41 @@ exports.viewCreateScreen = function(req, res) {
 }
 
 exports.create = function(req, res) {
-    let entry = new Entry(req.body, req.session.user._id, req.session.user.username)
+    let entry = new Entry(req.body, req.files, ObjectID(), req.session.user._id, req.session.user.username)
+    if (req.files.length) {
+    let photo = new Photo(req.files)
+    entry.create().then(function(newId) {
+        photo.uploadPhoto(newId).then(function() {
+        req.flash("success", "New entry successfully posted.")
+        req.session.save(() => res.redirect(`/entry/${newId}`))
+    })}).catch(function(errors){
+        req.flash("errors", "Error posting.")
+        //errors.forEach(error => req.flash("errors", error))
+        req.session.save(() => res.redirect("/create-entry"))
+    })
+    } else {
     entry.create().then(function(newId) {
         req.flash("success", "New entry successfully posted.")
         req.session.save(() => res.redirect(`/entry/${newId}`))
     }).catch(function(errors){
-        errors.forEach(error => req.flash("errors", error))
+        req.flash("errors", "Error posting.")
+        //errors.forEach(error => req.flash("errors", error))
         req.session.save(() => res.redirect("/create-entry"))
     })
 }
+}
+
 
 exports.viewSingle = async function(req, res) {
     try {
         let entry = await Entry.findSingleById(req.params.id, req.visitorId)
+        let photo = await Photo.getPhotoUrl(req.params.id)
         let likes = await Like.countLikesById(req.params.id)
         let hasVisitorLiked = await Like.hasVisitorLiked(req.params.id, req.visitorId)
         let entryMarker = GeoJSON.parse(entry.GeoJSONcoordinates, {'Point': ['entry.GeoJSONcoordinates.coordinates[0]','entry.GeoJSONcoordinates.coordinates[1]']})
-        res.render('single-entry', {entry: entry, pageName: "single-entry", likeCount: likes, hasVisitorLiked: hasVisitorLiked, entrymarker: JSON.stringify(entryMarker)})
+        res.render('single-entry', {entry: entry, photo: photo, pageName: "single-entry", likeCount: likes, hasVisitorLiked: hasVisitorLiked, entrymarker: JSON.stringify(entryMarker)})
     } catch {
-        res.render('pages-404')
+        res.render('404')
     }
 }
 
@@ -66,9 +87,10 @@ exports.viewSingleFlags = async function(req, res) {
 exports.viewEditScreen = async function(req, res) {
     try {
       let entry = await Entry.findSingleById(req.params.id, req.visitorId)
+      let photo = await Photo.getPhotoUrl(req.params.id)
       let entryMarker = GeoJSON.parse(entry.GeoJSONcoordinates, {'Point': ['entry.GeoJSONcoordinates.coordinates[0]','entry.GeoJSONcoordinates.coordinates[1]']})
       if (entry.isVisitorOwner) {
-        res.render("edit-entry", {entry: entry, entrymarker: JSON.stringify(entryMarker), pageName: "edit-entry"})
+        res.render("edit-entry", {entry: entry, photo: photo, entrymarker: JSON.stringify(entryMarker), pageName: "edit-entry"})
       } else {
         req.flash("errors", "You do not have permission to perform that action.")
         req.session.save(() => res.redirect("/"))
@@ -79,8 +101,12 @@ exports.viewEditScreen = async function(req, res) {
   }
 
 exports.edit = function(req, res) {
-    let entry = new Entry(req.body, req.visitorId, req.session.user.username, req.params.id)
-    entry.update().then((status) => {
+    let entry = new Entry(req.body, req.files, req.params.id, req.visitorId, req.session.user.username, req.params.id)
+        if (req.files.length) {
+            Photo.delete(req.params.id).then(() => {
+            let photo = new Photo(req.files)
+            photo.uploadPhoto(req.params.id).then(() => {
+                entry.update().then((status) => {
         // the entry was successfully updated in the database
         // or user did have permission, but there were validation errors
         if (status == "success") {
@@ -97,7 +123,7 @@ exports.edit = function(req, res) {
                 res.redirect(`/entry/${req.params.id}/edit`)
             })
         }
-    }).catch(() => {
+    })}).catch(() => {
         // if entry with requested id doesn't exist
         // or if current visitor is not the owner of requested entry
         req.flash("errors", "You do not have permission to perform that action.")
@@ -105,14 +131,70 @@ exports.edit = function(req, res) {
             res.redirect("/")
         })
     })
-}
+})} else if (req.body.photoindicator.length) {
 
-exports.delete = function(req, res) {
-    Like.authorDelete(req.params.id, req.visitorId).then(() => {
-        Entry.delete(req.params.id, req.visitorId)
-        req.flash("success", "Entry successfully deleted.")
-        req.session.save(() => res.redirect(`/journal/${req.session.user.username}`))
-    }).catch(() => {
+    Photo.delete(req.params.id).then(() => {
+    entry.update().then((status) => {
+    // the entry was successfully updated in the database
+    // or user did have permission, but there were validation errors
+    if (status == "success") {
+        // entry was updated in db
+        req.flash("success", "Entry successfully updated.")
+        req.session.save(function() {
+            res.redirect(`/entry/${req.params.id}`)
+        })
+    } else {
+        entry.errors.forEach(function(error) {
+            req.flash("errors", error)
+        })
+        req.session.save(function() {
+            res.redirect(`/entry/${req.params.id}/edit`)
+        })
+    }
+})}).catch(() => {
+    // if entry with requested id doesn't exist
+    // or if current visitor is not the owner of requested entry
+    req.flash("errors", "You do not have permission to perform that action.")
+    req.session.save(function() {
+        res.redirect("/")
+    })
+
+})} else {
+    entry.update().then((status) => {
+    // the entry was successfully updated in the database
+    // or user did have permission, but there were validation errors
+    if (status == "success") {
+        // entry was updated in db
+        req.flash("success", "Entry successfully updated.")
+        req.session.save(function() {
+            res.redirect(`/entry/${req.params.id}`)
+        })
+    } else {
+        entry.errors.forEach(function(error) {
+            req.flash("errors", error)
+        })
+        req.session.save(function() {
+            res.redirect(`/entry/${req.params.id}/edit`)
+        })
+    }
+}).catch(() => {
+    // if entry with requested id doesn't exist
+    // or if current visitor is not the owner of requested entry
+    req.flash("errors", "You do not have permission to perform that action.")
+    req.session.save(function() {
+        res.redirect("/")
+    })
+})
+}}
+
+exports.delete =  function(req, res) {
+    Like.authorDelete(req.params.id, req.visitorId).then( ()  => {
+         Entry.delete(req.params.id, req.visitorId).then( () => {
+             Photo.delete(req.params.id).then(() => {                
+                req.flash("success", "Entry successfully deleted.")
+                req.session.save(() => res.redirect(`/journal/${req.session.user.username}`))
+    })
+    })}).catch(() => {
         req.flash("errors", "You do not have permission to perform that action.")
         req.session.save(() => res.redirect("/"))
     })

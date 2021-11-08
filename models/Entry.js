@@ -4,12 +4,16 @@ const usersCollection = require('../db').db().collection("users")
 const ObjectID = require('mongodb').ObjectID
 const User = require('./User')
 const sanitizeHTML = require('sanitize-html')
+const { Photo } = require('./Photo')
 
 //entriesCollection.createIndex({title: "text", body: "text", place: "text", authorUsername: "text"})
 
 
-let Entry = function(data, userid, username, requestedEntryId) {
+
+let Entry = function(data, photo, Id, userid, username, requestedEntryId) {
   this.data = data
+  this.photo = photo
+  this.id = Id
   this.errors = []
   this.userid = userid
   this.authorUsername = username
@@ -33,10 +37,11 @@ Entry.prototype.cleanUp = function() {
   popup = JSON.stringify(popup)
   popup = popup.replace (/(^")|("$)/g, '')
 
-  
+  if (this.photo.length || !this.data.photoindicator.length) {this.photo = true} else {this.photo = false}
 
   // get rid of any bogus properties
   this.data = {
+    _id: ObjectID(this.id),
     title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
     place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
     date: sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}}),
@@ -45,7 +50,8 @@ Entry.prototype.cleanUp = function() {
     popup: popup,
     createdDate: new Date(),
     author: ObjectID(this.userid),
-    authorUsername: this.authorUsername
+    authorUsername: this.authorUsername,
+    hasPhoto: this.photo
   }
 }
 
@@ -96,7 +102,7 @@ Entry.prototype.actuallyUpdate = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await entriesCollection.findOneAndUpdate({_id: new ObjectID(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup}})
+      await entriesCollection.findOneAndUpdate({_id: new ObjectID(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup, hasPhoto: this.photo}})
       resolve("success")
     } else {
       resolve("failure")
@@ -109,6 +115,7 @@ Entry.reusableEntryQuery = function(uniqueOperations, visitorId, finalOperations
     let aggOperations = uniqueOperations.concat([
       {$lookup: {from: "users", localField: "author", foreignField: "_id", as: "authorDocument"}},
       {$project: {
+        _id: 1, 
         title: 1,
         place: 1,
         date: 1,
@@ -116,8 +123,9 @@ Entry.reusableEntryQuery = function(uniqueOperations, visitorId, finalOperations
         body: 1,
         popup: 1,
         createdDate: 1,
+        hasPhoto: 1,
         authorId: "$author",
-        author: {$arrayElemAt: ["$authorDocument", 0]}
+        author: {$arrayElemAt: ["$authorDocument", 0]},
       }}
     ]).concat(finalOperations)
 
@@ -128,14 +136,13 @@ Entry.reusableEntryQuery = function(uniqueOperations, visitorId, finalOperations
       entry.isVisitorOwner = entry.authorId.equals(visitorId)
       entry.authorId = undefined
 
+
       entry.author = {
         username: entry.author.username,
         avatar: new User(entry.author, true).avatar
       }
-
       return entry
     })
-
     resolve(entries)
   })
 }

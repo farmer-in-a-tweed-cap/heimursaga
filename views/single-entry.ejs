@@ -47,6 +47,15 @@
                             <div class="mb-5">
                               <%- filterUserHTML(entry.body) %>
                             </div>
+
+                            <% if (entry.hasPhoto) { %>
+
+                            <div class="mb-5">
+                              <img src="https://f002.backblazeb2.com/file/heimursaga-entry-photos/<%= entry._id %>" class="img-fluid" alt="entry image">
+                            </div>
+
+                            <% } %>
+
                           </div>
 
                           <% if (user) { %>
@@ -111,6 +120,7 @@
 </main>
 
 <script>
+
 
 function convertToPlain(html){
         var tempDivElement = document.createElement('entrymarkers');

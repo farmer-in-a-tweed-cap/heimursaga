@@ -319,6 +319,7 @@ exports.journalScreen = function(req, res) {
     let likedEntries = await Like.getLikedById(req.profileUser._id)
     let drafts = await Draft.findByAuthorId(req.profileUser._id)
     let user = await User.findByUsername(req.profileUser.username)
+
     if (req.isVisitorsProfile == true){
       res.render('journal', {
         pageName: "my-journal",

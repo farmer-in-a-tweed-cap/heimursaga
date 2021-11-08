@@ -81,6 +81,15 @@ to read and write journal entries tagged to precise geographic coordinates.">
                                                       <div class="modal-body mb-2">
                                                         <%- filterUserHTML(entry.body) %>
                                                       </div>
+
+                                                      <% if (entry.hasPhoto) { %>
+
+                                                      <div class="modal-body">
+                                                        <img src="https://f002.backblazeb2.com/file/heimursaga-entry-photos/<%= entry._id %>" class="img-fluid mb-3" alt="entry image">
+                                                      </div>
+
+                                                      <% } %>
+                                                      
                                                     </div>
 
                                                     <% if (user) { %>
@@ -169,6 +178,12 @@ to read and write journal entries tagged to precise geographic coordinates.">
 
 
 <script type="text/javascript">
+
+    document.querySelectorAll('img').forEach((img) => {
+        img.onerror = function() {
+            this.style.display = 'none';
+        }
+    })
 
 
     function convertToPlain(html){

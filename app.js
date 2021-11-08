@@ -41,8 +41,9 @@ app.use(function(req, res, next) {
 
 const router = require('./router')
 
-app.use(express.urlencoded({extended: false}))
-app.use(express.json())
+app.use(express.json({limit: '25mb'}));
+app.use(express.urlencoded({limit: '25mb', extended: false}));
+
 
 app.use(express.static('dist'))
 app.set('views', 'views')
@@ -58,7 +59,7 @@ app.use(function(req, res, next) {
 app.use('/', router)
 
 
-app.use(function(err, req, res, next){
+/*app.use(function(err, req, res, next){
     if(err) {
         if(err.code == "EBADCSRFTOKEN") {
             req.flash('errors', "Cross-site request forgery detected.")
@@ -68,7 +69,7 @@ app.use(function(err, req, res, next){
             res.render("404")
         }
     }
-})
+})*/
 
 const server = require('http').createServer(app)
 
@@ -83,5 +84,6 @@ const io = require('socket.io')(server)
 /*io.on('connection', function() {
     io.emit('testNotificationFromServer', {message: "testing notifications"})
 })*/
+
 
 module.exports = server

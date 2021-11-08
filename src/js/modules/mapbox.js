@@ -251,9 +251,9 @@ map.on('load', function () {
 
 if (document.title === "Heimursaga | Discovery") {
 
-map.on('load', function(){
+map.on('load', async function(){
     this.entryFeed = document.querySelector(".dynamic-entry-feed")
-    axios.get('/entry-list').then(response => {
+    await axios.get('/entry-list').then(response => {
         if (response.data.length && map.getZoom() >= entryzoom) {
             this.entryFeed.innerHTML = `${response.data.map(entry => {
                 return `<div class="list-group list-group-flush"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">
@@ -295,6 +295,12 @@ map.on('load', function(){
                                 <div class="modal-body mb-2">
                                   ${JSON.parse(JSON.stringify(entry.body, null,1)).replace(/\n/g, "</p><p>")}
                                 </div>
+
+
+                                ${(entry.hasPhoto == true) ? `
+                                <div class="modal-body">
+                                  <img src="https://f002.backblazeb2.com/file/heimursaga-entry-photos/${entry._id}" class="img-fluid mb-3" alt="entry image">
+                                </div> ` : ``}
 
                                 
 
@@ -350,7 +356,7 @@ map.on('load', function(){
                 var bounds = map.getBounds();
                         this.entryFeed.innerHTML = `${response.data.map(entry => {
                             if(bounds.contains(new mapboxgl.LngLat(entry.GeoJSONcoordinates.coordinates[0],entry.GeoJSONcoordinates.coordinates[1])) && map.getZoom() >= entryzoom) {
-                                return `<div class="list-group list-group-flush"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">
+                                return `<div class="list-group list-group-flush overflow-auto"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">
                                 <strong>${entry.title}</strong><br/>
                                 <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle">${entry.place} | ${entry.date}</small><br/>
                                 <small>by <strong>${entry.author.username}</strong></small>
@@ -389,8 +395,13 @@ map.on('load', function(){
                                           <div class="modal-body mb-2">
                                           ${JSON.parse(JSON.stringify(entry.body, null,1)).replace(/\n/g, "</p><p>")}
                                           </div>
+
+                                          ${(entry.hasPhoto) ? `
+                                          <div class="modal-body">
+                                            <img src="https://f002.backblazeb2.com/file/heimursaga-entry-photos/${entry._id}" class="img-fluid mb-3" alt="entry image">
+                                          </div> ` : ``}
+
                                         </div>
-        
                                
         
                                             <div class="col-md-6 offset-md-3">
@@ -443,6 +454,5 @@ map.on('load', function(){
     })
 })
 }
-
 
 

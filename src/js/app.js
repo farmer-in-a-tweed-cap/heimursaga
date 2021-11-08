@@ -10,6 +10,7 @@ import Notification from "./modules/notification";
 import Search from './modules/search';
 if (document.querySelector(".header-search-icon")) {new Search()}
 if (document.querySelector("#user-notifications")) {new Notification()}
+import "./modules/filepond"
 
 
 // Charts

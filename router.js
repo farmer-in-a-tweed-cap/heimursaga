@@ -7,8 +7,11 @@ const draftController = require('./controllers/draftController')
 const likeController = require('./controllers/likeController')
 const flagController = require('./controllers/flagController')
 const adminController = require('./controllers/adminController')
+const photoController = require('./controllers/photoController')
 const User = require('./models/User')
 const router = express.Router()
+const { multerUploads } = require('./models/Photo')
+
 
 
 // user related routes
@@ -46,18 +49,20 @@ router.post('/update-notifications/:username', userController.ifUserExists, user
 
 // entry related routes
 router.get('/create-entry', userController.mustBeLoggedIn, entryController.viewCreateScreen)
-router.post('/create-entry', userController.mustBeLoggedIn, entryController.create)
+router.post('/create-entry', userController.mustBeLoggedIn, multerUploads, entryController.create)
+//router.post('/create-entry', userController.mustBeLoggedIn, photoController.upload)
+
 router.get('/entry/:id', entryController.viewSingle)
 router.get('/entry/:id/edit', userController.mustBeLoggedIn, entryController.viewEditScreen)
-router.post('/entry/:id/edit', userController.mustBeLoggedIn, entryController.edit)
+router.post('/entry/:id/edit', userController.mustBeLoggedIn, multerUploads, entryController.edit)
 router.post('/entry/:id/delete', userController.mustBeLoggedIn, entryController.delete)
 
-router.post('/save-draft', userController.mustBeLoggedIn, draftController.create)
+router.post('/save-draft', userController.mustBeLoggedIn, multerUploads, draftController.create)
 router.get('/draft/:id', draftController.viewSingle)
 router.get('/draft/:id/edit', userController.mustBeLoggedIn, draftController.viewEditScreen)
-router.post('/draft/:id/edit', userController.mustBeLoggedIn, draftController.edit)
+router.post('/draft/:id/edit', userController.mustBeLoggedIn, multerUploads, draftController.edit)
 router.post('/draft/:id/delete', userController.mustBeLoggedIn, draftController.delete)
-router.post('/draft/:id/post-entry', userController.mustBeLoggedIn, draftController.postEntry)
+router.post('/draft/:id/post-entry', userController.mustBeLoggedIn, multerUploads, draftController.postEntry)
 
 router.post('/search', entryController.search)
 
@@ -76,6 +81,9 @@ router.get('/single-entry-likes/:id', entryController.viewSingleLikes)
 // flag related routes
 router.post('/addFlag/:id', userController.mustBeLoggedIn, flagController.addFlag)
 router.get('/single-entry-flags/:id', entryController.viewSingleFlags)
+
+// photo specific coutes
+router.post('/deletePhoto/:id', userController.mustBeLoggedIn, photoController.delete)
 
 
 

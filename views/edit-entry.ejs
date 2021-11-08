@@ -8,9 +8,22 @@
 
 <%- include('includes/navbar') %>
 
+<main class="content" style="padding: 0rem !important;">
+	<div class="container-fluid p-0" style="position: relative;">
 
-			<main class="content">
-				<div class="container-fluid p-0">
+		<div class="col-12" style="padding: 0rem;" class="overlay" id="overlay" style="z-index: 2; position: fixed;" hidden>
+			<div class="d-flex flex-column align-items-center justify-content-center" style="position: absolute; left: 50%;">
+				<div class="d-flex flex-column align-items-center justify-content-center" style="position:fixed; top: 50%; margin-top: -100px;">
+					<div class="spinner-border" role="status">
+					  <span class="sr-only">Loading...</span>
+					</div>
+					<div class="row mt-3 text-center" >
+						"A ship in harbor is safe, but that is not what ships are built for."</br>- John A. Shedd
+					</div>
+				</div>
+			</div>
+		</div>
+	<div style="padding: 2.5rem 2.5rem 1.5rem !important;">
 
 					<h1 class="h3 mb-3 text-center">Edit Entry</h1>
 
@@ -31,7 +44,7 @@
 							</div>
 						</div>
 
-						<form method="POST">
+						<form method="POST" enctype="multipart/form-data">
 							<div class="col-md-8 offset-md-2">
 							  <div class="card">
 								<div class="card-header">
@@ -135,6 +148,102 @@
 								</div>
 							  </div>
 							</div>
+
+							<div class="col-md-8 offset-md-2">
+								<div class="card">
+								  <div class="card-header">
+									<h5 class="card-title mb-0">4. Upload your photo</h5>
+									<label class="form-text text-muted pt-3">
+										Your photo will automatically be cropped to an aspect ratio of 3:2 and resized to 900x600px. For best results, crop/edit your photo before uploading. Photo uploads are optional.</label>
+
+									</div>
+								  <div class="card-body">
+
+									<% if (entry.hasPhoto) { %>
+
+										<div id="photo-module">
+											<div class="mb-5 col-md-8 offset-md-2">
+												<img src="<%= photo %>" class="img-fluid" alt="entry image">
+											</div>
+										</div>
+
+									<% } %>
+									
+										<button id="photo-button" type="button" class="btn btn-secondary text-center mt-1" onclick="deletePhoto()">Update photo</button>
+
+										<div id="upload-module" class="col-md-8 offset-md-2" hidden>
+
+											<style>
+												.filepond--root {
+													z-index: 1 !important;
+												}
+
+												.filepond--drop-label {
+													color: #4c4e53;
+												}
+
+												.filepond--label-action {
+													text-decoration-color: #babdc0;
+												}
+
+												.filepond--panel-root {
+													background-color: transparent;
+
+												}
+
+												.filepond--item-panel {
+													background: transparent;
+													border-radius: 0em;
+													border-width: 0em;
+												}
+
+												.filepond--image-preview {
+													background: white;
+													height: 100%;
+													width: 100%;
+												}
+
+												.filepond--item > .filepond--panel .filepond--panel-bottom {
+													box-shadow: none;
+													}
+
+												.filepond--image-preview-overlay svg {
+													display: none;
+												}
+
+												.filepond--file-info {
+													display: none;
+													top: 10em;
+													color: black;
+												}
+
+												.filepond--file-status {
+													display: none;
+												}
+												
+												.filepond--file-action-button filepond--action-remove-item {
+													display: none;
+												}
+
+
+												
+											</style>
+											
+											<input type="file" 
+												class="filepond"
+												name="filepond"
+												accept="image/png, image/jpeg"
+											/>
+										</div>
+
+
+									<input type="text" id="photoindicator" name="photoindicator" value="" hidden>
+
+								  </div>
+								</div>
+							</div>
+
+
 						  
 							<div class="col-md-8 offset-md-2">
 							  <div class="card">
@@ -143,9 +252,8 @@
 								</div>
 								<div class="card-body">
 
-								  <input type="hidden" name="_csrf" value="<%= csrfToken %>"> 
-								  <button type="submit" onclick="return confirm('Are you sure you want to delete this entry? This action is irreversible.');" formaction="/entry/<%= entry._id %>/delete" class="btn btn-danger">Delete</button>
-								  <button type="submit" id="submit-entry" formaction="/entry/<%= entry._id %>/edit" class="btn btn-primary">Update</button>
+								  <button type="submit" onclick="return confirm('Are you sure you want to delete this entry? This action is irreversible.');" formaction="/entry/<%= entry._id %>/delete?_csrf=<%=csrfToken%>" class="btn btn-danger">Delete</button>
+								  <button type="submit" onclick="showLoader()" id="submit-entry" formaction="/entry/<%= entry._id %>/edit?_csrf=<%=csrfToken%>" class="btn btn-primary">Update</button>
 								</div>
 							  </div>
 							</div>
@@ -159,9 +267,27 @@
 			<%- include('includes/footer') %>
 
 	<script>
+		
 
-				// Add event trigger for change to textareas with limit
-				$(document).on("input", "textarea[word-limit=true]", function() {
+		function showLoader() {
+			const overlay = document.getElementById("overlay")
+			overlay.removeAttribute("hidden")
+		}
+
+
+
+		function deletePhoto() {
+			let photoModule = document.getElementById('photo-module')
+			let uploadModule = document.getElementById('upload-module')
+			let photoButton = document.getElementById('photo-button')
+			document.getElementById('photoindicator').value = 'delete'
+			photoButton.hidden = true
+			uploadModule.hidden = false
+			photoModule.hidden = true
+		}
+
+		// Add event trigger for change to textareas with limit
+		$(document).on("input", "textarea[word-limit=true]", function() {
 
 
 		// Get individual limits
@@ -329,7 +455,6 @@
 				marker.setLngLat(entrymap.getCenter());
 				var lngLat = marker.getLngLat();
 				var entryCoordinates = marker.getLngLat();
-				console.log(document.getElementById('coordinates').value);
 				coordinates.innerHTML = [lngLat.lng,lngLat.lat];
 				coordinates.style.display = 'block';
 			});
@@ -352,30 +477,6 @@
 			document.getElementById("lnglatcoordinates").value = copyText;
 			}
 
-		document.addEventListener("DOMContentLoaded", function() {
-			if (!window.Quill) {
-				return $("#quill-editor,#quill-toolbar,#quill-bubble-editor,#quill-bubble-toolbar").remove();
-			}
-			var editor = new Quill("#quill-editor", {
-				modules: {
-					toolbar: "#quill-toolbar"
-				},
-				placeholder: "Type something",
-				theme: "snow"
-			});
-			var bubbleEditor = new Quill("#quill-bubble-editor", {
-				placeholder: "",
-				modules: {
-					toolbar: "#quill-bubble-toolbar",
-				},
-				theme: "bubble"
-			});
-		});
-		var form = document.querySelector('form');
-			form.onsubmit = function() {
-			var text = document.querySelector('input[name=body]');
-			text.value = quill.root.innerHTML;
-			};
 
 		document.addEventListener("DOMContentLoaded", function() {
 			// Select2

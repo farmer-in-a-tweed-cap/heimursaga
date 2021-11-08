@@ -6,8 +6,9 @@ const User = require('./User')
 const sanitizeHTML = require('sanitize-html')
 
 
-let Draft = function(data, userid, username, requestedDraftId) {
+let Draft = function(data, photo, userid, username, requestedDraftId) {
   this.data = data
+  this.photo = photo
   this.errors = []
   this.userid = userid
   this.requestedDraftId = requestedDraftId
@@ -22,6 +23,7 @@ Draft.prototype.cleanUp = function() {
   coordinatesString = sanitizeHTML(this.data.lnglatcoordinates.trim(), {allowedTags: [], allowedAttributes: {}}),
   coordinates = coordinatesString.split(',').map(Number)
   
+  if (this.photo.length) {this.photo = true} else {this.photo = false}
 
   // get rid of any bogus properties
   this.data = {
@@ -32,6 +34,7 @@ Draft.prototype.cleanUp = function() {
     GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
     createdDate: new Date(),
     author: ObjectID(this.userid),
+    hasPhoto: this.photo
   }
 }
 
@@ -82,7 +85,7 @@ Draft.prototype.actuallyUpdate = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await draftsCollection.findOneAndUpdate({_id: new ObjectID(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, body: this.data.body, data: this.data.date}})
+      await draftsCollection.findOneAndUpdate({_id: new ObjectID(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, body: this.data.body, date: this.data.date, hasPhoto: this.photo}})
       resolve("success")
     } else {
       resolve("failure")
@@ -103,6 +106,7 @@ Draft.reusableDraftQuery = function(uniqueOperations, visitorId, finalOperations
         popup: 1,
         createdDate: 1,
         authorId: "$author",
+        hasPhoto: 1,
         author: {$arrayElemAt: ["$authorDocument", 0]}
       }}
     ]).concat(finalOperations)
@@ -140,7 +144,6 @@ Draft.findSingleById = function(id, visitorId) {
     ], visitorId)
 
     if (drafts.length) {
-      console.log(drafts[0])
       resolve(drafts[0])
     } else {
       reject()
