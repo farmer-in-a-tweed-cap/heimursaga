@@ -31,7 +31,7 @@ const Photo = function(data) {
 
 Photo.prototype.uploadPhoto = async function(id) {
     let filename = encodeURI(id)
-    await authorize()
+    await b2.authorize()
     return new Promise((resolve, reject) => {
     
     const uploadPromises = this.photo.map(async function(photo){
@@ -61,7 +61,7 @@ Photo.prototype.uploadPhoto = async function(id) {
 
  Photo.getPhotoUrl = function(name) {
      return new Promise(async function(resolve, reject) {
-        let authToken = await authorize()
+        let authToken = await b2.authorize()
         let url = authToken.data.downloadUrl
         let photoUrl = url+'/file/'+'heimursaga-entry-photos'+'/'+name
 
@@ -77,7 +77,7 @@ Photo.prototype.uploadPhoto = async function(id) {
 
  Photo.delete = function(photoNameToDelete) {
     return new Promise(async (resolve, reject) => {
-    await authorize()
+    await b2.authorize()
       try {
         let photo = await b2.listFileNames({
             bucketId: process.env.ENTRY_PHOTO_BUCKETID,
