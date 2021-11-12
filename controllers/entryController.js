@@ -50,11 +50,10 @@ exports.create = function(req, res) {
 exports.viewSingle = async function(req, res) {
     try {
         let entry = await Entry.findSingleById(req.params.id, req.visitorId)
-        let photo = await Photo.getPhotoUrl(req.params.id)
         let likes = await Like.countLikesById(req.params.id)
         let hasVisitorLiked = await Like.hasVisitorLiked(req.params.id, req.visitorId)
         let entryMarker = GeoJSON.parse(entry.GeoJSONcoordinates, {'Point': ['entry.GeoJSONcoordinates.coordinates[0]','entry.GeoJSONcoordinates.coordinates[1]']})
-        res.render('single-entry', {entry: entry, photo: photo, pageName: "single-entry", likeCount: likes, hasVisitorLiked: hasVisitorLiked, entrymarker: JSON.stringify(entryMarker)})
+        res.render('single-entry', {entry: entry, pageName: "single-entry", likeCount: likes, hasVisitorLiked: hasVisitorLiked, entrymarker: JSON.stringify(entryMarker)})
     } catch {
         res.render('404')
     }
@@ -87,10 +86,9 @@ exports.viewSingleFlags = async function(req, res) {
 exports.viewEditScreen = async function(req, res) {
     try {
       let entry = await Entry.findSingleById(req.params.id, req.visitorId)
-      let photo = await Photo.getPhotoUrl(req.params.id)
       let entryMarker = GeoJSON.parse(entry.GeoJSONcoordinates, {'Point': ['entry.GeoJSONcoordinates.coordinates[0]','entry.GeoJSONcoordinates.coordinates[1]']})
       if (entry.isVisitorOwner) {
-        res.render("edit-entry", {entry: entry, photo: photo, entrymarker: JSON.stringify(entryMarker), pageName: "edit-entry"})
+        res.render("edit-entry", {entry: entry, entrymarker: JSON.stringify(entryMarker), pageName: "edit-entry"})
       } else {
         req.flash("errors", "You do not have permission to perform that action.")
         req.session.save(() => res.redirect("/"))

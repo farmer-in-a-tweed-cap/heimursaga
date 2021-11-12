@@ -47,10 +47,9 @@ exports.viewSingle = async function(req, res) {
 exports.viewEditScreen = async function(req, res) {
     try {
       let draft = await Draft.findSingleById(req.params.id, req.visitorId)
-      let photo = await Photo.getPhotoUrl(req.params.id)
       let entryMarker = GeoJSON.parse(draft.GeoJSONcoordinates, {'Point': ['draft.GeoJSONcoordinates.coordinates[0]','draft.GeoJSONcoordinates.coordinates[1]']})
       if (draft.isVisitorOwner) {
-        res.render("edit-draft", {draft: draft, photo: photo, entrymarker: JSON.stringify(entryMarker), pageName: "edit-draft"})
+        res.render("edit-draft", {draft: draft, entrymarker: JSON.stringify(entryMarker), pageName: "edit-draft"})
       } else {
         req.flash("errors", "You do not have permission to perform that action.")
         req.session.save(() => res.redirect("/"))

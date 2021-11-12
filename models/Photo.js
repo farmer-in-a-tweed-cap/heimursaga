@@ -10,14 +10,7 @@ const b2 = new B2({
     applicationKey: process.env.B2_KEY
 })
 
-const authorize = async function () {
-  await b2.authorize().then((result) => {
-    console.log(result.headers.date)
-    return result
-  })
-}
 
-const runAuthorize = setTimeout(function() {authorize()}, 86400000) 
 
 
 const storage = multer.memoryStorage()
@@ -59,20 +52,6 @@ Photo.prototype.uploadPhoto = async function(id) {
 }
 )}
 
- Photo.getPhotoUrl = function(name) {
-     return new Promise(async function(resolve, reject) {
-        let authToken = await b2.authorize()
-        let url = authToken.data.downloadUrl
-        let photoUrl = url+'/file/'+'heimursaga-entry-photos'+'/'+name
-
-        if (photoUrl) {
-          resolve(photoUrl)
-          } else {
-            reject()
-          }
-     })
-
- }
 
 
  Photo.delete = function(photoNameToDelete) {
