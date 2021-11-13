@@ -68,7 +68,7 @@
   
                                 </div>
   
-                                <div class="col-4 offset-3 overflow-hidden" id="single-entry-flags">
+                                <div class="col-3 offset-4 text-right overflow-hidden" id="single-entry-flags">
   
                                   <iframe src="single-entry-flags/<%=entry._id%>" id="single-entry-flags" height="21"></iframe>
   
@@ -89,28 +89,22 @@
                             Posted on <%= entry.createdDate.getMonth() + 1 %>/<%= entry.createdDate.getDate() %>/<%= entry.createdDate.getFullYear() %></p>
                           </div> 
 
-                          <div class="row justify-content-between">
+
+                          <div class="row text-center mt-5">
                             <% if (entry.isVisitorOwner) { %>
-                                <span class="pe-2">
-                                  <a href="/entry/<%= entry._id %>/edit" class="text-primary mr-2" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>
-                                  <form onsubmit="return confirm('Are you sure you want to delete this entry? This action is irreversible.');" class="delete-post-form d-inline" action="/entry/<%= entry._id %>/delete" method="POST">
-                                    
-                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                                    <button class="text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>
-                                  </form>
-                                </span>
-                              <% } %>
-
-                          </div>
-
-                          <!--<% if (user && !entry.isVisitorOwner) { %>
-                          <div class="col-xl-12 offset-md-2 text-center overflow-hidden" id="single-entry-flags">
+                              <span class="pe-2">
+                                <a href="/entry/<%= entry._id %>/edit" class="text-primary mr-2" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>
+                                <form onsubmit="return confirm('Are you sure you want to delete this entry? This action is irreversible.');" class="delete-post-form d-inline" action="/entry/<%= entry._id %>/delete" method="POST">
                                 
-                            <iframe src="single-entry-flags/<%=entry._id%>" id="single-entry-flags" height="21"></iframe>
-
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              
+                                <button class="text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>
+                                </form>
+                              </span>
+                              <% } %>
+              
                           </div>
-                          <% } %>-->
+
                         </div> 
                     </div>
                 </div>
