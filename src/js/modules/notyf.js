@@ -7,6 +7,7 @@ window.notyf = new Notyf({
     x: "right",
     y: "top"
   },
+  dismissible: true,
   types: [
     {
       type: "default",
@@ -18,7 +19,8 @@ window.notyf = new Notyf({
     },
     {
       type: "success",
-      backgroundColor: "#28a745",
+      //backgroundColor: "#28a745",
+      backgroundColor: "#70A844",
       icon: {
         className: "notyf__icon--success",
         tagName: "i",
@@ -26,15 +28,17 @@ window.notyf = new Notyf({
     },
     {
       type: "warning",
-      backgroundColor: "#ffc107",
+      //backgroundColor: "#ffc107",
+      backgroundColor: "#fa8072",
       icon: {
         className: "notyf__icon--error",
         tagName: "i",
       }
     },
     {
-      type: "danger",
-      backgroundColor: "#dc3545",
+      type: "error",
+      //backgroundColor: "#f72b13",
+      backgroundColor: "#fa8072",
       icon: {
         className: "notyf__icon--error",
         tagName: "i",
