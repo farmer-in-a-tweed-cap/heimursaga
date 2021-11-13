@@ -95,7 +95,7 @@ map.addControl(new mapboxgl.GeolocateControl({
 
 var mapmarkers = JSON.parse(markers)
 
-var entryzoom = 3
+var entryzoom = 7
 
 map.on('load', function () {
     // Add a new source from our GeoJSON data and
@@ -445,7 +445,7 @@ map.on('load', async function(){
                                 </div>`
                                 }}).join('')}`
                 if (this.entryFeed.innerHTML == "" && map.getZoom() < entryzoom) {
-                    this.entryFeed.innerHTML = `<div class="text-center"><p class="text-muted">The map is currently at zoom level <strong>${Math.round(map.getZoom()*10)/10}</strong>. Zoom in past level 3 to populate the entry feed and read full entries.</p></div>`
+                    this.entryFeed.innerHTML = `<div class="text-center"><p class="text-muted">The map is currently at zoom level <strong>${Math.round(map.getZoom()*10)/10}</strong>. Zoom in past level 7 to populate the entry feed and read full entries.</p></div>`
                 } else if (this.entryFeed.innerHTML == "") {
                     this.entryFeed.innerHTML = `<div class="text-center"><p class="text-muted">Looks like there are no journal entries in this area. Be the first to document your adventures here!</p></div>`
                 }     

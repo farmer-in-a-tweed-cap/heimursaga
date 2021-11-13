@@ -104,7 +104,7 @@ exports.edit = function(req, res) {
             Photo.delete(req.params.id).then(() => {
             let photo = new Photo(req.files)
             photo.uploadPhoto(req.params.id).then(() => {
-                entry.update().then((status) => {
+                entry.update2().then((status) => {
         // the entry was successfully updated in the database
         // or user did have permission, but there were validation errors
         if (status == "success") {
@@ -132,7 +132,7 @@ exports.edit = function(req, res) {
 })} else if (req.body.photoindicator.length) {
 
     Photo.delete(req.params.id).then(() => {
-    entry.update().then((status) => {
+    entry.update2().then((status) => {
     // the entry was successfully updated in the database
     // or user did have permission, but there were validation errors
     if (status == "success") {

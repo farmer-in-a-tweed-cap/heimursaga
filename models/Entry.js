@@ -37,7 +37,8 @@ Entry.prototype.cleanUp = function() {
   popup = JSON.stringify(popup)
   popup = popup.replace (/(^")|("$)/g, '')
 
-  if (this.photo.length || !this.data.photoindicator.length) {this.photo = true} else {this.photo = false}
+  if (this.photo.length) {this.photo = true} else {this.photo = false}
+
 
   // get rid of any bogus properties
   this.data = {
@@ -98,6 +99,36 @@ Entry.prototype.update = function() {
 }
 
 Entry.prototype.actuallyUpdate = function() {
+  return new Promise(async (resolve, reject) => {
+    this.cleanUp()
+    this.validate()
+    if (!this.errors.length) {
+      await entriesCollection.findOneAndUpdate({_id: new ObjectID(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup}})
+      resolve("success")
+    } else {
+      resolve("failure")
+    }
+  })
+}
+
+Entry.prototype.update2 = function() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let entry = await Entry.findSingleById(this.requestedEntryId, this.userid)
+      if (entry.isVisitorOwner) {
+        // actually update the db
+        let status = await this.actuallyUpdate2()
+        resolve(status)
+      } else {
+        reject()
+      }
+    } catch {
+      reject()
+    }
+  })
+}
+
+Entry.prototype.actuallyUpdate2 = function() {
   return new Promise(async (resolve, reject) => {
     this.cleanUp()
     this.validate()

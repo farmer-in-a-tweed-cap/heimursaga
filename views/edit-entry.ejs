@@ -23,6 +23,8 @@
 				</div>
 			</div>
 		</div>
+
+
 	<div style="padding: 2.5rem 2.5rem 1.5rem !important;">
 
 					<h1 class="h3 mb-3 text-center">Edit Entry</h1>
@@ -167,7 +169,15 @@
 											</div>
 										</div>
 
+									<% } else { %>
+
+									<input type="text" id="nophoto" name="nophoto" hidden>
+
 									<% } %>
+
+
+									<input type="text" id="photoindicator" name="photoindicator" hidden>
+
 									
 										<button id="photo-button" type="button" class="btn btn-secondary text-center mt-1" onclick="deletePhoto()">Update photo</button>
 
@@ -236,8 +246,6 @@
 											/>
 										</div>
 
-
-									<input type="text" id="photoindicator" name="photoindicator" value="" hidden>
 
 								  </div>
 								</div>

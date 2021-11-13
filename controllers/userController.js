@@ -56,6 +56,7 @@ exports.login = function(req, res) {
   user.login().then(function(result) {
     req.session.user = {avatar: user.avatar, username: user.data.username, _id: user.data._id}
     req.session.save(function() {
+      req.flash("success", `Welcome, ${user.data.username}!`)
       res.redirect('my-feed')
     })
   }).catch(function(e) {

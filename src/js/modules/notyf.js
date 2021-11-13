@@ -42,3 +42,12 @@ window.notyf = new Notyf({
     }
   ]
 });
+
+const successMessage = document.getElementById('success-message')
+const errorMessage = document.getElementById('error-message')
+
+if (successMessage) {
+  window.notyf.success(successMessage.textContent);
+} else if (errorMessage) {
+  window.notyf.error(errorMessage.textContent);
+}

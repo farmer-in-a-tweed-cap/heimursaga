@@ -23,7 +23,7 @@ Draft.prototype.cleanUp = function() {
   coordinatesString = sanitizeHTML(this.data.lnglatcoordinates.trim(), {allowedTags: [], allowedAttributes: {}}),
   coordinates = coordinatesString.split(',').map(Number)
   
-  if (this.photo.length || !this.data.photoindicator.length) {this.photo = true} else {this.photo = false}
+  if (this.photo.length) {this.photo = true} else {this.photo = false}
 
   // get rid of any bogus properties
   this.data = {
@@ -81,6 +81,36 @@ Draft.prototype.update = function() {
 }
 
 Draft.prototype.actuallyUpdate = function() {
+  return new Promise(async (resolve, reject) => {
+    this.cleanUp()
+    this.validate()
+    if (!this.errors.length) {
+      await draftsCollection.findOneAndUpdate({_id: new ObjectID(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, body: this.data.body, date: this.data.date}})
+      resolve("success")
+    } else {
+      resolve("failure")
+    }
+  })
+}
+
+Draft.prototype.update2 = function() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let draft = await Draft.findSingleById(this.requestedDraftId, this.userid)
+      if (draft.isVisitorOwner) {
+        // actually update the db
+        let status = await this.actuallyUpdate2()
+        resolve(status)
+      } else {
+        reject()
+      }
+    } catch {
+      reject()
+    }
+  })
+}
+
+Draft.prototype.actuallyUpdate2 = function() {
   return new Promise(async (resolve, reject) => {
     this.cleanUp()
     this.validate()
