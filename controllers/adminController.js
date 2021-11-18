@@ -35,6 +35,8 @@ exports.viewAdminDashboard = async function(req, res) {
   let usercount = await usersCollection.countDocuments({})
   let flagcount = await flagsCollection.countDocuments({})
   let sessioncount = await sessionsCollection.countDocuments({})
+  let photocount = await entriesCollection.countDocuments({hasPhoto: true})
+  let draftcount = await draftsCollection.countDocuments({})
   let flags = await flagsCollection.find({}).sort({createdDate: -1}).toArray()
   let sessions = await sessionsCollection.find({}).sort({createdDate: -1}).toArray()
 
@@ -49,6 +51,8 @@ exports.viewAdminDashboard = async function(req, res) {
       entrycount: entrycount,
       flagcount: flagcount,
       sessioncount: sessioncount,
+      photocount: photocount,
+      draftcount: draftcount
     })
   } else {
     res.render('404')

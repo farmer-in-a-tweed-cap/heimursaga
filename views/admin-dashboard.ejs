@@ -257,7 +257,28 @@
 							</div>
 						</div>
 
-						<div class="col-12 col-lg-3 d-flex">
+						<div class="col-12 col-lg-2 d-flex">
+							<div class="card w-100" style="height: 80vh;">
+								<div class="card-header text-center">
+									<h4>PHOTOS</h4>
+									<h1 class="text-primary"><%= photocount %></h1>
+								</div>
+								<div class="card-body overflow-auto">
+									<div class="list-group list-group-flush m-0">
+										<% entries.forEach(function(entry) { %>
+											<% if (entry.hasPhoto) { %>
+												<a data-bs-toggle="modal" href="#sizedModalMd-<%= entry._id %>" class="list-group-item list-group-item-action">
+													</li><img src="https://f002.backblazeb2.com/file/heimursaga-entry-photos/<%= entry._id %>" class="img-fluid" alt="entry image">
+												</a>
+											<% } %>
+										<% }) %>
+									</div>
+								</div>
+							
+							</div>
+						</div>
+
+						<div class="col-12 col-lg-2 d-flex">
 							<div class="card w-100" style="height: 80vh;">
 								<div class="card-header text-center">
 									<h4>FLAGS</h4>
@@ -277,25 +298,27 @@
 							</div>
 						</div>
 
-						<div class="col-12 col-lg-3 d-flex">
+						<div class="col-12 col-lg-2 d-flex">
 							<div class="card w-100" style="height: 80vh;">
 								<div class="card-header text-center">
-									<h4>SESSIONS</h4>
-									<h1 class="text-primary"><%= sessioncount %></h1>
+									<h4>OTHER</h4>
 								</div>
 								<div class="card-body overflow-auto">
-									<div class="list-group list-group-flush m-0">
-										<% sessions.forEach(function(session) { %>
-											<ul style="list-style-type: none;">
-												<li><small><strong>ID:</strong> <%= session._id %></small></li>
-												<li><small><strong>expires:</strong> <%= session.expires.toLocaleString() %></small></li>
-											</ul>											
-										 <% }) %>
+									<div class="list-group list-group-flush">
+										<div class="text-center mb-4">
+											<h5>Drafts</h5>
+											<h4 class="text-primary"><%= draftcount %></h4>
+										</div>
+										
+										<div class="text-center">
+											<h5>Sessions</h5>
+											<h4 class="text-primary"><%= sessioncount %></h4>
+										</div>	
 									</div>
 								</div>
-							
 							</div>
 						</div>
+
 					  
 					</div>
 				</div>
