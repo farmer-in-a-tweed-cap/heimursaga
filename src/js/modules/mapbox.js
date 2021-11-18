@@ -114,7 +114,7 @@ map.on('load', function () {
     id: 'clusters',
     type: 'circle',
     source: 'entrymarkers',
-    minzoom: 0.5,
+    minzoom: 0,
     filter: ['has', 'point_count'],
     paint: {
     // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
@@ -149,7 +149,7 @@ map.on('load', function () {
     id: 'cluster-count',
     type: 'symbol',
     source: 'entrymarkers',
-    minzoom: 0.5,
+    minzoom: 0,
     filter: ['has', 'point_count'],
     layout: {
     'text-field': '{point_count_abbreviated}',
@@ -165,7 +165,7 @@ map.on('load', function () {
     id: 'unclustered-point',
     type: 'circle',
     source: 'entrymarkers',
-    minzoom: 0.5,
+    minzoom: 0,
     filter: ['!', ['has', 'point_count']],
     paint: {
     'circle-color': '#ac6d46',
