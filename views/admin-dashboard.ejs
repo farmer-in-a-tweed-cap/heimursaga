@@ -122,6 +122,15 @@
 																  <div class="modal-body mb-2">
 																	<%- filterUserHTML(entry.body) %>
 																  </div>
+
+																  <% if (entry.hasPhoto) { %>
+
+																	<div id="photoDiv" class="photoDiv modal-body">
+																	  <img id="photo" src="https://f002.backblazeb2.com/file/heimursaga-entry-photos/<%= entry._id %>" class="photo img-fluid mb-3" alt="entry image">
+																	</div>
+
+																	<% } %>
+																	
 																</div>
 			
 			
