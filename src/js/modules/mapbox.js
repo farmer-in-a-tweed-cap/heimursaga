@@ -9,7 +9,8 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ
 
 var map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/cnh1187/ckppoum2i01vk17mzb71uh331',
+    style: 'mapbox://styles/mapbox/light-v10',
+    //style: 'mapbox://styles/cnh1187/ckppoum2i01vk17mzb71uh331',
     center: [-33.609412,36.749601],
     zoom: 0,
     attributionControl: false,
@@ -285,7 +286,7 @@ map.on('load', async function(){
       
                                 <div class="modal-body">
                                   <div class="text-center mb-1 overflow-hidden">
-                                    <img src="https://api.mapbox.com/styles/v1/cnh1187/ckppoum2i01vk17mzb71uh331/static/pin-s+ac6d46(${entry.GeoJSONcoordinates.coordinates})/${entry.GeoJSONcoordinates.coordinates},6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
+                                    <img src="https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+ac6d46(${entry.GeoJSONcoordinates.coordinates})/${entry.GeoJSONcoordinates.coordinates},6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
                                   </div>
                                   <div class="mb-4 text-center">
                                     <small>Longitude: ${entry.GeoJSONcoordinates.coordinates[0]}, Latitude: ${entry.GeoJSONcoordinates.coordinates[1]}</small>
@@ -385,7 +386,7 @@ map.on('load', async function(){
               
                                         <div class="modal-body">
                                           <div class="text-center mb-1 overflow-hidden">
-                                            <img src="https://api.mapbox.com/styles/v1/cnh1187/ckppoum2i01vk17mzb71uh331/static/pin-s+ac6d46(${entry.GeoJSONcoordinates.coordinates})/${entry.GeoJSONcoordinates.coordinates},6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
+                                            <img src="https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+ac6d46(${entry.GeoJSONcoordinates.coordinates})/${entry.GeoJSONcoordinates.coordinates},6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
                                           </div>
                                           <div class="mb-4 text-center">
                                             <small>Longitude: ${entry.GeoJSONcoordinates.coordinates[0]}, Latitude: ${entry.GeoJSONcoordinates.coordinates[1]}</small>
