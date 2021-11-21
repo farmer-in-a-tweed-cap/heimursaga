@@ -56,13 +56,14 @@ $transition-base: all .35s ease-in-out !default;
 
 // Theme colors
 $blue: 			#3C73AA !default;
+$brown:     #AC6D46 !default;
 $indigo:	 	#6610f2 !default;
 $purple: 		#6f42c1 !default;
 $pink:		 	#e83e8c !default;
 $red: 			#d9534f !default;
 $orange: 		#fd7e14 !default;
 $yellow: 		#E5A54B !default;
-$green: 		#4BBF73 !default;
+$green: 		#598636 !default;
 $teal: 			#20c997 !default;
 $cyan: 			#1F9BCF !default;
 
@@ -78,7 +79,8 @@ $gray-800: #020202 !default;
 $gray-900: #212529 !default;
 $black: #000 !default;
 
-$primary:       $blue !default;
+$primary:       $green !default;
+$brown:         $brown !default;
 $secondary:     $gray-700 !default;
 $success:       $green !default;
 $info:          $cyan !default;
@@ -89,6 +91,7 @@ $dark:          #293042 !default;
 
 $theme-colors: (
 	"primary": $primary,
+  "brown": $brown,
 	"secondary": $secondary,
 	"success": $success,
 	"info": $info,

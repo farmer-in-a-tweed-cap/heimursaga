@@ -275,11 +275,11 @@ map.on('load', async function(){
                                     <hr>
                                 </div>
       
-                                <div class="col-md-8 offset-md-2 mb-2 text-center">
-                                <h5><i class="align-middle mr-5 fas fa-fw fa-map-marker-alt text-primary"></i>${entry.place}</h5>
+                                <div class="modal-body col-md-8 offset-md-2 pb-0 pt-0 text-center">
+                                  <h5><i class="align-middle mr-5 fas fa-fw fa-map-marker-alt text-primary"></i>${entry.place}</h5>
                                 </div>
       
-                                <div class="col-md-8 offset-md-2 mb-2">
+                                <div class="modal-body col-md-8 offset-md-2 pt-0">
                                   <h5 class="text-center text-muted">on ${new Date(entry.date).toLocaleString('default', { month: 'long' })} ${new Date(entry.date).getDate()}, ${new Date(entry.date).getFullYear()} | by <a href="/journal/${entry.author.username}">${entry.author.username}</a></h5>
                                 </div>
       
@@ -375,11 +375,11 @@ map.on('load', async function(){
                                             <hr>
                                         </div>
               
-                                        <div class="col-md-8 offset-md-2 mb-2 text-center">
-                                        <h5><i class="align-middle mr-5 fas fa-fw fa-map-marker-alt text-primary"></i>${entry.place}</h5>
+                                        <div class="modal-body col-md-8 offset-md-2 pb-0 pt-0 text-center">
+                                          <h5><i class="align-middle mr-5 fas fa-fw fa-map-marker-alt text-primary"></i>${entry.place}</h5>
                                         </div>
               
-                                        <div class="col-md-8 offset-md-2 mb-2">
+                                        <div class="modal-body col-md-8 offset-md-2 pt-0">
                                           <h5 class="text-center text-muted">on ${new Date(entry.date).toLocaleString('default', { month: 'long' })} ${new Date(entry.date).getDate()}, ${new Date(entry.date).getFullYear()} | by <a href="/journal/${entry.author.username}">${entry.author.username}</a></h5>
                                         </div>
               
