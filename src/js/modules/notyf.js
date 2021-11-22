@@ -20,7 +20,7 @@ window.notyf = new Notyf({
     {
       type: "success",
       //backgroundColor: "#28a745",
-      backgroundColor: "#598636",
+      backgroundColor: "#4676AC",
       icon: {
         className: "notyf__icon--success",
         tagName: "i",
@@ -37,7 +37,7 @@ window.notyf = new Notyf({
     },
     {
       type: "error",
-      backgroundColor: "#f72b13",
+      backgroundColor: "#ac4946",
       //backgroundColor: "#fa8072",
       icon: {
         className: "notyf__icon--error",
