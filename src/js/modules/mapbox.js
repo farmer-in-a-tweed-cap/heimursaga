@@ -351,12 +351,10 @@ map.on('load', async function(){
                     </div>`}).join('')}`}
         response.data.forEach(entry => {
             map.on('move', function(){
-              map.on('zoom', function(){
+              map.on('move', function(){
                 var feed = document.getElementById("entry-div")
-                //var mapdiv = document.getElementById("map-div")
                 var overlay = document.getElementById('overlay');
                 overlay.style.display = "none";
-                //mapdiv.style.display = "block"
                 feed.style.display = "block"
               })
                 var bounds = map.getBounds();
