@@ -351,7 +351,7 @@ map.on('load', async function(){
                     </div>`}).join('')}`}
         response.data.forEach(entry => {
             map.on('move', function(){
-              map.on('move', function(){
+              map.on('zoom', function(){
                 var feed = document.getElementById("entry-div")
                 var overlay = document.getElementById('overlay');
                 overlay.style.display = "none";
