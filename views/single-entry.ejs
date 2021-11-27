@@ -62,15 +62,35 @@
                             <% } %>
 
                           </div>
+             
 
                           <% if (user) { %>
                       
                             <div class="col-md-8 offset-md-3">
                               <div class="row">
-                                <div class="col-4 offset-1 overflow-hidden" id="single-entry-likes">
+                                <div class="col-4 offset-1">
   
-                                  <iframe src="single-entry-likes/<%=entry._id%>" id="single-entry-likes" height="23"></iframe>
-  
+                                  <div class="">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <input type="hidden" id="entry-id" class="entry-id" value="<%= entry._id %>">
+                                    <input type="hidden" id="has-liked" class="has-liked" value="<%= hasVisitorLiked %>">
+                                    <% if (hasVisitorLiked) { %>
+                                      <div class="position-relative">
+                                      <button style="border: none; background: transparent;" id="like-button" class="text-muted align-middle like-button">
+                                        <i id="heart-icon" class="heart-icon" style="fill: #d9534f; stroke: #d9534f;" data-feather="heart"></i>
+                                        <span id="like-count" class="indicator text-danger"><%= likeCount %></span>
+                                      </button>  
+                                      </div>
+                                    <% } else { %>
+                                      <div class="position-relative">
+                                      <button style="border: none; background: transparent;" id="like-button" class="text-muted align-middle like-button">
+                                        <i id="heart-icon" class="heart-icon" style="fill: #3C73AA; stroke: #3C73AA;" data-feather="heart"></i>
+                                        <span id="like-count" class="indicator text-blue"><%= likeCount %></span>
+                                      </button>  
+                                      </div>
+                                    <% } %> 
+                                  </div>
+
                                 </div>
   
                                 <div class="col-4 offset-1 overflow-hidden" id="single-entry-flags">
@@ -119,10 +139,7 @@
     </div>
 </main>
 
-<script>
-
-
-
+<script type="text/javascript">
 
 function convertToPlain(html){
         var tempDivElement = document.createElement('entrymarkers');

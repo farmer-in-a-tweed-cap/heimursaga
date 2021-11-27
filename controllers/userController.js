@@ -376,21 +376,15 @@ exports.myFeed = async function(req, res) {
   // ask our post model for posts by a certain author id
   let entries = await Entry.getFollowedFeed(req.session.user._id)
   let following = await Follow.getFollowingById(req.session.user._id)
-  let hasVisitorFlagged = await Flag.hasVisitorFlagged(entries._id, req.visitorId)
   let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
       res.render('my-feed', {
         pageName: "my-feed",
         entries: entries,
         following: following,
         entrymarker: JSON.stringify(entryMarker),
-        hasVisitorFlagged: hasVisitorFlagged
       })
     } else {
-    res.render('discover', {
-      pageName: "discover",
-      entries: entries,
-      entrymarker: JSON.stringify(entryMarker),
-    })}
+    res.redirect('/')}
   }
 
 

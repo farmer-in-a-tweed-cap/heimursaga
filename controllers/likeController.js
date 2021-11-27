@@ -11,7 +11,6 @@ exports.addLike = async function(req, res) {
     let entry = await Entry.findSingleById(req.params.id)
     like.create().then(() => {
         req.session.save(async () => {
-            res.redirect(`/single-entry-likes/${req.params.id}`)
             let entryOwner = await User.findByUsername(entry.author.username)
             let likeOwner = await User.findByUsername(req.session.user.username)
             if (entryOwner.settings.emailNotifications.likes == "true") {
@@ -26,20 +25,27 @@ exports.addLike = async function(req, res) {
         })
     }).catch((errors) => {
         errors.forEach(error => {
-            req.flash("errors", error)
+            return error
         })
-        req.session.save(() => res.redirect('/'))
     })
 }
 
 exports.removeLike = function(req, res) {
     let like = new Like(req.params.id, req.visitorId)
     like.delete().then(() => {
-        req.session.save(() => res.redirect(`/single-entry-likes/${req.params.id}`))
+        req.session.save()
     }).catch((errors) => {
         errors.forEach(error => {
-            req.flash("errors", error)
+            return error
         })
-        req.session.save(() => res.redirect('/'))
+    })
+}
+
+exports.likeCount = async function(req, res) {
+    console.log(req.params.id)
+    console.log(req.visitorId)
+    let likeCount = await Like.countLikesById(req.params.id, req.visitorId).then((result) => {
+        console.log(result)
+        return result
     })
 }

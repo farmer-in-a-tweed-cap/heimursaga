@@ -77,6 +77,7 @@ router.post('/removeFollow/:username', userController.mustBeLoggedIn, followCont
 router.post('/addLike/:id', userController.mustBeLoggedIn, likeController.addLike)
 router.post('/removeLike/:id', userController.mustBeLoggedIn, likeController.removeLike)
 router.get('/single-entry-likes/:id', entryController.viewSingleLikes)
+router.get('/likeCount/:id', likeController.likeCount)
 
 // flag related routes
 router.post('/addFlag/:id', userController.mustBeLoggedIn, flagController.addFlag)

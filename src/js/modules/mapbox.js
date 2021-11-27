@@ -7,7 +7,11 @@ import axios from 'axios'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
 
-var map = new mapboxgl.Map({
+
+export default class Map {
+
+constructor() {
+  var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/light-v10',
     //style: 'mapbox://styles/cnh1187/ckppoum2i01vk17mzb71uh331',
@@ -17,6 +21,7 @@ var map = new mapboxgl.Map({
     dragRotate: false,
     touchPitch: false,
 });
+
 
 
 var coordinatesGeocoder = function (query) {
@@ -456,4 +461,6 @@ map.on('load', async function(){
 })
 }
 
+}
+}
 

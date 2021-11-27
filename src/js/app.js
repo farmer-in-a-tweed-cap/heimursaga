@@ -6,11 +6,19 @@ import "./modules/feather";
 import "./modules/moment";
 import "./modules/sidebar";
 import "./modules/notyf";
-import Notification from "./modules/notification";
-import Search from './modules/search';
-if (document.querySelector(".header-search-icon")) {new Search()}
-if (document.querySelector("#user-notifications")) {new Notification()}
 import "./modules/filepond"
+
+import Search from './modules/search';
+if (document.querySelector(".header-search-icon")) {new Search()};
+
+import Notification from "./modules/notification";
+if (document.querySelector("#user-notifications")) {new Notification()};
+
+import Like from './modules/likes'
+if (document.querySelector(".like-button")) {new Like()};
+
+import Map from "./modules/mapbox";
+if (document.querySelector("#map")) {new Map()};
 
 
 // Charts
@@ -29,7 +37,6 @@ import "./modules/wizard"; // requires jQuery
 
 // Maps
 import "./modules/vector-maps";
-import "./modules/mapbox";
 
 
 // Tables

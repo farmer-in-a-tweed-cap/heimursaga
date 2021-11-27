@@ -16,7 +16,7 @@ const opts = {
 module.exports = {
   entry: {
     app: "./src/js/app.js",
-    settings: "./src/js/settings/index.js",
+    //settings: "./src/js/settings/index.js",
     light: "./src/scss/light.scss",
     dark: "./src/scss/dark.scss",
   },
