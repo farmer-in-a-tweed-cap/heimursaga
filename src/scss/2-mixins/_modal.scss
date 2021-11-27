@@ -2,11 +2,7 @@
   .modal-content {
     background: $color;
     color: color-yiq($color);
-    -webkit-overflow-scrolling: initial !important;
-  }
-
-  .modal-open {
-    -webkit-overflow-scrolling: initial !important;
+    scroll-behavior: initial !important;
   }
 
   h1, h2, h3, h4, h5, h6,
