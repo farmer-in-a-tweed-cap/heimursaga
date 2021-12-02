@@ -8,7 +8,7 @@
 
 <div style="background: white;" class="overflow-hidden">
 
-<% if (user) %>
+<% if (user) { %>
 
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
   <input type="hidden" id="entry-id" class="entry-id" value="<%= entry._id %>">
