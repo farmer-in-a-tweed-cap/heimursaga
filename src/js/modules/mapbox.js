@@ -352,7 +352,7 @@ map.on('load', async function(){
                 var bounds = map.getBounds();
                         this.entryFeed.innerHTML = `${response.data.map(entry => {
                             if(bounds.contains(new mapboxgl.LngLat(entry.GeoJSONcoordinates.coordinates[0],entry.GeoJSONcoordinates.coordinates[1])) && map.getZoom() >= entryzoom) {
-                                return `<div class="list-group list-group-flush overflow-auto"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">
+                                return `<div class="list-group list-group-flush"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">
                                 <strong>${entry.title}</strong><br/>
                                 <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle">${entry.place} | ${entry.date}</small><br/>
                                 <small>by <strong>${entry.author.username}</strong></small>
