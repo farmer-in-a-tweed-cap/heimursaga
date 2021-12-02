@@ -122,6 +122,7 @@
     "simplebar": "5.3.0",
     "smartwizard": "5.1.1",
     "socket.io": "^4.1.2",
+    "stripe": "^8.191.0",
     "tempusdominus-bootstrap-4": "5.39.0",
     "util": "^0.12.4",
     "validator": "^13.5.2"

@@ -5,6 +5,7 @@ const mapboxgl = require('mapbox-gl');
 import axios from 'axios'
 
 
+
 mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
 
 
@@ -104,6 +105,7 @@ var mapmarkers = JSON.parse(markers)
 var entryzoom = 7
 
 map.on('load', function () {
+    //console.log(mapmarkers.features[0].geometry.coordinates)
     // Add a new source from our GeoJSON data and
     // set the 'cluster' option to true. GL-JS will
     // add the point_count property to your source data.
@@ -114,6 +116,7 @@ map.on('load', function () {
     clusterMaxZoom: 14, // Max zoom to cluster points on
     clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
     });
+
 
      
     map.addLayer({
@@ -442,6 +445,66 @@ map.on('load', async function(){
 })
 }
 
+
+/*map.on('load', () => {
+
+  console.log([-22.406929064318945, 63.87905672678207])
+  console.log(mapmarkers.features[1].geometry.coordinates)
+
+  map.addSource('route', {
+    'type': 'geojson',
+    'data': {
+    'type': 'Feature',
+    'properties': {},
+    'geometry': {
+    'type': 'LineString',
+    'coordinates': [
+      [-22.406929064318945, 63.87905672678207],
+      [2.238697195895327, 41.37022151440331],
+      [mapmarkers.features[0].geometry.coordinates],
+      [mapmarkers.features[1].geometry.coordinates]
+    ]
+    }
+    }
+    });
+
+  map.addLayer({
+      'id': 'route',
+      'type': 'line',
+      'source': 'route',
+      'layout': {
+      'line-join': 'round',
+      'line-cap': 'round'
+      },
+      'paint': {
+      'line-color': '#3C73AA',
+      'line-width': 3
+      }
+      });
+
+      var url = 'https://f002.backblazeb2.com/file/heimursaga-entry-photos/line+pointer+heimursaga.png';
+      map.loadImage(url, function(err, image) {
+        if (err) {
+          console.error('err image', err);
+          return;
+        }
+        map.addImage('arrow', image);
+        map.addLayer({
+          'id': 'arrow-layer',
+          'type': 'symbol',
+          'source': 'route',
+          'layout': {
+            'symbol-placement': 'line',
+            'symbol-spacing': 1,
+            'icon-allow-overlap': true,
+            // 'icon-ignore-placement': true,
+            'icon-image': 'arrow',
+            'icon-size': 0.08,
+            'visibility': 'visible'
+          }
+        });
+      });
+})*/
 }
 }
 

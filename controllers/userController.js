@@ -123,7 +123,7 @@ exports.register = function(req, res) {
     req.session.user = {username: user.data.username, avatar: user.avatar, _id: user.data._id}
     req.session.save(function() {
       //res.redirect(`/account-type/${user.data.username}`)
-      res.redirect('/getting-started')
+      res.redirect('/user-guide')
     })
   }).catch(function(e) {
     req.flash('errors', e)
@@ -289,7 +289,7 @@ exports.selectType = function(req, res) {
       if (status == "success") {
           // user was updated in db
           req.session.save(function() {
-              res.redirect(`/getting-started`)
+              res.redirect(`/user-guide`)
           })
       } else {
           user.errors.forEach(function(error) {
