@@ -39,7 +39,7 @@ Bookmark.prototype.create = function() {
         this.cleanUp()
         await this.validate("create")
         if (!this.errors.length) {
-            await bookmarksCollection.insertOne({bookmarkedEntryId: this.bookmarkedEntryId, authorId: new ObjectID(this.authorId)})
+            await bookmarksCollection.insertOne({bookmarkedEntryId: this.bookmarkedEntryId, authorId: new ObjectID(this.authorId), createdDate: new Date()})
             resolve()
         } else {
             reject(this.errors)

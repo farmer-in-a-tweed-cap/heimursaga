@@ -40,7 +40,7 @@ Highlight.prototype.create = function() {
         this.cleanUp()
         await this.validate("create")
         if (!this.errors.length) {
-            await highlightsCollection.insertOne({highlightedEntryId: this.highlightedEntryId, authorId: new ObjectID(this.authorId)})
+            await highlightsCollection.insertOne({highlightedEntryId: this.highlightedEntryId, authorId: new ObjectID(this.authorId), createdDate: new Date()})
             resolve()
         } else {
             reject(this.errors)
