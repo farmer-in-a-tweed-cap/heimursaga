@@ -8,6 +8,9 @@ import "./modules/sidebar";
 import "./modules/notyf";
 import "./modules/filepond"
 
+import Map from "./modules/mapbox";
+if (document.querySelector("#map")) {new Map()};
+
 import Search from './modules/search';
 if (document.querySelector(".header-search-icon")) {new Search()};
 
@@ -25,9 +28,6 @@ if (document.querySelector("#follow-button")) {new Follow()};
 
 import Flag from './modules/flag'
 if (document.querySelector("#flag-button")) {new Flag()};
-
-import Map from "./modules/mapbox";
-if (document.querySelector("#map")) {new Map()};
 
 
 // Charts
