@@ -52,7 +52,7 @@ export default class Follow {
         document.querySelector(".icon-heimursaga-follow-alt").style.color = "#AC6D46"
         document.querySelector("#follow-button").classList.remove("text-blue")
         document.querySelector("#follow-button").classList.add("text-primary")
-        document.querySelector("#follow-check").removeAttribute('hidden', true)
+        document.querySelector("#follow-check").style.color = "#AC6D46"
 
     }
 
@@ -60,7 +60,7 @@ export default class Follow {
         document.querySelector(".icon-heimursaga-follow-alt").style.color = "#3C73AA"
         document.querySelector("#follow-button").classList.remove("text-danger")
         document.querySelector("#follow-button").classList.add("text-blue")
-        document.querySelector("#follow-check").setAttribute('hidden', true)
+        document.querySelector("#follow-check").style.color = "#FFFFFF"
     }
 
 }
