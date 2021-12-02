@@ -8,6 +8,8 @@
 
 <div style="background: white;" class="overflow-hidden">
 
+<% if (user) %>
+
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
   <input type="hidden" id="entry-id" class="entry-id" value="<%= entry._id %>">
   <input type="hidden" id="has-flagged" class="has-flagged" value="<%= hasVisitorFlagged %>">
@@ -49,6 +51,10 @@
 
   <% } %>
 
+  <% } %>
+
 </div>
+
+
 
 <script src="js/app.js"></script>
