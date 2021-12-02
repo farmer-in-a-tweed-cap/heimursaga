@@ -57,7 +57,7 @@ to read and write journal entries tagged to precise geographic coordinates.">
                                                         <h4 class="text-center"><%= entry.title %></h4>
                                                     </div>
 
-                                                    <div class="modal-body col-md-6 offset-md-3">
+                                                    <div class="col-8 offset-2 mb-4">
                                                         <hr>
                                                     </div>
                           
@@ -95,26 +95,16 @@ to read and write journal entries tagged to precise geographic coordinates.">
 
                                                     <% if (user) { %>
 
-                                                        <div class="col-md-6 offset-md-3">
-                                                            <div class="row">
-                                                              <div class="col-3 offset-1 overflow-auto" id="single-entry-likes">
-                                
-                                                                <iframe src="single-entry-likes/<%=entry._id%>" id="single-entry-likes" height="23"></iframe>
+                                                        <div class="iframe-container">
 
-                                                              </div>
+                                                            <iframe class="button-stack-iframe" src="button-stack/<%= entry._id %>" id="button-stack-iframe" width="100%"></iframe>
                                 
-                                                              <div class="col-3 offset-4 text-right overflow-hidden" id="single-entry-flags">
-                                
-                                                                <iframe src="single-entry-flags/<%=entry._id%>" id="single-entry-flags" height="21"></iframe>
-                                
-                                                              </div>
-                                                            </div>
-                                                          </div>
+                                                        </div>
 
                                                     <% } %>
                           
                           
-                                                    <div class="modal-body col-md-6 offset-md-3 mb-1">
+                                                    <div class="col-8 offset-2 mb-4">
                                                       <hr>
                                                     </div>
                           
@@ -128,6 +118,12 @@ to read and write journal entries tagged to precise geographic coordinates.">
                                                         <small class="text-muted">
                                                         <a href="/entry/<%= entry._id %>">Visit entry permalink</a>
                                                         </small>
+                                                    </div>
+
+                                                    <div class="pb-2">
+													  
+                                                        <iframe src="flag-button/<%= entry._id %>" id="flag-button" height="60"></iframe>
+                        
                                                     </div>
 
                                                 </div>
@@ -179,6 +175,7 @@ to read and write journal entries tagged to precise geographic coordinates.">
 
 
 <script type="text/javascript">
+
 
 
     function convertToPlain(html){

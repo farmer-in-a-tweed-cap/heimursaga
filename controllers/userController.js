@@ -7,14 +7,16 @@ const followsCollection = require('../db').db().collection("follows")
 const usersCollection = require('../db').db().collection("users")
 const draftsCollection = require('../db').db().collection("drafts")
 const likesCollection = require('../db').db().collection("likes")
+const highlightsCollection = require('../db').db().collection("highlights")
 const GeoJSON = require('geojson')
 const Draft = require('../models/Draft')
-const Like = require('../models/Like')
+const Highlight = require('../models/Highlight')
 const sendgrid = require('@sendgrid/mail')
 const { TouchPitchHandler } = require('mapbox-gl')
 sendgrid.setApiKey(process.env.SENDGRIDAPIKEY)
 const sanitizeHTML = require('sanitize-html')
 const validator = require("validator")
+const Bookmark = require('../models/Bookmark')
 
 
 exports.sharedProfileData = async function(req, res, next) {
@@ -72,6 +74,10 @@ exports.logout = function(req, res) {
   req.session.destroy(function() {
     res.redirect('/')
   })
+}
+
+exports.userGuide = function(req, res) {
+  res.render('user-guide', {pageName: 'user-guide'})
 }
 
 exports.upgrade = async function(req, res) {
@@ -317,7 +323,8 @@ exports.journalScreen = function(req, res) {
     let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
     let following = await Follow.getFollowingById(req.profileUser._id)
     let followers = await Follow.getFollowersById(req.profileUser._id)
-    let likedEntries = await Like.getLikedById(req.profileUser._id)
+    let highlightedEntries = await Highlight.getHighlightedById(req.profileUser._id)
+    let bookmarkedEntries = await Bookmark.getBookmarkedById(req.profileUser._id)
     let drafts = await Draft.findByAuthorId(req.profileUser._id)
     let user = await User.findByUsername(req.profileUser.username)
 
@@ -328,7 +335,8 @@ exports.journalScreen = function(req, res) {
         drafts: drafts,
         followers: followers,
         following: following,
-        liked: likedEntries,
+        highlighted: highlightedEntries,
+        bookmarked: bookmarkedEntries,
         bio: user.bio,
         currentlyin: user.currentlyin,
         livesin: user.livesin,
@@ -350,7 +358,8 @@ exports.journalScreen = function(req, res) {
       drafts: drafts,
       followers: followers,
       following: following,
-      liked: likedEntries,
+      highlighted: highlightedEntries,
+      bookmarked: bookmarkedEntries,
       bio: user.bio,
       currentlyin: user.currentlyin,
       livesin: user.livesin,

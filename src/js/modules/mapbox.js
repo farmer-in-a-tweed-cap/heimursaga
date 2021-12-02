@@ -277,7 +277,7 @@ map.on('load', async function(){
                                     <h4 class="text-center">${entry.title}</h4>
                                 </div>
 
-                                <div class="modal-body col-md-6 offset-md-3">
+                                <div class="col-8 offset-2 mb-4">
                                     <hr>
                                 </div>
       
@@ -310,40 +310,32 @@ map.on('load', async function(){
 
                                 
 
-                                    <div class="col-md-6 offset-md-3">
-                                        <div class="row">
-                                          <div class="col-3 offset-1 overflow-hidden" id="single-entry-likes">
-            
-                                            <iframe src="single-entry-likes/${entry._id}" id="single-entry-likes" height="23" allowTransparency="true"></iframe>
-            
-                                          </div>
-            
-                                          <div class="col-3 offset-4 text-right overflow-hidden" id="single-entry-flags">
-            
-                                            <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="21" allowTransparency="true"></iframe>
-            
-                                          </div>
-                                        </div>
-                                    </div>
+                              <div class="iframe-container">
+                                <iframe class="button-stack-iframe" src="button-stack/${entry._id}" id="button-stack-iframe" width="100%"></iframe>
+                              </div>
 
-                                
-      
-      
-                                <div class="modal-body col-md-6 offset-md-3 mb-1">
-                                  <hr>
-                                </div>
-      
-                                <div>
-                                  <p class="text-muted small mb-4 text-center">
-                                  <a href="/journal/${entry.author.username}"><img class="avatar img-fluid rounded-circle me-1" src="${entry.author.avatar}"></a>
-                                  Posted on ${new Date(entry.createdDate).getMonth() + 1}/${new Date(entry.createdDate).getDate()}/${new Date(entry.createdDate).getFullYear()}</p>
-                                </div> 
-                                
-                                <div class="text-center mb-4">
-                                    <small class="text-muted">
-                                    <a href="/entry/${entry._id}">Visit entry permalink</a>
-                                    </small>
-                                </div>
+                              <div class="col-8 offset-2 mb-4">
+                                <hr>
+                              </div>
+
+    
+                              <div>
+                                <p class="text-muted small mb-4 text-center">
+                                <a href="/journal/${entry.author.username}"><img class="avatar img-fluid rounded-circle me-1" src="${entry.author.avatar}"></a>
+                                Posted on ${new Date(entry.createdDate).getMonth() + 1}/${new Date(entry.createdDate).getDate()}/${new Date(entry.createdDate).getFullYear()}</p>
+                              </div> 
+                              
+                              <div class="text-center mb-4">
+                                  <small class="text-muted">
+                                  <a href="/entry/${entry._id}">Visit entry permalink</a>
+                                  </small>
+                              </div>
+
+                              <div class="pb-2">
+													  
+                                <iframe src="flag-button/${entry._id}" id="flag-button" height="60"></iframe>
+              
+                              </div>
 
                             </div>
                         </div>
@@ -375,7 +367,7 @@ map.on('load', async function(){
                                             <h4 class="text-center">${entry.title}</h4>
                                         </div>
         
-                                        <div class="modal-body col-md-6 offset-md-3">
+                                        <div class="col-8 offset-2 mb-4">
                                             <hr>
                                         </div>
               
@@ -408,26 +400,11 @@ map.on('load', async function(){
                                         </div>
                                
         
-                                            <div class="col-md-6 offset-md-3">
-                                                <div class="row">
-                                                  <div class="col-3 offset-1 overflow-hidden" id="single-entry-likes">
-                    
-                                                    <iframe src="single-entry-likes/${entry._id}" id="single-entry-likes" height="23" allowTransparency="true"></iframe>
-                    
-                                                  </div>
-                    
-                                                  <div class="col-3 offset-4 text-right overflow-hidden" id="single-entry-flags">
-                    
-                                                    <iframe src="single-entry-flags/${entry._id}" id="single-entry-flags" height="21" allowTransparency="true"></iframe>
-                    
-                                                  </div>
-                                                </div>
-                                            </div>
+                                        <div class="iframe-container">
+                                          <iframe class="button-stack-iframe" src="button-stack/${entry._id}" id="button-stack-iframe" width="100%"></iframe>
+                                        </div>
         
-                                        
-              
-              
-                                        <div class="modal-body col-md-6 offset-md-3 mb-1">
+                                        <div class="col-8 offset-2 mb-4">
                                           <hr>
                                         </div>
               
@@ -441,6 +418,12 @@ map.on('load', async function(){
                                             <small class="text-muted">
                                             <a href="/entry/${entry._id}">Visit entry permalink</a>
                                             </small>
+                                        </div>
+
+                                        <div class="pb-2">
+													  
+                                          <iframe src="flag-button/${entry._id}" id="flag-button" height="60"></iframe>
+                      
                                         </div>
         
                                     </div>

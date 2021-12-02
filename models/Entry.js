@@ -165,7 +165,7 @@ Entry.reusableEntryQuery = function(uniqueOperations, visitorId, finalOperations
     // clean up author property in each post object
     entries = entries.map(function(entry) {
       entry.isVisitorOwner = entry.authorId.equals(visitorId)
-      entry.authorId = undefined
+      //entry.authorId = undefined
 
 
       entry.author = {

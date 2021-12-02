@@ -4,7 +4,8 @@ const userController = require('./controllers/userController')
 const entryController = require('./controllers/entryController')
 const followController = require('./controllers/followController')
 const draftController = require('./controllers/draftController')
-const likeController = require('./controllers/likeController')
+const highlightController = require('./controllers/highlightController')
+const bookmarkController = require('./controllers/bookmarkController')
 const flagController = require('./controllers/flagController')
 const adminController = require('./controllers/adminController')
 const photoController = require('./controllers/photoController')
@@ -31,6 +32,8 @@ router.get('/logout', userController.logout)
 router.get('/recover', function(req, res) {
   res.render('recover', {pageName: "recover-password"})
 })
+
+router.get('/user-guide', userController.mustBeLoggedIn, userController.userGuide)
 
 router.post('/recover', userController.recover)
 router.get('/reset-password/:token', userController.reset)
@@ -69,23 +72,25 @@ router.post('/search', entryController.search)
 router.get('/entry-list', entryController.entryList)
 
 
-// follow related routes
-router.post('/addFollow/:username', userController.mustBeLoggedIn, followController.addFollow)
-router.post('/removeFollow/:username', userController.mustBeLoggedIn, followController.removeFollow)
-
-// like related routes
-router.post('/addLike/:id', userController.mustBeLoggedIn, likeController.addLike)
-router.post('/removeLike/:id', userController.mustBeLoggedIn, likeController.removeLike)
-router.get('/single-entry-likes/:id', entryController.viewSingleLikes)
-router.get('/likeCount/:id', likeController.likeCount)
-
-// flag related routes
-router.post('/addFlag/:id', userController.mustBeLoggedIn, flagController.addFlag)
-router.get('/single-entry-flags/:id', entryController.viewSingleFlags)
-
 // photo specific coutes
 router.post('/deletePhoto/:id', userController.mustBeLoggedIn, photoController.delete)
 
+// button routes
+router.get('/button-stack/:id', entryController.viewEntryButtons)
+// highlight related routes
+router.post('/addHighlight/:id', userController.mustBeLoggedIn, highlightController.addHighlight)
+router.post('/removeHighlight/:id', userController.mustBeLoggedIn, highlightController.removeHighlight)
+router.get('/highlightCount/:id', highlightController.highlightCount)
+// bookmark related routes
+router.post('/addBookmark/:id', userController.mustBeLoggedIn, bookmarkController.addBookmark)
+router.post('/removeBookmark/:id', userController.mustBeLoggedIn, bookmarkController.removeBookmark)
+router.get('/bookmarkCount/:id', bookmarkController.bookmarkCount)
+// flag related routes
+router.post('/addFlag/:id', userController.mustBeLoggedIn, flagController.addFlag)
+router.get('/flag-button/:id', flagController.viewSingleFlags)
+// follow related routes
+router.post('/addFollow/:username', userController.mustBeLoggedIn, followController.addFollow)
+router.post('/removeFollow/:username', userController.mustBeLoggedIn, followController.removeFollow)
 
 
 // navigation related routes
@@ -109,6 +114,13 @@ router.get('/contact', function (req, res) {
   res.render('contact', {pageName: 'contact'})
 })
 
+router.get('/button-stack', function (req, res) {
+  res.render('button-stack', {pageName: 'button-stack'})
+})
+
+router.get('/flag-button', function (req, res) {
+  res.render('flag-button', {pageName: 'flag-button'})
+})
 
 //Admin Routes
 router.get('/admin-dashboard', userController.mustBeLoggedIn, adminController.viewAdminDashboard)

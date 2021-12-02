@@ -14,8 +14,17 @@ if (document.querySelector(".header-search-icon")) {new Search()};
 import Notification from "./modules/notification";
 if (document.querySelector("#user-notifications")) {new Notification()};
 
-import Like from './modules/likes'
-if (document.querySelector(".like-button")) {new Like()};
+import Highlight from './modules/highlight'
+if (document.querySelector("#highlight-button")) {new Highlight()};
+
+import Bookmark from './modules/bookmark'
+if (document.querySelector("#bookmark-button")) {new Bookmark()};
+
+import Follow from './modules/follow'
+if (document.querySelector("#follow-button")) {new Follow()};
+
+import Flag from './modules/flag'
+if (document.querySelector("#flag-button")) {new Flag()};
 
 import Map from "./modules/mapbox";
 if (document.querySelector("#map")) {new Map()};

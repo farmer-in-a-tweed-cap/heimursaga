@@ -1,5 +1,5 @@
 const Entry = require('../models/Entry')
-const Like = require('../models/Like')
+const Highlight = require('../models/Highlight')
 const Flag = require('../models/Flag')
 const Draft = require('../models/Draft')
 const sessionsCollection = require('../db').db().collection("sessions")
@@ -10,6 +10,9 @@ const { Photo } = require('../models/Photo')
 sendgrid.setApiKey(process.env.SENDGRIDAPIKEY)
 const { Notyf } = require('notyf')
 const ObjectID = require('mongodb').ObjectID
+const { hasVisitorHighlighted } = require('../models/Highlight')
+const Bookmark = require('../models/Bookmark')
+const Follow = require('../models/Follow')
 
 
 
@@ -50,36 +53,28 @@ exports.create = function(req, res) {
 exports.viewSingle = async function(req, res) {
     try {
         let entry = await Entry.findSingleById(req.params.id, req.visitorId)
-        let likes = await Like.countLikesById(req.params.id)
-        let hasVisitorLiked = await Like.hasVisitorLiked(req.params.id, req.visitorId)
+        let highlights = await Highlight.countHighlightsById(req.params.id)
+        let hasVisitorHighlighted = await Highlight.hasVisitorHighlighted(req.params.id, req.visitorId)
         let entryMarker = GeoJSON.parse(entry.GeoJSONcoordinates, {'Point': ['entry.GeoJSONcoordinates.coordinates[0]','entry.GeoJSONcoordinates.coordinates[1]']})
-        res.render('single-entry', {entry: entry, pageName: "single-entry", likeCount: likes, hasVisitorLiked: hasVisitorLiked, entrymarker: JSON.stringify(entryMarker)})
+        res.render('single-entry', {entry: entry, pageName: "single-entry", highlightCount: highlights, hasVisitorHighlighted: hasVisitorHighlighted, entrymarker: JSON.stringify(entryMarker)})
     } catch {
         res.render('404')
     }
 }
 
-exports.viewSingleLikes = async function(req, res) {
-    try {
-        let entry = await Entry.findSingleById(req.params.id, req.visitorId)
-        let likes = await Like.countLikesById(req.params.id)
-        let hasVisitorLiked = await Like.hasVisitorLiked(req.params.id, req.visitorId)
-        let hasVisitorFlagged = await Flag.hasVisitorFlagged(req.params.id, req.visitorId)
-        let entryMarker = GeoJSON.parse(entry, {GeoJSON: 'GeoJSONcoordinates'})
-        res.render('single-entry-likes', {entry: entry, pageName: "single-entry-likes", likeCount: likes, hasVisitorLiked: hasVisitorLiked, hasVisitorFlagged: hasVisitorFlagged, entrymarker: JSON.stringify(entryMarker)})
-    } catch {
-        res.render('pages-404')
-    }
-}
 
-exports.viewSingleFlags = async function(req, res) {
+exports.viewEntryButtons = async function(req, res) {
     try {
         let entry = await Entry.findSingleById(req.params.id, req.visitorId)
+        let highlights = await Highlight.countHighlightsById(req.params.id)
+        let bookmarks = await Bookmark.countBookmarksById(req.params.id)
+        let hasVisitorBookmarked = await Bookmark.hasVisitorBookmarked(req.params.id, req.visitorId)
+        let hasVisitorHighlighted = await Highlight.hasVisitorHighlighted(req.params.id, req.visitorId)
         let hasVisitorFlagged = await Flag.hasVisitorFlagged(req.params.id, req.visitorId)
-        let entryMarker = GeoJSON.parse(entry, {GeoJSON: 'GeoJSONcoordinates'})
-        res.render('single-entry-flags', {entry: entry, pageName: "single-entry-flags", hasVisitorFlagged: hasVisitorFlagged, entrymarker: JSON.stringify(entryMarker)})
+        let isVisitorFollowing = await Follow.isVisitorFollowing(entry.authorId, req.visitorId)
+        res.render('button-stack', {entry: entry, pageName: "button-stack", highlightCount: highlights, bookmarkCount: bookmarks, hasVisitorHighlighted: hasVisitorHighlighted, hasVisitorBookmarked: hasVisitorBookmarked, isVisitorFollowing: isVisitorFollowing, hasVisitorFlagged: hasVisitorFlagged})
     } catch {
-        res.render('pages-404')
+        res.render('404')
     }
 }
 
@@ -186,7 +181,7 @@ exports.edit = function(req, res) {
 }}
 
 exports.delete =  function(req, res) {
-    Like.authorDelete(req.params.id, req.visitorId).then( ()  => {
+    Highlight.authorDelete(req.params.id, req.visitorId).then( ()  => {
          Entry.delete(req.params.id, req.visitorId).then( () => {
              Photo.delete(req.params.id).then(() => {                
                 req.flash("success", "Entry successfully deleted.")
