@@ -336,10 +336,14 @@ map.on('load', async function(){
                                   </small>
                               </div>
 
-                              <div class="pb-2">
+                              <div class="">
 													  
                                 <iframe src="flag-button/${entry._id}" id="flag-button" height="60"></iframe>
               
+                              </div>
+
+                              <div class="modal-body m-0">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                               </div>
 
                             </div>
@@ -425,10 +429,14 @@ map.on('load', async function(){
                                             </small>
                                         </div>
 
-                                        <div class="pb-2">
+                                        <div class="">
 													  
                                           <iframe src="flag-button/${entry._id}" id="flag-button" height="60"></iframe>
                       
+                                        </div>
+
+                                        <div class="modal-body m-0">
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
         
                                     </div>

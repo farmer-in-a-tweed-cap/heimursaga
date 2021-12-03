@@ -79,7 +79,7 @@
 
   <% if (user) { %>
   
-      <div class="pt-3 col-sm-12 offset-3 row text-center">
+      <div class="pt-3 col-sm-12 offset-2 row text-center">
 
         <% if (!entry.isVisitorOwner) { %>
 
@@ -87,7 +87,7 @@
   
         <% } else { %>
   
-        <div class="col-3">
+        <div class="col-4">
   
         <% } %>
 
@@ -121,7 +121,7 @@
 
         <% } else { %>
 
-        <div class="col-3">
+        <div class="col-4">
 
         <% } %>
 
@@ -178,15 +178,18 @@
 
         <% } %>
 
+        <% if (!entry.isVisitorOwner) { %>
 
+        <div class="col-2">
 
-    <!--<div class="col-2 text-blue">
-          <button style="border: none; background: transparent; color: #adb5bd;" disabled>
-            <i style="font-size: x-large;" class="icon-heimursaga-fund-alt"></i>
+          <button id="fund-button" style="border: none; background: transparent;" class="text-blue" disabled>
+            <i id="icon-heimursaga-fund-alt" style="font-size: x-large; color: #adb5bd;" class="icon-heimursaga-fund-alt"></i>
             <div class="w-100"></div>
-            <small>fund</small>
+            <i id="fund-check" class="fund-check" style="color: white; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
           </button>
-        </div>-->
+        </div>
+
+        <% } %>
 
       </div> 
 
