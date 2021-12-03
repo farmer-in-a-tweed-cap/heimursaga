@@ -43,7 +43,7 @@ export default class Follow {
             })
         } else {
             axios.post(`/removeFollow/${this.entryAuthor}`, {_csrf: this._csrf, username: this.entryAuthor}).then(() => {
-                window.notyf.error(`You have unfollowed ${this.entryAuthor}`);
+                window.notyf.error({background: '#3C73AA', message: `You have unfollowed ${this.entryAuthor}`});
             })
         }
     }

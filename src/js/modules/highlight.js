@@ -43,7 +43,7 @@ export default class Highlight {
             })
         } else {
             axios.post(`/removeHighlight/${this.entryId}`, {_csrf: this._csrf, id: this.entryId}).then(() => {
-                window.notyf.error(`Your highlight has been removed`);
+                window.notyf.error({background: '#3C73AA', message: `Your highlight has been removed`});
             })
         }
     }

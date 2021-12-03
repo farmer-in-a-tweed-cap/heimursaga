@@ -34,7 +34,7 @@ window.notyf = new Notyf({
     },
     {
       type: "warning",
-      backgroundColor: red,
+      backgroundColor: blue,
       icon: {
         className: "notyf__icon--error",
         tagName: "i",
@@ -42,7 +42,7 @@ window.notyf = new Notyf({
     },
     {
       type: "error",
-      backgroundColor: blue,
+      backgroundColor: red,
       icon: {
         className: "notyf__icon--error",
         tagName: "i",

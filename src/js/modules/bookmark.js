@@ -43,7 +43,7 @@ export default class Bookmark {
             })
         } else {
             axios.post(`/removeBookmark/${this.entryId}`, {_csrf: this._csrf, id: this.entryId}).then(() => {
-                window.notyf.error(`Your bookmark has been removed`);
+                window.notyf.error({background: '#3C73AA', message: `Your bookmark has been removed`});
             })
         }
     }
