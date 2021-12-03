@@ -39,11 +39,11 @@ export default class Highlight {
     sendRequest() {
         if (document.querySelector(".icon-heimursaga-highlight").style.color != "rgb(60, 115, 170)"){
             axios.post(`/addHighlight/${this.entryId}`, {_csrf: this._csrf, id: this.entryId}).then(() => {
-                console.log('successfully highlighted')
+                window.notyf.success(`You have highlighted this entry`);
             })
         } else {
             axios.post(`/removeHighlight/${this.entryId}`, {_csrf: this._csrf, id: this.entryId}).then(() => {
-                console.log('highlight removed')
+                window.notyf.error(`Your highlight has been removed`);
             })
         }
     }

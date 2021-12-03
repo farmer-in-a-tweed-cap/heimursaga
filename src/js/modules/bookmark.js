@@ -39,11 +39,11 @@ export default class Bookmark {
     sendRequest() {
         if (document.querySelector(".icon-heimursaga-bookmark").style.color != "rgb(60, 115, 170)"){
             axios.post(`/addBookmark/${this.entryId}`, {_csrf: this._csrf, id: this.entryId}).then(() => {
-                console.log('successfully bookmarked')
+                window.notyf.success(`You have bookmarked this entry`);
             })
         } else {
             axios.post(`/removeBookmark/${this.entryId}`, {_csrf: this._csrf, id: this.entryId}).then(() => {
-                console.log('bookmark removed')
+                window.notyf.error(`Your bookmark has been removed`);
             })
         }
     }
