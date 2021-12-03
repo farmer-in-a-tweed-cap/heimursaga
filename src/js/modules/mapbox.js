@@ -254,7 +254,9 @@ map.on('load', function () {
     });
 
 
-
+map.on('zoom', function() {
+  document.activeElement.blur()
+})
 
 // map list feed
 
