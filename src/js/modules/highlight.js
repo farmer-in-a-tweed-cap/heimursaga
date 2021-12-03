@@ -25,11 +25,13 @@ export default class Highlight {
         if (document.querySelector(".icon-heimursaga-highlight").style.color == "rgb(60, 115, 170)"){
 
             this.changePrimary()
+            parent.window.notyf.success(`You have highlighted this entry`);
             this.waitTimer = setTimeout(() => this.sendRequest(), 750)
 
         } else {
 
             this.changeBlue()
+            parent.window.notyf.error({background: '#3C73AA', message: `Your highlight has been removed`});
             this.waitTimer = setTimeout(() => this.sendRequest(), 750)
 
 
@@ -39,11 +41,11 @@ export default class Highlight {
     sendRequest() {
         if (document.querySelector(".icon-heimursaga-highlight").style.color != "rgb(60, 115, 170)"){
             axios.post(`/addHighlight/${this.entryId}`, {_csrf: this._csrf, id: this.entryId}).then(() => {
-                window.notyf.success(`You have highlighted this entry`);
+                console.log('highlight added')
             })
         } else {
             axios.post(`/removeHighlight/${this.entryId}`, {_csrf: this._csrf, id: this.entryId}).then(() => {
-                window.notyf.error({background: '#3C73AA', message: `Your highlight has been removed`});
+                console.log('highlight removed')
             })
         }
     }
