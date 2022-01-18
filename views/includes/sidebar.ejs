@@ -1,0 +1,86 @@
+<body data-theme="default" data-layout="fluid" data-sidebar-position="left" data-sidebar-behavior="sticky">
+	<div class="wrapper">
+	    <nav id="sidebar" class="sidebar">
+			<div class="sidebar-content js-simplebar">
+                <div class="sidebar-brand ps-0">
+                    <a  href="/" >
+					<img src="../img/brands/Heimursaga Logo & Slogan Brown.svg" width="247" height="93.1" alt="Heimursaga Logo">
+                    </a>
+                </div>
+
+                <div class="mb-4"></div>
+
+				<ul class="sidebar-nav" style="padding-left: 2rem;">
+
+                    <li <% if (pageName === 'discovery') { %>
+                            class="sidebar-item active" 
+                            <% } else { %>
+                            class="sidebar-item"
+                            <% } %> >
+                        <a class="sidebar-link" href="/discovery" style="font-size: large">
+                            <i class="align-middle" data-feather="compass"></i> <span class="align-middle">Discovery</span>
+                        </a>
+                    </li>
+
+                    <% if (user) { %>
+
+                    <li <% if (pageName === 'my-feed') { %>
+                            class="sidebar-item active" 
+                            <% } else { %>
+                            class="sidebar-item"
+                            <% } %> >
+                        <a class="sidebar-link" href="/my-feed" style="font-size: large">
+                            <i class="align-middle" data-feather="users"></i> <span class="align-middle">My Feed</span>
+                        </a>
+                    </li>
+
+                    <li <% if (pageName === 'my-journal') { %>
+                            class="sidebar-item active" 
+                            <% } else { %>
+                            class="sidebar-item"
+                            <% } %> >
+                        <a class="sidebar-link" href="/journal/<%= user.username %>" style="font-size: large">
+                            <i class="align-middle" data-feather="book-open"></i> <span class="align-middle">My Journal</span>
+                        </a>
+                    </li>
+
+
+                    <% } %> 
+
+				</ul>
+                <% if (user) { %>
+                <hr class="col-md-8 offset-md-2" style="position:absolute; bottom:200px">
+                <% } %>
+                <ul class="sidebar-footer text-center" style="position: absolute; bottom: 0; padding-bottom: 1rem;">
+                    <% if (user) { %>
+                    <div <% if (pageName === 'user-guide') { %>
+                        class="sidebar-item active" 
+                        <% } else { %>
+                        class="sidebar-item"
+                        <% } %> >
+                        <a class="sidebar-link" href="/user-guide">User Guide</a>
+                    </div>
+                    <div <% if (pageName === 'explorer-code') { %>
+                        class="sidebar-item active" 
+                        <% } else { %>
+                        class="sidebar-item"
+                        <% } %> >
+                        <a class="sidebar-link" href="/explorer-code">The Explorer Code</a>
+                    </div>
+                    <% } %>
+                    <div <% if (pageName === 'about') { %>
+                        class="sidebar-item active" 
+                        <% } else { %>
+                        class="sidebar-item"
+                        <% } %> >
+                        <a class="sidebar-link" href="/about">About Heimursaga</a>
+                    </div>
+                    <div <% if (pageName === 'contact') { %>
+                        class="sidebar-item active" 
+                        <% } else { %>
+                        class="sidebar-item"
+                        <% } %> >
+                        <a class="sidebar-link" href="/contact">Contact Us</a>
+                    </div>
+                </ul>
+			</div>
