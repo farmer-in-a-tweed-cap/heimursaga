@@ -1,0 +1,268 @@
+<%- include('includes/header') %>
+
+<title>Heimursaga | Settings</title>
+
+</head>
+
+<%- include('includes/sidebar') %>
+
+<%- include('includes/navbar') %>
+
+			<main class="content">
+				<div class="container-fluid p-0">
+						
+						<div class="row">
+
+						<div class="col-md-3 col-xl-2">
+
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Profile Settings</h5>
+								</div>
+
+								<div class="list-group list-group-flush" role="tablist">
+									<a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#account" role="tab">
+          							Public Info
+        							</a>
+									<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#notifications" role="tab">
+          							Notifications
+        							</a>
+									<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#password" role="tab">
+									Password
+		  							</a>
+									<!--<a class="list-group-item list-group-item-action disabled" data-bs-toggle="list" href="#" role="tab">
+          							Your data
+        							</a>
+									<a class="list-group-item list-group-item-action disabled" data-bs-toggle="list" href="#" role="tab">
+          							Delete account
+        							</a>-->
+								</div>
+							</div>
+						</div>
+
+						
+
+						<div class="col-md-9 col-xl-10">
+							<%- include('includes/flash') %>
+							<div class="tab-content">
+								<div class="tab-pane fade show active" id="account" role="tabpanel">
+									
+									
+												<form action="/update-user/<%= user.username %>" method="POST">
+													<div class="card">
+														<div class="card-header">
+															<h5 class="card-title mb-0">Public info</h5>
+														</div>
+														<div class="card-body col-md-10 offset-md-1">
+
+															<div class="mb-5">
+																<label class="form-label text-dark">Explorer Avatar</label>
+																<div class="">
+																<img src="<%= user.avatar %>" class="img-fluid rounded-circle mb-2" width="128" height="128" />
+																</div>
+																<label class="form-text text-muted">Heimursaga uses the Gravatar service for profile avatars. Your avatar is linked to the email you used to register your Heimursaga account. Please visit <a href="https://en.gravatar.com" target="_blank">gravatar.com</a> to update or set your explorer avatar.</label>
+															</div>
+															<div class="mb-3">
+																<input type="text" class="form-control" id="username-register" name="username" maxlength="30" value="<%= user.username %>"hidden>
+															</div>
+															<div class="mb-3">
+																<input type="email" class="form-control" id="email-register" name="email" value="<%= email %>" hidden>
+															</div>
+															<div class="mb-3">
+																<label class="form-label text-dark">Bio</label>
+																<label class="form-text text-muted">- a little bit about you (200 char.)</label>
+																<textarea rows="3" class="form-control" id="bio" name="bio" maxlength="200"><%= bio %></textarea>
+															</div>
+															<div class="mb-3">
+																<label class="form-label text-dark">Currently In</label>
+																<label class="form-text text-muted">- where are you currently? (50 char.)</label>
+																<input class="form-control" id="currentlyin" name="currentlyin" maxlength="50" value="<%= currentlyin %>">
+															</div>
+															<div class="mb-3">
+																<label class="form-label text-dark">Lives In</label>
+																<label class="form-text text-muted">- where do you call home? (50 char.)</label>
+																<input class="form-control" id="livesin" name="livesin" value="<%= livesin %>" maxlength="50">
+															</div>
+															<div class="mb-5">
+																<label class="form-label text-dark">From</label>
+																<label class="form-text text-muted">- where are you from? (50 char.)</label>
+																<input class="form-control" id="from" name="from" value="<%= from %>" maxlength="50">
+															</div>
+															<!--<div class="mb-3">
+																<label class="form-label">Instagram</label>
+																<label class="form-text text-muted">- if you want to link your instagram on your profile</label>
+																<input class="form-control" id="instagram" name="instagram" placeholder="<%= user.instagram %>" maxlength="50">
+															</div>
+															<div class="mb-3">
+																<label class="form-label">Website</label>
+																<label class="form-text text-muted">- if you want to link a blog or personal website</label>
+																<input class="form-control" id="website" name="website" placeholder="<%= user.website %>" maxlength="50">
+															</div>-->
+
+															<div>
+
+																<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+		
+																<button type="submit" class="btn btn-primary">Save changes</button>
+		
+															</div>
+
+														</div>
+													</div>
+												</form>
+
+
+								</div>
+
+								<div class="tab-pane fade" id="password" role="tabpanel">
+									<form action="/update-password/<%= user.username %>" method="POST">
+										<div class="card">
+											<div class="card-header">
+												<h5 class="card-title mb-0">Change Password</h5>
+											</div>
+
+											<div class="card-body col-md-10 offset-md-1">
+
+													<div class="mb-3">
+														<input type="text" class="form-control" id="username-register" name="username" maxlength="30" value="<%= user.username %>"hidden>
+													</div>
+
+													<div class="mb-3">
+														<input type="email" class="form-control" id="email-register" name="email" value="<%= email %>" hidden>
+													</div>
+			
+													<!--<div class="mb-5">
+														<label for="inputPasswordCurrent" class="form-label">Current password</label>
+														<input type="password" name="CurrentPassword" class="form-control form-control-lg" id="CurrentPassword">
+														<small><a href="#">Forgot your password?</a></small>
+													</div>-->
+
+													<div class="mb-3">
+
+														<style>
+															.form-item {
+																position: relative;
+																}
+		
+															.fas-eye {
+																position: absolute;
+																right: 1.1rem;
+																top: 0.8rem;
+																cursor: pointer;
+																}
+														</style>
+														<label class="form-label">New Password</label>
+														<div class="form-item">
+															<input type="password" name="PasswordNew" class="form-control form-control-lg" id="PasswordNew" maxlength="50" minlength="8"/>
+															<i class="fas-eye fas fa-eye" id="eye"></i>
+														  </div>
+		
+													</div>
+													<div class="mb-5">
+														<label class="form-label">Confirm Password</label>
+															<input class="form-control form-control-lg" type="password" name="confirm_password" id="confirm_password"/>
+															<span id='message'></span>
+													</div>
+
+													<div>
+
+														<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+														<button id="pass-submit" type="submit" class="btn btn-primary">Save changes</button>
+
+													</div>
+
+											</div>
+										</div>
+									</form>	
+								</div>
+
+								<div class="tab-pane fade" id="notifications" role="tabpanel">
+									<form action="/update-notifications/<%= user.username %>" method="POST">
+										<div class="card">
+											<div class="card-header">
+												<h5 class="card-title mb-0">Update Notifications</h5>
+											</div>
+
+											<div class="card-body col-md-10 offset-md-1">
+
+													<div class="mb-3">
+														<input type="text" class="form-control" id="username-register" name="username" maxlength="30" value="<%= user.username %>"hidden>
+													</div>
+
+													<div class="mb-3">
+														<input type="email" class="form-control" id="email-register" name="email" value="<%= email %>" hidden>
+													</div>
+			
+													<div class="mb-3">
+														<div class="form-check form-switch">
+															<input class="form-check-input" type="checkbox" value="true" name="followersemailnotifications" id="followersemailnotifications"<% if (settings.emailNotifications.followers == "true") { %> checked <% } %>/>
+															<label class="form-check-label">email notifications for new followers</label>
+														</div>
+													</div>
+													<div class="mb-5">
+														<div class="form-check form-switch">
+															<input class="form-check-input" type="checkbox" value="true" name="likesemailnotifications" id="likesemailnotifications" <% if (settings.emailNotifications.likes == "true") { %> checked <% } %>/>
+															<label class="form-check-label">email notifications for new entry likes</label>
+														</div>
+													</div>
+
+													<div>
+
+														<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+														<button type="submit" class="btn btn-primary">Save changes</button>
+
+													</div>
+
+											</div>
+										</div>
+
+									</form>	
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+			</main>
+
+<%- include('includes/footer') %>
+
+<script>
+		const password = document.querySelector("#PasswordNew");
+		const confirmpassword = document.querySelector("#confirm_password");
+		const eyeIcon = document.querySelector("#eye");
+		const submit = document.querySelector("#pass-submit")
+
+		eyeIcon.addEventListener("click", () => {
+		if (eyeIcon.classList.contains("fa-eye")) {
+			password.setAttribute("type", "text");
+			confirmpassword.setAttribute("type", "text")
+			eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
+		} else {
+			password.setAttribute("type", "password");
+			confirmpassword.setAttribute("type", "password")
+			eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
+		}
+		});
+
+		$('#PasswordNew, #confirm_password').on('keyup', function () {
+		if ($('#PasswordNew').val() == $('#confirm_password').val()) {
+			submit.removeAttribute("disabled");
+		} else 
+			submit.setAttribute("disabled", true);
+		});
+
+		$('#PasswordNew, #confirm_password').on('keyup', function () {
+		if ($('#PasswordNew').val() == $('#confirm_password').val()) {
+			$('#message').html('Matching').css('color', 'green');
+		} else 
+			$('#message').html('Not Matching').css('color', 'red');
+		});
+
+
+</script>

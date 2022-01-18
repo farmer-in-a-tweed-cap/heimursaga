@@ -1,0 +1,206 @@
+<%- include('includes/header') %>
+
+</head>
+
+<style type="text/css">
+  BODY {background:none transparent;}
+</style>
+
+<div style="background: white;" class="overflow-hidden">
+
+  <!--<div class="pt-3 row">
+
+    <div class="col-sm-6">
+
+      <div class="row text-center">
+
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="hidden" id="entry-id" class="entry-id" value="<%= entry._id %>">
+        <input type="hidden" id="has-highlighted" class="has-highlighted" value="<%= hasVisitorHighlighted %>">
+
+        <div class="col-6">
+
+          <% if (hasVisitorHighlighted) { %>
+
+          <button id="highlight-button" style="border: none; background: transparent;" class="text-primary">
+            <i id="icon-heimursaga-highlight" style="font-size: 6vw; color: #AC6D46;" class="icon-heimursaga-highlight"></i>
+            <div class="w-100"></div>
+            <small id="button-stack-label">highlighted</small>
+          </button>
+
+          <% } else { %>
+
+          <button id="highlight-button" style="border: none; background: transparent;" class="text-blue">
+            <i id="icon-heimursaga-highlight" style="font-size: 6vw; color: #3C73AA;" class="icon-heimursaga-highlight"></i>
+            <div class="w-100"></div>
+            <small id="button-stack-label">highlight</small>
+          </button>
+
+          <% } %>
+
+        </div>
+
+        <div class="col-6">
+          <button style="border: none; background: transparent;" class="text-blue">
+            <i style="font-size: 6vw;" class="icon-heimursaga-bookmark"></i>
+            <div class="w-100"></div>
+            <small>bookmark</small>
+          </button>
+        </div>
+
+      </div>
+
+    </div>  
+
+    <div class="col-sm-6">
+
+      <div class="row text-center">
+
+        <div class="col-6 text-blue">
+          <button style="border: none; background: transparent;" class="text-blue">
+            <i style="font-size: 6vw;" class="icon-heimursaga-follow-alt"></i>
+            <div class="w-100"></div>
+            <small>follow</small>
+          </button>
+        </div>
+
+        <div class="col-6 text-blue">
+          <button style="border: none; background: transparent; color: #adb5bd;" disabled>
+            <i style="font-size: 6vw;" class="icon-heimursaga-fund-alt"></i>
+            <div class="w-100"></div>
+            <small>fund</small>
+          </button>
+        </div>
+
+      </div> 
+
+    </div>
+  </div>-->
+
+  <% if (user) { %>
+  
+      <div class="pt-3 col-sm-12 offset-2 row text-center">
+
+        <% if (!entry.isVisitorOwner) { %>
+
+        <div class="col-2">
+  
+        <% } else { %>
+  
+        <div class="col-4">
+  
+        <% } %>
+
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input type="hidden" id="entry-id" class="entry-id" value="<%= entry._id %>">
+          <input type="hidden" id="has-highlighted" class="has-highlighted" value="<%= hasVisitorHighlighted %>">
+
+          <% if (hasVisitorHighlighted) { %>
+
+          <button id="highlight-button" style="border: none; background: transparent;" class="text-primary">
+            <i id="icon-heimursaga-highlight" style="font-size: x-large; color: #AC6D46;" class="icon-heimursaga-highlight"></i>
+            <div class="w-100"></div>
+            <i id="highlight-check" class="highlight-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
+          </button>
+
+          <% } else { %>
+
+          <button id="highlight-button" style="border: none; background: transparent;" class="text-blue">
+            <i id="icon-heimursaga-highlight" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-highlight"></i>
+            <div class="w-100"></div>
+            <i id="highlight-check" class="highlight-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check" hidden></i>
+          </button>
+
+          <% } %>
+
+        </div>
+
+        <% if (!entry.isVisitorOwner) { %>
+
+        <div class="col-2">
+
+        <% } else { %>
+
+        <div class="col-4">
+
+        <% } %>
+
+          <input type="hidden" id="has-bookmarked" class="has-bookmarked" value="<%= hasVisitorBookmarked%>">
+  
+
+          <% if (hasVisitorBookmarked) { %>
+
+          <button id="bookmark-button" style="border: none; background: transparent;" class="text-primary">
+            <i id="icon-heimursaga-bookmark" style="font-size: x-large; color: #AC6D46;" class="icon-heimursaga-bookmark"></i>
+            <div class="w-100"></div>
+            <i id="bookmark-check" class="bookmark-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
+          </button>
+  
+          <% } else { %>
+  
+          <button id="bookmark-button" style="border: none; background: transparent;" class="text-blue">
+            <i id="icon-heimursaga-bookmark" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-bookmark"></i>
+            <div class="w-100"></div>
+            <i id="bookmark-check" class="bookmark-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check" hidden></i>
+          </button>
+  
+          <% } %>
+
+        </div>
+
+        <% if (!entry.isVisitorOwner) { %>
+
+        <div class="col-2">
+
+          <input type="hidden" id="is-following" class="is-following" value="<%= isVisitorFollowing %>">
+          <input type="hidden" id="entry-username" class="entry-username" value="<%= entry.author.username %>">
+
+  
+          <% if (isVisitorFollowing) { %>
+
+          <button id="follow-button" style="border: none; background: transparent;" class="text-primary">
+            <i id="icon-heimursaga-follow-alt" style="font-size: x-large; color: #AC6D46;" class="icon-heimursaga-follow-alt"></i>
+            <div class="w-100"></div>
+            <i id="follow-check" class="follow-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
+          </button>
+  
+          <% } else { %>
+  
+          <button id="follow-button" style="border: none; background: transparent;" class="text-blue">
+            <i id="icon-heimursaga-follow-alt" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-follow-alt"></i>
+            <div class="w-100"></div>
+            <i id="follow-check" class="follow-check" style="color: white; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
+          </button>
+  
+          <% } %>
+
+        </div>
+
+        <% } %>
+
+        <% if (!entry.isVisitorOwner) { %>
+
+        <div class="col-2">
+
+          <button id="fund-button" style="border: none; background: transparent;" class="text-blue" disabled>
+            <i id="icon-heimursaga-fund-alt" style="font-size: x-large; color: #adb5bd;" class="icon-heimursaga-fund-alt"></i>
+            <div class="w-100"></div>
+            <i id="fund-check" class="fund-check" style="color: white; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
+          </button>
+        </div>
+
+        <% } %>
+
+      </div> 
+
+    <% } %>
+
+</div>
+
+<script>
+
+
+</script>
+
+<script src="js/app.js"></script>
+
