@@ -27,7 +27,6 @@ export default class Flag {
         if (response) {
             console.log('flag confirmed')
             this.changePrimary()
-            parent.window.notyf.error('You have flagged this entry for review');
             document.querySelector("#flag-label").innerText = 'flagged'
             this.waitTimer = setTimeout(() => this.sendRequest(), 750)
         } else {

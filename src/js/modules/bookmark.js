@@ -1,7 +1,4 @@
 import axios from 'axios'
-import { Notyf } from "notyf";
-
-
 
 export default class Bookmark {
     constructor() {
@@ -28,13 +25,11 @@ export default class Bookmark {
         if (document.querySelector(".icon-heimursaga-bookmark").style.color == "rgb(60, 115, 170)"){
 
             this.changePrimary()
-            parent.window.notyf.success(`You have bookmarked this entry`);
             this.waitTimer = setTimeout(() => this.sendRequest(), 750)
 
         } else {
 
             this.changeBlue()
-            parent.window.notyf.error({background: '#3C73AA', message: `Your bookmark has been removed`});
             this.waitTimer = setTimeout(() => this.sendRequest(), 750)
 
 
@@ -44,7 +39,7 @@ export default class Bookmark {
     sendRequest() {
         if (document.querySelector(".icon-heimursaga-bookmark").style.color != "rgb(60, 115, 170)"){
             axios.post(`/addBookmark/${this.entryId}`, {_csrf: this._csrf, id: this.entryId}).then(() => {
-                console.log('bookmark added')
+                console.log('successfully bookmarked')
             })
         } else {
             axios.post(`/removeBookmark/${this.entryId}`, {_csrf: this._csrf, id: this.entryId}).then(() => {
@@ -52,7 +47,6 @@ export default class Bookmark {
             })
         }
     }
-
 
 
     changePrimary() {

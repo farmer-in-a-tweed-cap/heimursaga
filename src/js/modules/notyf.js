@@ -1,15 +1,8 @@
 // Usage: https://github.com/caroso1222/notyf
 import { Notyf } from "notyf";
 
-
-var blue = '#3C73AA'
-var green = '#409e72'
-var red = '#ac4946'
-var copper = '#AC6D46'
-
-
 window.notyf = new Notyf({
-  duration: 3000,
+  duration: 5000,
   position: {
     x: "right",
     y: "top"
@@ -26,7 +19,8 @@ window.notyf = new Notyf({
     },
     {
       type: "success",
-      backgroundColor: copper,
+      //backgroundColor: "#28a745",
+      backgroundColor: "#4676AC",
       icon: {
         className: "notyf__icon--success",
         tagName: "i",
@@ -34,7 +28,8 @@ window.notyf = new Notyf({
     },
     {
       type: "warning",
-      backgroundColor: blue,
+      backgroundColor: "#ffc107",
+      //backgroundColor: "#fa8072",
       icon: {
         className: "notyf__icon--error",
         tagName: "i",
@@ -42,7 +37,8 @@ window.notyf = new Notyf({
     },
     {
       type: "error",
-      backgroundColor: red,
+      backgroundColor: "#ac4946",
+      //backgroundColor: "#fa8072",
       icon: {
         className: "notyf__icon--error",
         tagName: "i",

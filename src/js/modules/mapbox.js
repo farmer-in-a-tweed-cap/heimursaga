@@ -14,47 +14,14 @@ export default class Map {
 constructor() {
   var map = new mapboxgl.Map({
     container: 'map',
-    //style: 'mapbox://styles/mapbox/light-v10',
-  	//style: 'mapbox://styles/cnh1187/ckwqxzg5w196n14ml3snpoo7m', // heimursaga custom style blue water
-		style: 'mapbox://styles/cnh1187/ckwqyxju41h0c14o695dd3fdt', // heimursaga custom style grey water
+    style: 'mapbox://styles/mapbox/light-v10',
+    //style: 'mapbox://styles/cnh1187/ckppoum2i01vk17mzb71uh331',
     center: [-33.609412,36.749601],
     zoom: 0,
     attributionControl: false,
     dragRotate: false,
     touchPitch: false,
 });
-
-    map.on('load', () => {
-      map.addSource('10m-bathymetry-81bsvj', {
-      type: 'vector',
-      url: 'mapbox://mapbox.9tm8dx88'
-      });
-      
-      map.addLayer(
-      {
-      'id': '10m-bathymetry-81bsvj',
-      'type': 'fill',
-      'source': '10m-bathymetry-81bsvj',
-      'source-layer': '10m-bathymetry-81bsvj',
-      'layout': {},
-      'paint': {
-      'fill-outline-color': 'hsla(337, 82%, 62%, 0)',
-      // cubic bezier is a four point curve for smooth and precise styling
-      // adjust the points to change the rate and intensity of interpolation
-      'fill-color': [
-      'interpolate',
-      ['cubic-bezier', 0, 0.5, 1, 0.5],
-      ['get', 'DEPTH'],
-      200,
-      '#8c8c8c',
-      9000,
-      '#4d4d4d'
-      ]
-      }
-      },
-      'land-structure-polygon'
-      );
-      });
 
 
 
@@ -329,7 +296,7 @@ map.on('load', async function(){
       
                                 <div class="modal-body">
                                   <div class="text-center mb-1 overflow-hidden">
-                                    <img src="https://api.mapbox.com/styles/v1/cnh1187/ckwqyxju41h0c14o695dd3fdt/static/pin-s+ac6d46(${entry.GeoJSONcoordinates.coordinates})/${entry.GeoJSONcoordinates.coordinates},6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
+                                    <img src="https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+ac6d46(${entry.GeoJSONcoordinates.coordinates})/${entry.GeoJSONcoordinates.coordinates},6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
                                   </div>
                                   <div class="mb-4 text-center">
                                     <small>Longitude: ${entry.GeoJSONcoordinates.coordinates[0]}, Latitude: ${entry.GeoJSONcoordinates.coordinates[1]}</small>
@@ -369,14 +336,10 @@ map.on('load', async function(){
                                   </small>
                               </div>
 
-                              <div class="">
+                              <div class="pb-2">
 													  
                                 <iframe src="flag-button/${entry._id}" id="flag-button" height="60"></iframe>
               
-                              </div>
-
-                              <div class="modal-body m-0">
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                               </div>
 
                             </div>
@@ -423,7 +386,7 @@ map.on('load', async function(){
               
                                         <div class="modal-body">
                                           <div class="text-center mb-1 overflow-hidden">
-                                            <img src="https://api.mapbox.com/styles/v1/cnh1187/ckwqyxju41h0c14o695dd3fdt/static/pin-s+ac6d46(${entry.GeoJSONcoordinates.coordinates})/${entry.GeoJSONcoordinates.coordinates},6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
+                                            <img src="https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+ac6d46(${entry.GeoJSONcoordinates.coordinates})/${entry.GeoJSONcoordinates.coordinates},6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
                                           </div>
                                           <div class="mb-4 text-center">
                                             <small>Longitude: ${entry.GeoJSONcoordinates.coordinates[0]}, Latitude: ${entry.GeoJSONcoordinates.coordinates[1]}</small>
@@ -462,14 +425,10 @@ map.on('load', async function(){
                                             </small>
                                         </div>
 
-                                        <div class="">
+                                        <div class="pb-2">
 													  
                                           <iframe src="flag-button/${entry._id}" id="flag-button" height="60"></iframe>
                       
-                                        </div>
-
-                                        <div class="modal-body m-0">
-                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
         
                                     </div>

@@ -846,12 +846,7 @@ $jsvectormap-zoom-btn: $dark !default;
 }
 
 
-.icon-heimursaga-message-alt:before {
-  content: "\e908";
-}
-.icon-heimursaga-message:before {
-  content: "\e909";
-}
+
 .icon-heimursaga-follow-alt-2:before {
   content: "\e907";
 }
@@ -885,10 +880,6 @@ iframe {
 
 body {
   &.modal-open {
-    bottom: 0;
-    left: 0;
-    position: fixed;
-    right: 0;
-    top: 0;
+      position: fixed;
   }
 }
