@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+
 export default class Follow {
     constructor() {
         this.followButton = document.querySelector("#follow-button")
@@ -24,11 +25,13 @@ export default class Follow {
         if (document.querySelector(".icon-heimursaga-follow-alt").style.color == "rgb(60, 115, 170)"){
 
             this.changePrimary()
+            parent.window.notyf.success(`You are now following ${this.entryAuthor}`);
             this.waitTimer = setTimeout(() => this.sendRequest(), 750)
 
         } else {
 
             this.changeBlue()
+            parent.window.notyf.error({background: '#3C73AA', message: `You have unfollowed ${this.entryAuthor}`});
             this.waitTimer = setTimeout(() => this.sendRequest(), 750)
 
 
@@ -38,7 +41,7 @@ export default class Follow {
     sendRequest() {
         if (document.querySelector(".icon-heimursaga-follow-alt").style.color != "rgb(60, 115, 170)"){
             axios.post(`/addFollow/${this.entryAuthor}`, {_csrf: this._csrf, username: this.entryAuthor}).then(() => {
-                console.log('successfully followed')
+                console.log('follow added')
             })
         } else {
             axios.post(`/removeFollow/${this.entryAuthor}`, {_csrf: this._csrf, username: this.entryAuthor}).then(() => {

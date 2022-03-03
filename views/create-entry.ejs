@@ -215,9 +215,18 @@
 							<div class="col-12 col-xl-12">
 							  <div class="card">
 								<div class="card-header">
-								  <h5 class="card-title mb-0">5. Post or save entry</h5>
+								  <h5 class="card-title mb-0">5. Confirm privacy and post/save entry</h5>
 								</div>
 								<div class="card-body">
+
+									<div class="form-check">
+										<input type="radio" class="form-check-input" name="flexRadioDefault" id="entrypublic" value="public" autocomplete="off" checked>
+										<label class="form-check-label" for="entrypublic">Public</label>
+								  	</div>
+									<div class="form-check pb-3">
+										<input type="radio" class="form-check-input" name="flexRadioDefault" id="entryprivate" value="private" autocomplete="off">
+										<label class="form-check-label" for="entryprivate">Private</label>
+									</div>
 
 									<div class="submit_error form-text text-danger"></div>
 
@@ -329,18 +338,64 @@
 		mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
 		const entrymap = new mapboxgl.Map({
 			container: 'entrymap', // container ID
-			style: 'mapbox://styles/cnh1187/ckppoum2i01vk17mzb71uh331', // style URL
+			//style: 'mapbox://styles/mapbox/light-v10',
+			//style: 'mapbox://styles/cnh1187/ckwqxzg5w196n14ml3snpoo7m', // heimursaga custom style blue water
+			style: 'mapbox://styles/cnh1187/ckwqyxju41h0c14o695dd3fdt', // heimursaga custom style grey water
 			center: [-33.609412,36.749601], // starting position [lng, lat]
 			zoom: 0,// starting zoom
 			attributionControl: false,
 			});
 
+			entrymap.on('load', () => {
+				entrymap.addSource('10m-bathymetry-81bsvj', {
+				type: 'vector',
+				url: 'mapbox://mapbox.9tm8dx88'
+				});
+				
+				entrymap.addLayer(
+				{
+				'id': '10m-bathymetry-81bsvj',
+				'type': 'fill',
+				'source': '10m-bathymetry-81bsvj',
+				'source-layer': '10m-bathymetry-81bsvj',
+				'layout': {},
+				'paint': {
+				'fill-outline-color': 'hsla(337, 82%, 62%, 0)',
+				// cubic bezier is a four point curve for smooth and precise styling
+				// adjust the points to change the rate and intensity of interpolation
+				'fill-color': [
+				'interpolate',
+				['cubic-bezier', 0, 0.5, 1, 0.5],
+				['get', 'DEPTH'],
+				200,
+				'#8c8c8c',
+				9000,
+				'#4d4d4d'
+				]
+				}
+				},
+				'land-structure-polygon'
+				);
+				});
+
+				
 			var marker = new mapboxgl.Marker({
 				color: '#ac6d46',
 				draggable: false,
 				})
 				.setLngLat([-33.609412,36.749601])
 				.addTo(entrymap);
+
+			entrymap.on('load', () => {
+				entrymap.addSource('mapbox-dem', {
+				'type': 'raster-dem',
+				'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+				'tileSize': 512,
+				'maxzoom': 14
+				});
+				// add the DEM source as a terrain layer with exaggerated height
+				entrymap.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+				})
 
 
 			entrymap.on('move', function (e) {

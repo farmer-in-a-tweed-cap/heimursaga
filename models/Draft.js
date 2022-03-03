@@ -34,7 +34,8 @@ Draft.prototype.cleanUp = function() {
     GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
     createdDate: new Date(),
     author: ObjectID(this.userid),
-    hasPhoto: this.photo
+    hasPhoto: this.photo,
+    privacy: this.data.flexRadioDefault
   }
 }
 
@@ -85,7 +86,7 @@ Draft.prototype.actuallyUpdate = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await draftsCollection.findOneAndUpdate({_id: new ObjectID(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, body: this.data.body, date: this.data.date}})
+      await draftsCollection.findOneAndUpdate({_id: new ObjectID(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, body: this.data.body, date: this.data.date, privacy: this.data.privacy}})
       resolve("success")
     } else {
       resolve("failure")
@@ -137,6 +138,7 @@ Draft.reusableDraftQuery = function(uniqueOperations, visitorId, finalOperations
         createdDate: 1,
         authorId: "$author",
         hasPhoto: 1,
+        privacy: 1,
         author: {$arrayElemAt: ["$authorDocument", 0]}
       }}
     ]).concat(finalOperations)

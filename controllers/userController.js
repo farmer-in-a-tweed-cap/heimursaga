@@ -318,8 +318,12 @@ exports.ifUserExists = function(req, res, next) {
 }
 
 exports.journalScreen = function(req, res) {
+
+  if (req.isVisitorsProfile == true) {
   // ask our post model for posts by a certain author id
+
   Entry.findByAuthorId(req.profileUser._id).then(async function(entries) {
+
     let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
     let following = await Follow.getFollowingById(req.profileUser._id)
     let followers = await Follow.getFollowersById(req.profileUser._id)
@@ -378,7 +382,67 @@ exports.journalScreen = function(req, res) {
     res.render("404")
   })
 
-}
+} else {
+  Entry.findPublicByAuthorId(req.profileUser._id).then(async function(entries) {
+
+    let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
+    let following = await Follow.getFollowingById(req.profileUser._id)
+    let followers = await Follow.getFollowersById(req.profileUser._id)
+    let highlightedEntries = await Highlight.getHighlightedById(req.profileUser._id)
+    let bookmarkedEntries = await Bookmark.getBookmarkedById(req.profileUser._id)
+    let drafts = await Draft.findByAuthorId(req.profileUser._id)
+    let user = await User.findByUsername(req.profileUser.username)
+
+    if (req.isVisitorsProfile == true){
+      res.render('journal', {
+        pageName: "my-journal",
+        entries: entries,
+        drafts: drafts,
+        followers: followers,
+        following: following,
+        highlighted: highlightedEntries,
+        bookmarked: bookmarkedEntries,
+        bio: user.bio,
+        currentlyin: user.currentlyin,
+        livesin: user.livesin,
+        from: user.from,
+        instagram: user.instagram,
+        website: user.website,
+        type: user.type,
+        entrymarker: JSON.stringify(entryMarker),
+        profileUsername: req.profileUser.username,
+        profileAvatar: req.profileUser.avatar,
+        isFollowing: req.isFollowing,
+        isVisitorsProfile: req.isVisitorsProfile,
+        counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
+      })
+    } else {
+    res.render('journal', {
+      pageName: "journal",
+      entries: entries,
+      drafts: drafts,
+      followers: followers,
+      following: following,
+      highlighted: highlightedEntries,
+      bookmarked: bookmarkedEntries,
+      bio: user.bio,
+      currentlyin: user.currentlyin,
+      livesin: user.livesin,
+      from: user.from,
+      instagram: user.instagram,
+      website: user.website,
+      type: user.type,
+      entrymarker: JSON.stringify(entryMarker),
+      profileUsername: req.profileUser.username,
+      profileAvatar: req.profileUser.avatar,
+      isFollowing: req.isFollowing,
+      isVisitorsProfile: req.isVisitorsProfile,
+      counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
+    })}
+  }).catch(function() {
+    res.render("404")
+  })
+}}
 
 exports.myFeed = async function(req, res) {
   if (req.session.user){

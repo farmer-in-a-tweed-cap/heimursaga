@@ -8,6 +8,7 @@ const { Photo } = require('./Photo')
 
 //entriesCollection.createIndex({title: "text", body: "text", place: "text", authorUsername: "text"})
 
+//entriesCollection.updateMany({}, {$set: {privacy: "public"}})
 
 
 let Entry = function(data, photo, Id, userid, username, requestedEntryId) {
@@ -52,7 +53,8 @@ Entry.prototype.cleanUp = function() {
     createdDate: new Date(),
     author: ObjectID(this.userid),
     authorUsername: this.authorUsername,
-    hasPhoto: this.photo
+    hasPhoto: this.photo,
+    privacy: this.data.flexRadioDefault
   }
 }
 
@@ -103,7 +105,7 @@ Entry.prototype.actuallyUpdate = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await entriesCollection.findOneAndUpdate({_id: new ObjectID(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup}})
+      await entriesCollection.findOneAndUpdate({_id: new ObjectID(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup, privacy: this.data.privacy}})
       resolve("success")
     } else {
       resolve("failure")
@@ -155,6 +157,7 @@ Entry.reusableEntryQuery = function(uniqueOperations, visitorId, finalOperations
         popup: 1,
         createdDate: 1,
         hasPhoto: 1,
+        privacy: 1,
         authorId: "$author",
         author: {$arrayElemAt: ["$authorDocument", 0]},
       }}
@@ -206,6 +209,14 @@ Entry.findByAuthorId = function(authorId) {
   ])
 }
 
+Entry.findPublicByAuthorId = function(authorId) {
+  return Entry.reusableEntryQuery([
+    {$match: {author: authorId}},
+    {$match: {privacy: "public"}},
+    {$sort: {createdDate: -1}}
+  ])
+}
+
 Entry.delete = function(entryIdToDelete, currentUserId) {
   return new Promise(async (resolve, reject) => {
     try {
@@ -226,7 +237,8 @@ Entry.search = function(searchTerm) {
   return new Promise(async (resolve, reject) => {
     if (typeof(searchTerm) == "string") {
       let entries = await Entry.reusableEntryQuery([
-        {$match: {$text: {$search: searchTerm}}}
+        {$match: {$text: {$search: searchTerm}}},
+        {$match: {privacy: "public"}},
       ], undefined, [{$sort: {score: {$meta: "textScore"}}}])
       resolve(entries)
     } else { 
@@ -244,6 +256,7 @@ Entry.countEntriesByAuthor = function(id) {
 
 Entry.getFeed = async function() {
   return Entry.reusableEntryQuery([
+    {$match: {privacy: "public"}},
     {$sort: {createdDate: -1}}
   ])
 }
@@ -259,6 +272,7 @@ Entry.getFollowedFeed = async function(id) {
   // look for posts where the author is in the above array of followed users
   return Entry.reusableEntryQuery([
     {$match: {author: {$in: followedUsers}}},
+    {$match: {privacy: "public"}},
     {$sort: {createdDate: -1}}
   ])
 }

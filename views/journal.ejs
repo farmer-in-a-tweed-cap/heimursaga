@@ -47,10 +47,10 @@
 										<% if (type == "ExplorerPro") { %>
 										<img src="<%= profileAvatar %>" class="img-fluid rounded-circle border border-primary mb-2" style="border-width: 3px !important;" width="128" height="128" />
 										<% } else { %>
-										<img src="<%= profileAvatar %>" class="img-fluid rounded-circle mb-2" width="128" height="128" />
+										<img src="<%= profileAvatar %>" class="img-fluid rounded-circle mb-3" width="128" height="128" />
 										<% } %>
 
-										<h5 class="card-title mb-5"><%= profileUsername %></h5>
+										<h5 class="card-title mb-4"><%= profileUsername %></h5>
 										<!--<div class="text-muted mb-2"><%= type %></div>-->
 
 										<% if (user && !isVisitorsProfile) { %>
@@ -80,6 +80,18 @@
 
 										
 											<% } %>
+
+												<button id="fund-button" style="border: none; background: transparent;" class="text-blue" disabled>
+													<i id="icon-heimursaga-fund-alt" style="font-size: x-large; color: #adb5bd;" class="icon-heimursaga-fund-alt"></i>
+													<div class="w-100"></div>
+													<i id="follow-check" class="fund-check" style="color: white; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
+												</button>
+
+												<button id="message-button" style="border: none; background: transparent;" class="text-blue" disabled>
+													<i id="icon-heimursaga-message" style="font-size: x-large; color: #adb5bd;" class="icon-heimursaga-message"></i>
+													<div class="w-100"></div>
+													<i id="follow-check" class="message-check" style="color: white; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
+												</button>
 
 											</div>
 
@@ -251,9 +263,15 @@
 												<div class="list-group list-group-flush">
 													<% entries.forEach(function(entry) { %>
 														<a data-bs-toggle="modal" href="#sizedModalMd-<%= entry._id %>" class="list-group-item list-group-item-action">
+															<% if (entry.privacy == "private") { %>
+																<strong><%= entry.title %></strong><br/>
+																<i class="align-middle me-0 fas fa-fw fa-lock text-blue"></i> <small class="align-middle"><%= entry.place %> | <%= entry.date %></small><br/>
+																<small>by <strong><%= entry.author.username %></strong></small>	
+															<% } else { %>
 															<strong><%= entry.title %></strong><br/>
 															<i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle"><%= entry.place %> | <%= entry.date %></small><br/>
 															<small>by <strong><%= entry.author.username %></strong></small>
+															<% } %>
 															</a>
 																<div class="modal fade" id="sizedModalMd-<%= entry._id %>" data-bs-target="#sizedModalMd" data-bs-whatever="<%= entry._id %>" tabindex="-1" role="dialog" aria-hidden="true">
 																	<div class="modal-dialog modal-md modal-dialog-centered" role="document">
@@ -269,9 +287,21 @@
 																				<hr>
 																			</div>
 												  
+																			<% if (entry.privacy == "private") { %>
+
 																			<div class="modal-body col-md-8 offset-md-2 pb-0 pt-0 text-center">
-																			  <h5><i class="align-middle mr-5 fas fa-fw fa-map-marker-alt text-primary"></i><%= entry.place %></h5>
+																				<h5><i class="align-middle mr-5 fas fa-fw fa-lock text-blue"></i><%= entry.place %></h5>
 																			</div>
+
+																			<% } else { %>
+
+																			<div class="modal-body col-md-8 offset-md-2 pb-0 pt-0 text-center">
+																				<h5><i class="align-middle mr-5 fas fa-fw fa-map-marker-alt text-primary"></i><%= entry.place %></h5>
+																			</div>
+
+																			<% } %>
+
+
 																  
 																			<div class="modal-body col-md-8 offset-md-2 pt-0">
 																				<h5 class="text-center text-muted">on <%= new Date(entry.date).toLocaleString('default', { month: 'long' }) %> <%= new Date(entry.date).getDate() %>, <%= new Date(entry.date).getFullYear() %> | by <a href="/journal/${entry.author.username}"><%= entry.author.username %></a></h5>
@@ -279,8 +309,7 @@
 												  
 																			<div class="modal-body">
 																			  <div class="text-center mb-1 overflow-hidden">
-																				<img src="https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+ac6d46(<%=entry.GeoJSONcoordinates.coordinates%>)/<%=entry.GeoJSONcoordinates.coordinates%>,6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
-																				<!--<img src="https://api.mapbox.com/styles/v1/cnh1187/ckppoum2i01vk17mzb71uh331/static/pin-s+ac6d46(<%=entry.GeoJSONcoordinates.coordinates%>)/<%=entry.GeoJSONcoordinates.coordinates%>,6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">-->
+																				<img src="https://api.mapbox.com/styles/v1/cnh1187/ckwqyxju41h0c14o695dd3fdt/static/pin-s+ac6d46(<%=entry.GeoJSONcoordinates.coordinates%>)/<%=entry.GeoJSONcoordinates.coordinates%>,6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
 																			  </div>
 																			  <div class="mb-4 text-center">
 																				<small>Longitude: <%= entry.GeoJSONcoordinates.coordinates[0]%>, Latitude: <%= entry.GeoJSONcoordinates.coordinates[1]%></small>
@@ -346,7 +375,7 @@
 
 																				  <% } else { %>
 													
-																					<div class="pb-2">
+																					<div class="">
 													  
 																						<iframe src="flag-button/<%= entry._id %>" id="flag-button" height="60"></iframe>
 													  
@@ -354,6 +383,10 @@
 													
 																				  <% } %>
 																  
+																			</div>
+
+																			<div class="modal-body m-0">
+																				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 																			</div>
 
 						

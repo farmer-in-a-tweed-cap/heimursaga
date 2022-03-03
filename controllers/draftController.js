@@ -49,6 +49,7 @@ exports.viewEditScreen = async function(req, res) {
       let draft = await Draft.findSingleById(req.params.id, req.visitorId)
       let entryMarker = GeoJSON.parse(draft.GeoJSONcoordinates, {'Point': ['draft.GeoJSONcoordinates.coordinates[0]','draft.GeoJSONcoordinates.coordinates[1]']})
       if (draft.isVisitorOwner) {
+          console.log(draft)
         res.render("edit-draft", {draft: draft, entrymarker: JSON.stringify(entryMarker), pageName: "edit-draft"})
       } else {
         req.flash("errors", "You do not have permission to perform that action.")

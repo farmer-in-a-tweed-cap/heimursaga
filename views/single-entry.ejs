@@ -29,9 +29,20 @@
                               <hr>
                           </div>
 
-                          <div class="mb-2 text-center">
-                            <h5><i class="align-middle mr-5 fas fa-fw fa-map-marker-alt text-primary"></i><%= entry.place %></h5>
-                          </div>
+                          <% if (entry.privacy == "private") { %>
+
+                            <div class="mb-2 text-center">
+                              <h5><i class="align-middle mr-5 fas fa-fw fa-lock text-blue"></i><%= entry.place %></h5>
+                            </div>
+
+                            <% } else { %>
+
+                            <div class="mb-2 text-center">
+                              <h5><i class="align-middle mr-5 fas fa-fw fa-map-marker-alt text-primary"></i><%= entry.place %></h5>
+                            </div>
+
+                            <% } %>
+
                 
                           <div class="mb-2">
                               <h5 class="text-center text-muted">on <%= new Date(entry.date).toLocaleString('default', { month: 'long' }) %> <%= new Date(entry.date).getDate() %>, <%= new Date(entry.date).getFullYear() %> | by <a href="/journal/<%= entry.author.username %>"><%= entry.author.username %></a></h5>
@@ -142,8 +153,9 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ
 
 const singlemap = new mapboxgl.Map({
     container: 'singlemap',
-    style: 'mapbox://styles/mapbox/light-v10',
-    //style: 'mapbox://styles/cnh1187/ckppoum2i01vk17mzb71uh331',
+    //style: 'mapbox://styles/mapbox/light-v10',
+  	//style: 'mapbox://styles/cnh1187/ckwqxzg5w196n14ml3snpoo7m', // heimursaga custom style blue water
+	  style: 'mapbox://styles/cnh1187/ckwqyxju41h0c14o695dd3fdt', // heimursaga custom style grey water
     center: singlemarker.properties.coordinates,
     zoom: 1,
     attributionControl: false,
@@ -156,6 +168,38 @@ const singlemap = new mapboxgl.Map({
     touchPan: false,
     maxZoom: 22
 });
+
+singlemap.on('load', () => {
+				singlemap.addSource('10m-bathymetry-81bsvj', {
+				type: 'vector',
+				url: 'mapbox://mapbox.9tm8dx88'
+				});
+				
+				singlemap.addLayer(
+				{
+				'id': '10m-bathymetry-81bsvj',
+				'type': 'fill',
+				'source': '10m-bathymetry-81bsvj',
+				'source-layer': '10m-bathymetry-81bsvj',
+				'layout': {},
+				'paint': {
+				'fill-outline-color': 'hsla(337, 82%, 62%, 0)',
+				// cubic bezier is a four point curve for smooth and precise styling
+				// adjust the points to change the rate and intensity of interpolation
+				'fill-color': [
+				'interpolate',
+				['cubic-bezier', 0, 0.5, 1, 0.5],
+				['get', 'DEPTH'],
+				200,
+				'#8c8c8c',
+				9000,
+				'#4d4d4d'
+				]
+				}
+				},
+				'land-structure-polygon'
+				);
+				});
 
 singlemap.addControl(new mapboxgl.NavigationControl())
 
