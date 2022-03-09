@@ -7,7 +7,7 @@ import GeoJSON from 'geojson'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
 
-
+var globalPopup
 
 export default class DiscoveryMap {
 
@@ -27,8 +27,9 @@ export default class DiscoveryMap {
     this.overlay = document.querySelector('#overlay')
     this.feed = document.querySelector('#entry-div')
     this.entryfeed = document.querySelector('#dynamic-entry-feed')
+    this.loaderIcon = document.querySelector(".spinner-border")
     this.loadzoom = 3
-    this.timeout = 2000
+    this.timeout = 500
     this.events()
   }
 
@@ -155,15 +156,17 @@ export default class DiscoveryMap {
 
   hideOverlay() {
     console.log('hiding overlay')
-    document.activeElement.blur()
     this.overlay.style.display = "none";
     this.feed.style.display = "block"
+    this.entryfeed.innerHTML = '<div class="text-center text-muted">Loading...</div>'
   }
+
 
   loadEntries() {
     var bounds = this.discoverymap.getBounds().toArray()
     if (this.discoverymap.getZoom() > this.loadzoom) {
       console.log('loading entries')
+      this.loader = "loader"
       setTimeout(() => this.sendRequest(bounds), this.timeout)
     } else {
       this.entryfeed.innerHTML = `<div class="text-center"><p class="text-muted">The map is currently at zoom level <strong>${Math.round(this.discoverymap.getZoom()*10)/10}</strong>. Zoom in past level ${this.loadzoom} to populate the entry feed and read full entries.</p></div>`
@@ -175,6 +178,14 @@ export default class DiscoveryMap {
       this.loadMarkers(response)
       this.renderEntryHTML(response)
     })
+  }
+
+  showLoaderIcon() {
+    this.loaderIcon.classList.add("circle-loader--visible")
+  }
+
+  hideLoaderIcon() {
+    this.loaderIcon.classList.remove("circle-loader--visible")
   }
 
   loadMarkers(entries) {
@@ -276,6 +287,7 @@ export default class DiscoveryMap {
         var coordinates = e.features[0].geometry.coordinates.slice();
         var popup = e.features[0].properties.popup;
         var id = e.features[0].properties._id;
+
             
         this.easeTo({
           center: coordinates,
@@ -287,12 +299,13 @@ export default class DiscoveryMap {
             // copies of the feature are visible, the popup appears
             // over the copy being pointed to.
         while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
         }
-          new mapboxgl.Popup({closeButton: false, focusAfterOpen: false})
-            .setLngLat(coordinates)
-            .setHTML(popup+`<a data-bs-toggle="modal" href="#sizedModalMd-${id}">Expand</a>`)
-            .addTo(this);
+         
+       globalPopup = new mapboxgl.Popup({closeButton: false, focusAfterOpen: true})
+          .setLngLat(coordinates)
+          .setHTML(popup+`<a data-bs-toggle="modal" href="#sizedModalMd-${id}">Expand</a>`)
+          .addTo(this);
       });
     
       this.discoverymap.on('mouseenter', `unclustered-point${sourceID}`, function () {
@@ -351,16 +364,16 @@ export default class DiscoveryMap {
                           </div>
 
 
-                        <div class="modal-body mb-2">
-                          ${JSON.parse(JSON.stringify(entry.body, null,1)).replace(/\n/g, "</p><p>")}
+                          <div class="modal-body mb-2">
+                            ${JSON.parse(JSON.stringify(entry.body, null,1)).replace(/\n/g, "</p><p>")}
+                          </div>
+
+
+                          ${(entry.hasPhoto == true) ? `
+                          <div class="modal-body">
+                            <img src="https://f002.backblazeb2.com/file/heimursaga-entry-photos/${entry._id}" class="img-fluid mb-3" alt="entry image">
+                          </div> ` : ``}
                         </div>
-
-
-                        ${(entry.hasPhoto == true) ? `
-                        <div class="modal-body">
-                          <img src="https://f002.backblazeb2.com/file/heimursaga-entry-photos/${entry._id}" class="img-fluid mb-3" alt="entry image">
-                        </div> ` : ``}
-
                         
 
                       <div class="iframe-container">
