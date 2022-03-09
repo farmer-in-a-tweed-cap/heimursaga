@@ -7,7 +7,6 @@ import GeoJSON from 'geojson'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
 
-var globalPopup
 
 export default class DiscoveryMap {
 
@@ -302,7 +301,7 @@ export default class DiscoveryMap {
           coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
         }
          
-       globalPopup = new mapboxgl.Popup({closeButton: false, focusAfterOpen: true})
+       new mapboxgl.Popup({closeButton: false, focusAfterOpen: true})
           .setLngLat(coordinates)
           .setHTML(popup+`<a data-bs-toggle="modal" href="#sizedModalMd-${id}">Expand</a>`)
           .addTo(this);
