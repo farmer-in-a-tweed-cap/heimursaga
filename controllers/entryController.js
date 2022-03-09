@@ -201,8 +201,8 @@ exports.search = function(req, res) {
     })
 }
 
-exports.entryList = function(req, res) {
-    Entry.getFeed().then(entries => {
+exports.entryList = async function(req, res) {
+    await Entry.getFeed(req.params.bounds).then(entries => {
         res.json(entries)
     }).catch(() => {
         res.json([])

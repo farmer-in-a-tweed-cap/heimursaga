@@ -16,8 +16,17 @@ const { multerUploads } = require('./models/Photo')
 
 
 // user related routes
-router.get('/', entryController.getAll)
-router.get('/discovery', entryController.getAll)
+
+router.get('/', function (req, res) {
+  res.render('discovery', {pageName: 'discovery'})
+})
+
+router.get('/discovery', function (req, res) {
+  res.render('discovery', {pageName: 'discovery'})
+})
+
+//router.get('/', entryController.getAll)
+//router.get('/discovery', entryController.getAll)
 
 router.get('/login', function (req, res) {
   res.render('login', {pageName: 'login'})
@@ -69,7 +78,7 @@ router.post('/draft/:id/post-entry', userController.mustBeLoggedIn, multerUpload
 
 router.post('/search', entryController.search)
 
-router.get('/entry-list', entryController.entryList)
+router.get('/entry-list/:bounds', entryController.entryList)
 
 
 // photo specific coutes

@@ -11,6 +11,9 @@ import "./modules/filepond"
 import Map from "./modules/mapbox";
 if (document.querySelector("#map")) {new Map()};
 
+import DiscoveryMap from "./modules/discoverymap";
+if (document.querySelector("#discoverymap")) {new DiscoveryMap()};
+
 import Search from './modules/search';
 if (document.querySelector(".header-search-icon")) {new Search()};
 

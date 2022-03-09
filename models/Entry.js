@@ -5,6 +5,7 @@ const ObjectID = require('mongodb').ObjectID
 const User = require('./User')
 const sanitizeHTML = require('sanitize-html')
 const { Photo } = require('./Photo')
+const mapboxgl = require('mapbox-gl');
 
 //entriesCollection.createIndex({title: "text", body: "text", place: "text", authorUsername: "text"})
 
@@ -36,7 +37,7 @@ Entry.prototype.cleanUp = function() {
 
   popup = `<strong>${sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}})}</br><i class='align-middle me-0 fas fa-fw fa-map-marker-alt text-primary'></i></strong>${sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}})}</br><p>on ${sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})} by ${this.authorUsername}</p><p>${bodyExcerpt}...</p>`
   popup = JSON.stringify(popup)
-  popup = popup.replace (/(^")|("$)/g, '')
+  //popup = popup.replace (/(^")|("$)/g, '')
 
   if (this.photo.length) {this.photo = true} else {this.photo = false}
 
@@ -153,6 +154,7 @@ Entry.reusableEntryQuery = function(uniqueOperations, visitorId, finalOperations
         place: 1,
         date: 1,
         GeoJSONcoordinates: 1,
+        coordinates: "$GeoJSONcoordinates.coordinates",
         body: 1,
         popup: 1,
         createdDate: 1,
@@ -254,9 +256,15 @@ Entry.countEntriesByAuthor = function(id) {
   })
 }
 
-Entry.getFeed = async function() {
+Entry.getFeed = async function(bounds) {
+  let LngLatArray = bounds.split(',')
+  var LngWest = parseFloat(LngLatArray[0])
+  var LatSouth = parseFloat(LngLatArray[1])
+  var LngEast = parseFloat(LngLatArray[2])
+  var LatNorth = parseFloat(LngLatArray[3])
   return Entry.reusableEntryQuery([
-    {$match: {privacy: "public"}},
+    {$match: {privacy: "public"}},    
+    {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
     {$sort: {createdDate: -1}}
   ])
 }
