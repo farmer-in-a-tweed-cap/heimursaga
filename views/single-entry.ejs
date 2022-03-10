@@ -72,20 +72,17 @@
 
                             <% } %>
 
-                          </div>
+                        
              
 
                           <% if (user) { %>
 
-                      </div>
 
-                      <style></style>
+                          <div class="iframe-container">
 
-                      <div class="iframe-container">
+                            <iframe class="button-stack-iframe" src="button-stack/<%= entry._id %>" id="button-stack-iframe" scrolling="no"></iframe>
 
-                        <iframe class="button-stack-iframe" src="button-stack/<%= entry._id %>" id="button-stack-iframe" scrolling="no"></iframe>
-
-                      </div>
+                          </div>
 
 
                           <% } %>
@@ -93,6 +90,7 @@
                           <div class="col-8 offset-2 mb-4">
                             <hr>
                           </div>
+                        </div>
                       
                       <div class="card-body">
 

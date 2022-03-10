@@ -36,8 +36,8 @@ Entry.prototype.cleanUp = function() {
   bodyExcerpt = bodyExcerpt.replace(/(\r\n|\n|\r)/gm," ")
 
   popup = `<strong>${sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}})}</br><i class='align-middle me-0 fas fa-fw fa-map-marker-alt text-primary'></i></strong>${sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}})}</br><p>on ${sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})} by ${this.authorUsername}</p><p>${bodyExcerpt}...</p>`
-  popup = JSON.stringify(popup)
-  //popup = popup.replace (/(^")|("$)/g, '')
+  //popup = JSON.stringify(popup)
+  popup = popup.replace (/(^")|("$)/g, '')
 
   if (this.photo.length) {this.photo = true} else {this.photo = false}
 

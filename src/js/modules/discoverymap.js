@@ -376,7 +376,7 @@ export default class DiscoveryMap {
                         
 
                       <div class="iframe-container">
-                        <iframe class="button-stack-iframe" src="button-stack/${entry._id}" id="button-stack-iframe" width="100%"></iframe>
+                        <iframe class="button-stack-iframe" src="button-stack/${entry._id}" id="button-stack-iframe" width="100%" scrolling="no"></iframe>
                       </div>
 
                       <div class="col-8 offset-2 mb-4">
@@ -398,7 +398,7 @@ export default class DiscoveryMap {
 
                       <div class="">
                     
-                        <iframe src="flag-button/${entry._id}" id="flag-button" height="60"></iframe>
+                        <iframe src="flag-button/${entry._id}" id="flag-button" height="60" scrolling="no"></iframe>
       
                       </div>
 

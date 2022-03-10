@@ -11,7 +11,7 @@ var copper = '#AC6D46'
 window.notyf = new Notyf({
   duration: 3000,
   position: {
-    x: "right",
+    x: "center",
     y: "top"
   },
   dismissible: true,
@@ -26,7 +26,7 @@ window.notyf = new Notyf({
     },
     {
       type: "success",
-      backgroundColor: copper,
+      backgroundColor: green,
       icon: {
         className: "notyf__icon--success",
         tagName: "i",
@@ -34,7 +34,7 @@ window.notyf = new Notyf({
     },
     {
       type: "warning",
-      backgroundColor: blue,
+      backgroundColor: red,
       icon: {
         className: "notyf__icon--error",
         tagName: "i",

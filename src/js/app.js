@@ -8,14 +8,14 @@ import "./modules/sidebar";
 import "./modules/notyf";
 import "./modules/filepond"
 
+import Search from './modules/search';
+if (document.querySelector(".header-search-icon")) {new Search()};
+
 import Map from "./modules/mapbox";
 if (document.querySelector("#map")) {new Map()};
 
 import DiscoveryMap from "./modules/discoverymap";
 if (document.querySelector("#discoverymap")) {new DiscoveryMap()};
-
-import Search from './modules/search';
-if (document.querySelector(".header-search-icon")) {new Search()};
 
 import Notification from "./modules/notification";
 if (document.querySelector("#user-notifications")) {new Notification()};
@@ -53,4 +53,5 @@ import "./modules/vector-maps";
 
 // Tables
 import "./modules/datatables"; // requires jQueryimport app from "../../app";
+
 
