@@ -133,6 +133,7 @@ map.addControl(new mapboxgl.GeolocateControl({
     })
 );
 
+
 var mapmarkers = JSON.parse(markers)
 
 var entryzoom = 7

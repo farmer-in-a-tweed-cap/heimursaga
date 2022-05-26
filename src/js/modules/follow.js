@@ -4,7 +4,7 @@ import axios from 'axios'
 export default class Follow {
     constructor() {
         this.followButton = document.querySelector("#follow-button")
-        this.followIcon = document.querySelector(".icon-heimursaga-follow-alt")
+        this.followIcon = document.querySelector(".icon-heimursaga-follow-alt-2")
         this._csrf = document.querySelector('[name="_csrf"]').value
         this.entryAuthor = document.querySelector("#entry-username").value
         this.isVisitorFollowing = document.querySelector("#is-following").value

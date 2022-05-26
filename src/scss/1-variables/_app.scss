@@ -846,37 +846,27 @@ $jsvectormap-zoom-btn: $dark !default;
 }
 
 
-.icon-heimursaga-message-alt:before {
-  content: "\e908";
-}
-.icon-heimursaga-message:before {
-  content: "\e909";
-}
-.icon-heimursaga-follow-alt-2:before {
-  content: "\e907";
-}
-.icon-heimursaga-fund-alt:before {
-  content: "\e905";
-}
-.icon-heimursaga-follow-alt:before {
-  content: "\e906";
-}
 .icon-heimursaga-bookmark:before {
   content: "\e900";
 }
-.icon-heimursaga-follow:before {
+.icon-heimursaga-flag:before {
   content: "\e901";
 }
-.icon-heimursaga-fund:before {
+.icon-heimursaga-follow-alt-2:before {
   content: "\e902";
 }
-.icon-heimursaga-highlight:before {
+.icon-heimursaga-fund-alt:before {
   content: "\e903";
 }
-.icon-heimursaga-flag:before {
+.icon-heimursaga-highlight:before {
   content: "\e904";
 }
-
+.icon-heimursaga-message:before {
+  content: "\e905";
+}
+.icon-heimursaga-share:before {
+  content: "\e906";
+}
 
 iframe {
   width: 100%;
