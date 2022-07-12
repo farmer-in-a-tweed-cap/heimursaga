@@ -7,6 +7,10 @@ const csrf = require('csurf')
 const app = express()
 const sanitizeHTML = require('sanitize-html')
 
+const { SitemapStream, streamToPromise } = require( 'sitemap' )
+const { Readable } = require( 'stream' )
+
+
 
 
 let sessionOptions = session({
@@ -16,6 +20,8 @@ let sessionOptions = session({
     saveUninitialized: false,
     cookie: {maxAge: 1000 * 60 * 60 * 24, httpOnly: true}
 })
+
+
 
 app.use(sessionOptions)
 app.use(flash())
@@ -70,6 +76,7 @@ app.use(function(err, req, res, next){
         }
     }
 })
+
 
 const server = require('http').createServer(app)
 
