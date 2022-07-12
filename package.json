@@ -85,6 +85,7 @@
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "express-sitemap-xml": "^3.0.1",
     "feather-icons": "4.28.0",
     "filepond": "^4.30.3",
     "filepond-plugin-file-encode": "^2.1.10",
@@ -127,6 +128,7 @@
     "stripe": "^8.191.0",
     "tempusdominus-bootstrap-4": "5.39.0",
     "util": "^0.12.4",
-    "validator": "^13.5.2"
+    "validator": "^13.5.2",
+    "xml": "^1.0.1"
   }
 }

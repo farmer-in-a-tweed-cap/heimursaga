@@ -6,9 +6,10 @@ const markdown = require('marked')
 const csrf = require('csurf')
 const app = express()
 const sanitizeHTML = require('sanitize-html')
+const expressSitemapXml = require('express-sitemap-xml')
+const entriesCollection = require('./db').db().collection("entries")
 
-const { SitemapStream, streamToPromise } = require( 'sitemap' )
-const { Readable } = require( 'stream' )
+
 
 
 
@@ -76,6 +77,22 @@ app.use(function(err, req, res, next){
         }
     }
 })
+
+
+
+function getUrlsFromDatabase() {
+    return new Promise(async function(resolve,reject) {
+      let entries = entriesCollection.find({privacy: "public"}).toArray()
+      resolve(entries)
+    })
+    
+  }
+
+app.use(expressSitemapXml(getUrls, 'https://heimursaga.com'))
+
+async function getUrls () {
+  return await getUrlsFromDatabase()
+}
 
 
 const server = require('http').createServer(app)
