@@ -269,8 +269,12 @@ Entry.getFeed = async function(bounds) {
   ])
 }
 
-
-Entry.getFollowedFeed = async function(id) {
+Entry.getFollowedFeed = async function(bounds, id) {
+  let LngLatArray = bounds.split(',')
+  var LngWest = parseFloat(LngLatArray[0])
+  var LatSouth = parseFloat(LngLatArray[1])
+  var LngEast = parseFloat(LngLatArray[2])
+  var LatNorth = parseFloat(LngLatArray[3])
   // create an array of the user ids that the current user follows
   let followedUsers = await followsCollection.find({authorId: new ObjectID(id)}).toArray()
   followedUsers = followedUsers.map(function(followDoc) {
@@ -280,6 +284,7 @@ Entry.getFollowedFeed = async function(id) {
   // look for posts where the author is in the above array of followed users
   return Entry.reusableEntryQuery([
     {$match: {author: {$in: followedUsers}}},
+    {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
     {$match: {privacy: "public"}},
     {$sort: {createdDate: -1}}
   ])

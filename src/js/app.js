@@ -18,6 +18,9 @@ if (document.querySelector("#map")) {new Map()};
 import DiscoveryMap from "./modules/discoverymap";
 if (document.querySelector("#discoverymap")) {new DiscoveryMap()};
 
+import FeedMap from "./modules/feedmap";
+if (document.querySelector("#feedmap")) {new FeedMap()};
+
 import Notification from "./modules/notification";
 if (document.querySelector("#user-notifications")) {new Notification()};
 

@@ -447,18 +447,26 @@ exports.journalScreen = function(req, res) {
 exports.myFeed = async function(req, res) {
   if (req.session.user){
   // ask our post model for posts by a certain author id
-  let entries = await Entry.getFollowedFeed(req.session.user._id)
+  //let entries = await Entry.getFollowedFeed(req.session.user._id)
   let following = await Follow.getFollowingById(req.session.user._id)
-  let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
+  //let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
       res.render('my-feed', {
         pageName: "my-feed",
-        entries: entries,
+        //entries: entries,
         following: following,
-        entrymarker: JSON.stringify(entryMarker),
+        //entrymarker: JSON.stringify(entryMarker),
       })
     } else {
     res.redirect('/')}
   }
+
+exports.feedEntryList = async function(req, res) {
+    await Entry.getFollowedFeed(req.params.bounds, req.session.user._id).then(entries => {
+        res.json(entries)
+    }).catch(() => {
+        res.json([])
+    })
+}
 
 
 exports.profileFollowersScreen = async function(req, res) {

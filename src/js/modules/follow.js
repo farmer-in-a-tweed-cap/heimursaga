@@ -22,7 +22,7 @@ export default class Follow {
 
     buttonClickHandler() {
 
-        if (document.querySelector(".icon-heimursaga-follow-alt").style.color == "rgb(60, 115, 170)"){
+        if (document.querySelector(".icon-heimursaga-follow-alt-2").style.color == "rgb(60, 115, 170)"){
 
             this.changePrimary()
             parent.window.notyf.success(`You are now following ${this.entryAuthor}`);
@@ -39,7 +39,7 @@ export default class Follow {
     }
 
     sendRequest() {
-        if (document.querySelector(".icon-heimursaga-follow-alt").style.color != "rgb(60, 115, 170)"){
+        if (document.querySelector(".icon-heimursaga-follow-alt-2").style.color != "rgb(60, 115, 170)"){
             axios.post(`/addFollow/${this.entryAuthor}`, {_csrf: this._csrf, username: this.entryAuthor}).then(() => {
                 console.log('follow added')
             })
@@ -52,7 +52,7 @@ export default class Follow {
 
 
     changePrimary() {
-        document.querySelector(".icon-heimursaga-follow-alt").style.color = "#AC6D46"
+        document.querySelector(".icon-heimursaga-follow-alt-2").style.color = "#AC6D46"
         document.querySelector("#follow-button").classList.remove("text-blue")
         document.querySelector("#follow-button").classList.add("text-primary")
         document.querySelector("#follow-check").style.color = "#AC6D46"
@@ -60,7 +60,7 @@ export default class Follow {
     }
 
     changeBlue() {
-        document.querySelector(".icon-heimursaga-follow-alt").style.color = "#3C73AA"
+        document.querySelector(".icon-heimursaga-follow-alt-2").style.color = "#3C73AA"
         document.querySelector("#follow-button").classList.remove("text-danger")
         document.querySelector("#follow-button").classList.add("text-blue")
         document.querySelector("#follow-check").style.color = "#FFFFFF"

@@ -64,6 +64,7 @@ router.get('/create-entry', userController.mustBeLoggedIn, entryController.viewC
 router.post('/create-entry', userController.mustBeLoggedIn, multerUploads, entryController.create)
 //router.post('/create-entry', userController.mustBeLoggedIn, photoController.upload)
 
+
 router.get('/entry/:id', entryController.viewSingle)
 router.get('/entry/:id/edit', userController.mustBeLoggedIn, entryController.viewEditScreen)
 router.post('/entry/:id/edit', userController.mustBeLoggedIn, multerUploads, entryController.edit)
@@ -79,6 +80,7 @@ router.post('/draft/:id/post-entry', userController.mustBeLoggedIn, multerUpload
 router.post('/search', entryController.search)
 
 router.get('/entry-list/:bounds', entryController.entryList)
+router.get('/feed-entry-list/:bounds', userController.feedEntryList)
 
 
 // photo specific coutes
