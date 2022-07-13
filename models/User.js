@@ -7,6 +7,8 @@ const sanitizeHTML = require('sanitize-html')
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
+
+
 let User = function(data, getAvatar, username) {
     this.data = data
     this.errors = []
@@ -36,6 +38,7 @@ User.prototype.cleanUp = function() {
         resetPasswordToken: {type: String, required: false},
         resetPasswordExpires: {type: Date, required: false},
         registeredDate: new Date(),
+        url: `https://heimursaga.com/journal/${this.data.username.trim().toLowerCase()}`
     }
 }
 

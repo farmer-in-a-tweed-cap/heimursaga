@@ -2,7 +2,13 @@
 
 <title>Heimursaga | Journal - <%= profileUsername %></title>
 
-<%- include('includes/standard-meta') %>
+<meta name="description" content=
+"<% if (bio == "undefined") { %>
+	<i>This explorer has not yet added a bio</i>
+	<% } else { %>
+		<%= bio %>
+	<% } %>
+">
 
 </head>
 

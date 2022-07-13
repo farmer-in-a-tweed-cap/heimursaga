@@ -6,7 +6,9 @@ const markdown = require('marked')
 const csrf = require('csurf')
 const app = express()
 const sanitizeHTML = require('sanitize-html')
-
+const expressSitemapXml = require('express-sitemap-xml')
+const entriesCollection = require('./db').db().collection("entries")
+const usersCollection = require('./db').db().collection("users")
 
 
 let sessionOptions = session({
@@ -16,6 +18,8 @@ let sessionOptions = session({
     saveUninitialized: false,
     cookie: {maxAge: 1000 * 60 * 60 * 24, httpOnly: true}
 })
+
+
 
 app.use(sessionOptions)
 app.use(flash())
@@ -70,6 +74,40 @@ app.use(function(err, req, res, next){
         }
     }
 })
+
+
+
+function getEntryUrls() {
+    return new Promise(async function(resolve,reject) {
+      let entries = entriesCollection.find({privacy: "public"}).project({url: 1, _id: 0}).toArray()
+      resolve(entries)
+    })
+  }
+
+  function getUserUrls() {
+    return new Promise(async function(resolve,reject) {
+      let users = usersCollection.find({}, {url: 1, _id: 0}).toArray()
+      resolve(users)
+    })
+  }
+  
+
+app.use(expressSitemapXml(getUrls, 'https://heimursaga.com'))
+
+async function getUrls () {
+    let primeList = [
+        {url: "https://heimursaga.com/"}, 
+        {url: "https://heimursaga.com/discovery"}, 
+        {url: "https://heimursaga.com/about"}, 
+        {url: "https://heimursaga.com/register"}, 
+        {url: "https://heimursaga.com/login"}
+    ]
+    let entryList = await getEntryUrls()
+    let userList = await getUserUrls()
+    urlList = primeList.concat(entryList.concat(userList))
+  return urlList
+}
+
 
 const server = require('http').createServer(app)
 
