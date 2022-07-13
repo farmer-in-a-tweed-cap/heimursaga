@@ -36,16 +36,16 @@ export default class FeedMap {
 
 
   events() {
+    window.onload = this.showLoaderIcon()
     this.feedmap.on('load', () => this.loadResources())
     this.feedmap.on('moveend', () => this.loadEntries())
-    this.feedmap.on('movestart', () => this.clearEntries())
+    //this.feedmap.on('movestart', () => this.clearEntries())
 
   }
 
 
   loadResources() {
-    this.showLoaderIcon()
-    console.log('loading resources')
+    //console.log('loading resources')
     this.loadControls()
     this.feedmap.addSource('10m-bathymetry-81bsvj', {
       type: 'vector',
@@ -162,7 +162,7 @@ export default class FeedMap {
   }
 
   loadedFeed() {
-    console.log('loaded')
+    //console.log('loaded')
     this.entryfeed.innerHTML = '<div class="text-center text-muted">Loading...</div>'
   }
 
@@ -170,8 +170,8 @@ export default class FeedMap {
   loadEntries() {
     var bounds = this.feedmap.getBounds().toArray()
     if (this.feedmap.getZoom() >= this.loadzoom) {
-      console.log('loading entries')
-      console.log(bounds)
+      //console.log('loading entries')
+      //console.log(bounds)
       this.loader = "loader"
       setTimeout(() => this.sendRequest(bounds), this.timeout)
     } else {
@@ -185,7 +185,7 @@ export default class FeedMap {
   }
 
   sendRequest(bounds) {
-    console.log('sending request')
+    //console.log('sending request')
     axios.get(`/feed-entry-list/${bounds}`).then(response => {
       this.entryfeed.removeAttribute('hidden', true)
           this.hideLoaderIcon()
@@ -206,7 +206,7 @@ export default class FeedMap {
 
 
   loadMarkers(entries) {
-    console.log('loading markers')
+    //console.log('loading markers')
       var markers = GeoJSON.parse(entries.data, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
       var sourceID = Math.random().toString(36).slice(2)
       this.feedmap.addSource(`entrymarkers${sourceID}`, {
