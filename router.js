@@ -31,8 +31,8 @@ router.get('/discovery', function (req, res) {
 router.get('/login', function (req, res) {
   res.render('login', {pageName: 'login'})
 })
-router.get('/register', function (req, res) {
-  res.render('register', {pageName: 'register'})
+router.get('/join', function (req, res) {
+  res.render('join', {pageName: 'join'})
 })
 router.post('/register', userController.register)
 router.post('/login', userController.login)

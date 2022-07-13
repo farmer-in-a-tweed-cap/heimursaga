@@ -99,7 +99,7 @@ async function getUrls () {
         {url: "https://heimursaga.com/"}, 
         {url: "https://heimursaga.com/discovery"}, 
         {url: "https://heimursaga.com/about"}, 
-        {url: "https://heimursaga.com/register"}, 
+        {url: "https://heimursaga.com/join"}, 
         {url: "https://heimursaga.com/login"}
     ]
     let entryList = await getEntryUrls()
