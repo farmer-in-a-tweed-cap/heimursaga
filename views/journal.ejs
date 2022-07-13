@@ -2,8 +2,8 @@
 
 <title>Heimursaga | Journal - <%= profileUsername %></title>
 
-<meta name="description" content=
-"<% if (bio == "undefined") { %>
+<meta property="og:image" content="<%= profileAvatar %>" />
+<meta name="description" content="<% if (bio == "undefined") { %>
 	<i>This explorer has not yet added a bio</i>
 	<% } else { %>
 		<%= bio %>
