@@ -6,13 +6,10 @@ const User = require('./User')
 const sanitizeHTML = require('sanitize-html')
 const { Photo } = require('./Photo')
 const mapboxgl = require('mapbox-gl');
-const { SitemapStream, streamToPromise } = require( 'sitemap' )
-
 
 //entriesCollection.createIndex({title: "text", body: "text", place: "text", authorUsername: "text"})
 
-//entriesCollection.updateMany({}, {$set: {url: "https://heimursaga.com/entry/"}})
-
+//entriesCollection.updateMany({}, {$set: {privacy: "public"}})
 
 
 let Entry = function(data, photo, Id, userid, username, requestedEntryId) {
@@ -58,8 +55,7 @@ Entry.prototype.cleanUp = function() {
     author: ObjectID(this.userid),
     authorUsername: this.authorUsername,
     hasPhoto: this.photo,
-    privacy: this.data.flexRadioDefault,
-    url: `https://heimursaga.com/entry/${this.id}`
+    privacy: this.data.flexRadioDefault
   }
 }
 
