@@ -1,0 +1,68 @@
+<%- include('includes/header') %>
+
+<title>Heimursaga | My Feed</title>
+
+<meta name="description" content="Heimursaga (HEY-mer-saga) is a text-focused, map-centric social media platform for explorers and travelers. Heimursaga enables users
+to read and write journal entries tagged to precise geographic coordinates.">
+
+</head>
+
+<%- include('includes/sidebar') %>
+
+<%- include('includes/navbar') %>
+
+
+<main class="content">
+        <div class="container-fluid p-0">
+            <div class="row">
+                <h3 class="text-center d-lg-none pb-3">My Feed</h3>
+
+                <%- include('includes/flash') %>
+
+                <div class="col-12 col-lg-4 d-flex">
+                    <div class="card flex-fill w-100" style="height: 80vh;">
+
+                        <div class="card-body overflow-auto">
+
+                                    <div class="d-flex justify-content-center text-center">
+                                        <div class="d-flex flex-column align-items-center justify-content-center">
+                                            <div class="spinner-border mt-5" role="status" hidden>
+                                            </div>
+                                            <span class="text-center loader-text mt-2" hidden>Loading entries...</span>
+
+
+                                        </div>
+                                    </div>
+                        
+                                    
+                            <div id="dynamic-entry-feed" class="dynamic-entry-feed" style="height: 75vh;"></div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-8 d-flex">
+                    <div class="card w-100" style="height: 75vh;">
+                        <div class="card d-flex w-100">
+
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    
+                                <div id="feedmap" class="feedmap" style='width: 100%; height: 80vh;'></div>
+                                <div id="start-geocoder" class="start-geocoder" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+</main>
+
+
+<script type="text/javascript">
+    
+
+</script>
+			
+<%- include('includes/footer') %>

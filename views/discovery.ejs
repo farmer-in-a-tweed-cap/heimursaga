@@ -1,0 +1,104 @@
+<%- include('includes/header') %>
+
+<title>Heimursaga | Discovery</title>
+
+<meta name="description" content="Welcome to Heimursaga - The Explorer's Journal. Your journey begins here. Search for a place on the map to begin discovering explorers and journal entries.">
+
+</head>
+
+<%- include('includes/sidebar') %>
+
+<%- include('includes/navbar') %>
+
+
+<main class="content" style="padding: 0rem !important;">
+
+    <style>
+        .mapboxgl-popup {
+        max-width: 350px;
+       font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        }
+
+        .start-geocoder {
+        position: absolute;
+        z-index: 2;
+        width: 50%;
+        left: 50%;
+        margin-left: -25%;
+        top: 190px;
+        }
+        .mapboxgl-ctrl-geocoder {
+        min-width: 100%;
+        }
+    </style>
+
+        <div class="container-fluid p-0" style="position: relative;">
+
+                <div class="col-12" style="padding: 0rem;" class="overlay" id="overlay">
+                    <div>
+                        <div class="text-center" style="margin-top: 100px;">
+                            <h3>Your Journey Begins Here...</h3>
+                            <small>Search for a place on the map to begin discovering <br>new explorers and journal entries</small>
+                        </div>
+                        <div id="start-geocoder" class="start-geocoder"></div>
+                    </div>
+                </div>
+
+            <div style="padding: 2.5rem 2.5rem 1.5rem !important;">
+                <div class="row">
+                    <h3 class="text-center d-lg-none pb-3">Discovery</h3>
+
+                    <%- include('includes/flash') %>
+
+                    <div class="col-12 col-lg-8 d-flex">
+                        <div id="map-div" class="card w-100" style="height: 80vh;">
+                            <div class="card d-flex w-100"">
+
+                                    
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                    <div id="discoverymap" class="discoverymap" style='width: 100%; height: 80vh;'></div>
+                                    
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-4 d-flex">
+                        <div id="entry-div" class="card flex-fill" style="height: 80vh;">
+                            <div class="card-body overflow-auto">
+                                
+
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                <div id="dynamic-entry-feed" class="dynamic-entry-feed" style="height: 75vh;"></div>
+
+                                    
+
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+</main>
+
+
+<script type="text/javascript">
+
+
+    var overlay = document.getElementById("overlay");
+    var feed = document.getElementById("entry-div")
+    var mapdiv = document.getElementById("map-div")
+
+    if (overlay.style.display != "none") {
+        feed.style.display = "none"
+    } 
+
+
+
+
+</script>
+			
+<%- include('includes/footer') %>

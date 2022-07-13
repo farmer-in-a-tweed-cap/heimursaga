@@ -1,0 +1,38 @@
+<%- include('includes/header') %>
+
+<title>Heimursaga | About</title>
+
+<%- include('includes/standard-meta') %>
+
+</head>
+
+<%- include('includes/sidebar') %>
+
+<%- include('includes/navbar') %>
+
+			<main class="content d-flex">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12 d-table-cell align-middle">
+							<!--<div class="text-center mb-4 me-4">
+								<img src="./img/brands/Heimursaga Logo & Slogan Brown white-bg.svg" width="266" height="99.75" alt="Heimursaga">
+							</div>-->
+							<div class="card">
+								<div class="card-body text-center col-md-8 offset-md-2 mb-4 mt-3">
+										Heimursaga (HEY-mer-saga) is a text-focused, map-centric social media platform and online travel journal for explorers and travelers. Heimursaga's core feature is the ability for users
+										to read and write "journal entries" tagged to precise geographic coordinates. Features currently in development include trip planning, route lines and entry grouping, private messaging, 
+										and user fundraising capability. The name "Heimursaga" is derived from the Old Norse words "heimr" meaning "world", and "saga" meaning "story". <!--The Heimursaga web application was developed in Colorado and is funded and managed by The Peripety Company.--> <br><br>
+
+										<% if (!user) { %>
+										<a href="/register">Create an account</a> or <a href="/login">login</a> to begin sharing your journey, or <a href="/">discover</a> explorers and entries as a guest!
+										<% } %>
+								</div>
+							</div>
+						</div>
+
+
+					</div>
+				</div>
+			</main>
+			
+<%- include('includes/footer') %>

@@ -1,0 +1,138 @@
+<%- include('includes/header') %>
+
+<title>Heimursaga | User Guide</title>
+
+<%- include('includes/standard-meta') %>
+
+</head>
+
+<%- include('includes/sidebar') %>
+
+<%- include('includes/navbar') %>
+
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<h1 class="h3 mb-3 text-center">User Guide</h1>
+						  
+						<div class="col-12">
+							
+							<%- include('includes/flash') %>
+
+							<div class="card">
+								<div class="card-body text-center col-md-8 offset-md-2 mb-5 mt-3">
+									<h3 class="text-primary">Welcome to Heimursaga, The Explorer's Journal!</h3></p>
+									So you've signed up for an Explorer account, and now it's time to learn how to share your stories.
+									A Heimursaga Explorer account gives you the ability to write and publish geotagged "journal entries", read and "like"
+									other explorers' entries, and follow other explorers as they document their own journeys.</p>
+
+									<h3 class="text-primary mt-5">Posting Entries</h3>
+									<hr class="col-md-6 offset-md-3 mb-0">
+										<div class="row pb-3">
+											<div class="col-md-6">
+												<h5 class="text-blue mt-5">Creating an Entry</h5>
+												Ready to post an entry? Click the "Create Entry" button on the top right of your screen and follow the 5 steps. All fields are required except photo
+												uploads. Pay special attention to word limits and be as specific as possible with your location. Pro tip: use the search box on the map to quickly fly to a location or area.
+											</div>
+											<div class="col-md-6">
+												<h5 class="text-blue mt-5">Creating a Draft</h5>
+												Not ready to go public with your entry? At the bottom of the Create Entry page, you'll see a "Save to Drafts" button. Drafts are only viewable by you and are not subject to
+												word limits. However, all fields must have *some* text. Visit the Drafts tab in your journal to continue editing or publish as an entry. Once
+												a draft has been posted as an entry, it cannot be reverted back to a draft.
+											</div>
+										</div>
+
+										<h5 class="text-blue mt-4">Setting Entry Privacy</h3>
+										There are two privacy options: "Public" and "Private". The default setting, Public, means that your entry will be viewable from the Discovery page and by
+										any visitors or followers of your journal. Private means that your entry will be "unlisted" and will only appear in your own journal, marked by a blue lock icon instead of the copper map marker. Private entries may still
+										be read by anyone who has the unique permalink, so be careful who you share that with.
+
+									<h3 class="text-primary mt-5">Discovery</h3>
+									<hr class="col-md-6 offset-md-3">
+									This is Heimursaga's home page, every entry and every explorer can be found from here. Search for a location on the map, and begin discovering new entries
+									and explorers.
+									<h3 class="text-primary mt-5">My Feed</h3>
+									<hr class="col-md-6 offset-md-3">
+									Welcome to your personalized home page! Here you'll see entries from explorers you've followed. Use the map or browse the latest entries in the list feed.
+									<h3 class="text-primary mt-5">My Journal</h3>
+									<hr class="col-md-6 offset-md-3">
+									Think of this as your own personal travel journal. This is where you'll view your profile information, a map of all your entries, and a list feed of
+									your entries, drafts, explorers you've followed, explorers who follow you, and bookmarked entries.
+									<div class="w-100 mb-3"></div>
+
+
+									<h3 class="text-primary pt-5">Interacting with Entries and Journals</h3>
+									<hr class="col-md-6 offset-md-3">
+									<div class="mb-4">
+										You will see blue buttons at the bottom of all entries and in the profile section of Explorer journals. Clicking these buttons allows you to interact with the explorer
+										or their entries. When clicked, buttons will turn copper and a small checkmark will appear to let you know you've interacted.	
+									</div>
+
+										<div class="row col-sm-6 offset-sm-3">
+											<div class="w-100 mb-2"></div>
+
+											<div class="pb-4">
+												<h5 class="text-blue mt-2 mb-2">Highlighting</h5>
+												<i id="icon-heimursaga-highlight" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-highlight"></i>
+												<div class="w-100 mb-2"></div>
+												Highlighting is Heimursaga's "like" system. If you particularly enjoyed an entry, click the highlight button and let the writer know! 
+												The explorer who wrote the entry will be notified.
+											</div>
+											<div class="w-100 mb-2"></div>
+											<div class="pb-4">
+												<h5 class="text-blue mt-2">Bookmarking</h5>
+												<i id="icon-heimursaga-bookmark" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-bookmark"></i>
+												<div class="w-100 mb-2"></div>
+												Want to save an entry to read later? Click the bookmark button. The entry
+												will be added to the Bookmarks feed in your journal.
+											</div>
+											<div class="w-100 mb-2"></div>
+											<div class="pb-4">
+												<h5 class="text-blue mt-2">Following</h5>
+												<i id="icon-heimursaga-follow-alt-2" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-follow-alt-2"></i>
+												<div class="w-100 mb-2"></div>
+												Following is the ultimate affirmation. When you click the follow button, the explorer will be notified that they have a new follower, and all their entries will appear
+												on your My Feed page. View all explorers you've followed in your journal on the Following tab.
+											</div>
+										</div>
+										<div class="w-100 mb-2"></div>
+
+
+										<div class="row col-sm-6 offset-sm-3">
+											<div class="pb-4">
+												<h5 class="text-blue mt-2 mb-2">Messaging</h5>
+												<i id="icon-heimursaga-message" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-message"></i>
+												<div class="w-100 mb-2"></div>
+												Messaging is an Explorer Pro feature that allows you to send private messages to other Explorer Pro accounts. <strong>Explorer Pro features are currently in development.</strong>
+											</div>
+											<div class="w-100 mb-2"></div>
+
+											<div class="pb-4">
+												<h5 class="text-blue mt-2">Funding</h5>
+												<i id="icon-heimursaga-fund-alt" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-fund-alt"></i>
+												<div class="w-100 mb-2"></div>
+												Funding is an Explorer Pro feature that allows you to receive funding/donations from your followers! If you have Explorer Fund turned on, the fund button will be enabled
+												on all your entries and your journal. <strong>Explorer Pro features are currently in development.</strong>
+											</div>
+										</div>
+
+						
+									<div class="mt-6">
+										<hr class="col-md-6 offset-md-3">
+										Be sure to review <a href="/explorer-code">The Explorer Code</a> before posting, and stay adventurous!</p>
+										Regards,<br>
+										<div>explorer1</div>
+									</div>
+
+									<div class="text-center mt-5">
+										<a href="/journal/<%= user.username %>"><strong class="text-primary">Take Me To My Journal</strong></a>
+									</div>
+							</div>
+						</div>
+
+
+					</div>
+				</div>
+			</main>
+			
+<%- include('includes/footer') %>
