@@ -34,6 +34,7 @@ export default class DiscoveryMap {
 
 
   events() {
+    window.onload = this.showLoaderIcon()
     this.discoverymap.on('load', () => this.loadResources())
   }
 
@@ -132,7 +133,7 @@ export default class DiscoveryMap {
     });
 
     this.startgeocoder.appendChild(geocoder.onAdd(this.discoverymap))      
-
+    this.hideLoaderIcon()
     this.discoverymap.addControl(
       new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
@@ -180,12 +181,13 @@ export default class DiscoveryMap {
   }
 
   showLoaderIcon() {
-    this.loaderIcon.classList.add("circle-loader--visible")
+      document.querySelector(".loader-text").removeAttribute('hidden', true)
   }
 
   hideLoaderIcon() {
-    this.loaderIcon.classList.remove("circle-loader--visible")
+    document.querySelector(".loader-text").setAttribute('hidden', true)
   }
+
 
   loadMarkers(entries) {
     console.log('loading markers')
