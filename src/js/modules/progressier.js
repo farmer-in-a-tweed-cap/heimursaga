@@ -1,1 +1,0 @@
-progressier.add(data)
