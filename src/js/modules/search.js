@@ -7,6 +7,7 @@ export default class Search {
         this._csrf = document.querySelector('[name="_csrf"]').value
         this.injectHTML()
         this.headerSearchIcon = document.querySelector(".header-search-icon")
+        this.headerSearchIconMobile = document.querySelector(".header-search-icon-mobile")
         this.overlay = document.querySelector(".search-overlay")
         this.closeIcon = document.querySelector(".close-live-search")
         this.inputField = document.querySelector("#live-search-field")
@@ -22,6 +23,10 @@ export default class Search {
         this.inputField.addEventListener("keyup", () => this.keyPressHandler())
         this.closeIcon.addEventListener("click", () => this.closeOverlay())
         this.headerSearchIcon.addEventListener("click", (e) => {
+            e.preventDefault()
+            this.openOverlay()
+        })
+        this.headerSearchIconMobile.addEventListener("click", (e) => {
             e.preventDefault()
             this.openOverlay()
         })

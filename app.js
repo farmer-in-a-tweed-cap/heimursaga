@@ -63,7 +63,7 @@ app.use(function(req, res, next) {
 app.use('/', router)
 
 
-app.use(function(err, req, res, next){
+/*app.use(function(err, req, res, next){
     if(err) {
         if(err.code == "EBADCSRFTOKEN") {
             req.flash('errors', "Cross-site request forgery detected.")
@@ -73,7 +73,7 @@ app.use(function(err, req, res, next){
             res.render("404")
         }
     }
-})
+})*/
 
 
 

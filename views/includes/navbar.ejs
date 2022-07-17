@@ -7,17 +7,27 @@
             </a>
 
 
-        <div class="">
+        <div class="d-none d-lg-block">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button class="text-muted align-middle header-search-icon" style="background: transparent; border: none;" title="Search" data-toggle="tooltip" data-placement="bottom"><i data-feather="search"></i></button>
         </div>
 
-        <% if (user) { %>
 
-        <div class="navbar-collapse d-lg-none">
-            <ul class="navbar-nav navbar-align d-lg-none">
+        <div class="navbar-collapse">
+            <ul class="navbar-nav navbar-align">
 
-                <li class="nav-item">
+                <li class="nav-item d-lg-none">
+
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button class="nav-icon header-search-icon-mobile position-relative" style="background: transparent; border: none;" title="Search" data-toggle="tooltip" data-placement="bottom"><i data-feather="search"></i></button>
+
+
+                </li>
+
+                <% if (user) { %>
+
+
+                <li class="nav-item d-lg-none">
                     <div class="">
                         <a class="nav-icon" href="/discovery">
                             <div class="position-relative">
@@ -31,7 +41,7 @@
                     </div>
                 </li>
 
-                <li class="nav-item">
+                <li class="nav-item d-lg-none">
                     <div class="">
                         <a class="nav-icon" href="/my-feed">
                             <div class="position-relative">
@@ -45,8 +55,8 @@
                     </div>
                 </li>
 
-                <li class="nav-item">
-                    <div class="">
+                <li class="nav-item d-lg-none">
+                    <div class="me-2">
                         <a class="nav-icon" href="/journal/<%= user.username %>">
                             <div class="position-relative">
                                 <i <% if (pageName === 'my-journal') { %>
@@ -58,6 +68,13 @@
                         </a>                    
                     </div>
                 </li>
+
+                <li class="nav-item d-lg-none">
+                    <div class="mt-1 me-3">
+                        <a class="btn btn-primary" href="/create-entry"><i class="fas fa-feather-alt"></i><span class="d-none d-sm-inline">  Create Entry</span></a>
+                    </div>
+                </li>
+
             </ul>
         </div>
 
@@ -67,20 +84,9 @@
             <ul class="navbar-nav navbar-align">
  
                 <% if (user) { %>
-
-               <!--<li <% if (pageName === 'discovery') { %>
-                        class="sidebar-item active" 
-                        <% } else { %>
-                        class="sidebar-item"
-                        <% } %> >
-                    <a class="sidebar-link" href="/discovery" style="font-size: large">
-                        <i class="align-middle" data-feather="compass"></i> <span class="align-middle">Discovery</span>
-                    </a>
-                </li>-->
-
                     
                 <li class="nav-item">
-                        <div class="mt-1 me-2">
+                        <div class="mt-1 me-2 d-none d-lg-block">
                             <a class="btn btn-primary" href="/create-entry"><i class="fas fa-feather-alt"></i><span class="d-none d-sm-inline">  Create Entry</span></a>
                         </div>
                 </li>
