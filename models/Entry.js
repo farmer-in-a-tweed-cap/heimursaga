@@ -6,6 +6,7 @@ const User = require('./User')
 const sanitizeHTML = require('sanitize-html')
 const { Photo } = require('./Photo')
 const mapboxgl = require('mapbox-gl');
+const { SitemapStream, streamToPromise } = require( 'sitemap' )
 
 
 //entriesCollection.createIndex({title: "text", body: "text", place: "text", authorUsername: "text"})

@@ -11,7 +11,7 @@ var copper = '#AC6D46'
 window.notyf = new Notyf({
   duration: 3000,
   position: {
-    x: "right",
+    x: "center",
     y: "top"
   },
   dismissible: true,
