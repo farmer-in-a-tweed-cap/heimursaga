@@ -59,7 +59,7 @@ export default class ShareButton {
 
     changePrimary() {
       document.querySelector(".icon-heimursaga-share").style.color = "#AC6D46"
-      document.querySelector(".share-label").removeAttribute('hidden', true)
+      document.querySelector("#share-check").removeAttribute('hidden', true)
 
     }
 
