@@ -161,10 +161,7 @@ export default class FeedMap {
     );
   }
 
-  loadedFeed() {
-    //console.log('loaded')
-    this.entryfeed.innerHTML = '<div class="text-center text-muted">Loading...</div>'
-  }
+
 
 
   loadEntries() {
@@ -407,6 +404,7 @@ export default class FeedMap {
                         <a href="/journal/${entry.author.username}"><img class="avatar img-fluid rounded-circle me-1" src="${entry.author.avatar}"></a>
                         Posted on ${new Date(entry.createdDate).getMonth() + 1}/${new Date(entry.createdDate).getDate()}/${new Date(entry.createdDate).getFullYear()}</p>
                       </div> 
+
                       
                       <div class="text-center mb-4">
                           <small class="text-muted">

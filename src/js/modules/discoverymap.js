@@ -10,10 +10,6 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ
 
 export default class DiscoveryMap {
 
-
-  
-
-
   constructor() {
     this.discoverymap = new mapboxgl.Map({
       container: 'discoverymap',
@@ -37,13 +33,12 @@ export default class DiscoveryMap {
 
 
   events() {
-    window.onload = this.showLoaderIcon()
     this.discoverymap.on('load', () => this.loadResources())
   }
 
 
   loadResources() {
-    console.log('loading resources')
+    //console.log('loading resources')
     this.loadControls()
     this.discoverymap.addSource('10m-bathymetry-81bsvj', {
       type: 'vector',
@@ -136,7 +131,6 @@ export default class DiscoveryMap {
     });
 
     this.startgeocoder.appendChild(geocoder.onAdd(this.discoverymap))      
-    this.hideLoaderIcon()
     this.discoverymap.addControl(
       new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
@@ -158,20 +152,20 @@ export default class DiscoveryMap {
   }
 
   hideOverlay() {
-    console.log('hiding overlay')
+    this.showLoaderIcon()
+    //console.log('hiding overlay')
     this.overlay.style.display = "none";
     this.feed.style.display = "block"
-    this.entryfeed.innerHTML = '<div class="text-center text-muted">Loading...</div>'
   }
 
 
   loadEntries() {
     var bounds = this.discoverymap.getBounds().toArray()
     if (this.discoverymap.getZoom() > this.loadzoom) {
-      console.log('loading entries')
-      this.loader = "loader"
+      //console.log('loading entries')
       setTimeout(() => this.sendRequest(bounds), this.timeout)
     } else {
+      this.hideLoaderIcon()
       this.entryfeed.innerHTML = `<div class="text-center"><p class="text-muted">The map is currently at zoom level <strong>${Math.round(this.discoverymap.getZoom()*10)/10}</strong>. Zoom in past level ${this.loadzoom} to populate the entry feed and read full entries.</p></div>`
     }
   }
@@ -184,16 +178,18 @@ export default class DiscoveryMap {
   }
 
   showLoaderIcon() {
-      document.querySelector(".loader-text").removeAttribute('hidden', true)
+    document.querySelector(".spinner-border").removeAttribute('hidden', true)
+    document.querySelector(".loader-text-2").removeAttribute('hidden', true)
   }
 
   hideLoaderIcon() {
-    document.querySelector(".loader-text").setAttribute('hidden', true)
+    document.querySelector(".spinner-border").setAttribute('hidden', true)
+    document.querySelector(".loader-text-2").setAttribute('hidden', true)
   }
 
 
   loadMarkers(entries) {
-    console.log('loading markers')
+    //console.log('loading markers')
       var markers = GeoJSON.parse(entries.data, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
       var sourceID = Math.random().toString(36).slice(2)
       this.discoverymap.addSource(`entrymarkers${sourceID}`, {
@@ -331,6 +327,7 @@ export default class DiscoveryMap {
   
 
   renderEntryHTML(entries) {
+    this.hideLoaderIcon()
     if (entries.data.length) {
       this.entryfeed.innerHTML = `${entries.data.map(entry => {
         return `<div class="list-group list-group-flush"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">

@@ -25,6 +25,9 @@ if (document.querySelector("#journalmap")) {new JournalMap()};
 import Notification from "./modules/notification";
 if (document.querySelector("#user-notifications")) {new Notification()};
 
+import ShareButton from './modules/sharebutton'
+if (document.querySelector("#share-button")) {new ShareButton()};
+
 import Highlight from './modules/highlight'
 if (document.querySelector("#highlight-button")) {new Highlight()};
 

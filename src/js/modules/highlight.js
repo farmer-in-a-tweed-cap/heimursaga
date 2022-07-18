@@ -53,16 +53,12 @@ export default class Highlight {
 
     changePrimary() {
         document.querySelector(".icon-heimursaga-highlight").style.color = "#AC6D46"
-        document.querySelector("#highlight-button").classList.remove("text-blue")
-        document.querySelector("#highlight-button").classList.add("text-primary")
         document.querySelector("#highlight-check").removeAttribute('hidden', true)
 
     }
 
     changeBlue() {
         document.querySelector(".icon-heimursaga-highlight").style.color = "#3C73AA"
-        document.querySelector("#highlight-button").classList.remove("text-danger")
-        document.querySelector("#highlight-button").classList.add("text-blue")
         document.querySelector("#highlight-check").setAttribute('hidden', true)
     }
 
