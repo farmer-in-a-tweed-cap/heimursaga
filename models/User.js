@@ -2,7 +2,6 @@ const bcrypt = require('bcryptjs')
 const usersCollection = require('../db').db().collection("users")
 const validator = require("validator")
 const md5 = require('md5')
-const { get } = require('../router')
 const sanitizeHTML = require('sanitize-html')
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');

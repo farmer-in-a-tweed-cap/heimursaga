@@ -1,5 +1,4 @@
 const express = require('express')
-const { render } = require('./app')
 const userController = require('./controllers/userController')
 const entryController = require('./controllers/entryController')
 const followController = require('./controllers/followController')

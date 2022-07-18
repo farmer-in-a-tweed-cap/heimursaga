@@ -33,6 +33,7 @@ export default class DiscoveryMap {
 
 
   events() {
+    window.onload = this.showLoaderText()
     this.discoverymap.on('load', () => this.loadResources())
   }
 
@@ -185,6 +186,14 @@ export default class DiscoveryMap {
   hideLoaderIcon() {
     document.querySelector(".spinner-border").setAttribute('hidden', true)
     document.querySelector(".loader-text-2").setAttribute('hidden', true)
+  }
+
+  showLoaderText() {
+    document.querySelector(".loader-text").removeAttribute('hidden', true)
+  }
+
+  hideLoaderText() {
+    document.querySelector(".loader-text").setAttribute('hidden', true)
   }
 
 
