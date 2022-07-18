@@ -11,6 +11,9 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ
 export default class DiscoveryMap {
 
 
+  
+
+
   constructor() {
     this.discoverymap = new mapboxgl.Map({
       container: 'discoverymap',
@@ -325,6 +328,7 @@ export default class DiscoveryMap {
         this.getCanvas().style.cursor = '';
       });
   }
+  
 
   renderEntryHTML(entries) {
     if (entries.data.length) {
@@ -391,12 +395,14 @@ export default class DiscoveryMap {
                         <a href="/journal/${entry.author.username}"><img class="avatar img-fluid rounded-circle me-1" src="${entry.author.avatar}"></a>
                         Posted on ${new Date(entry.createdDate).getMonth() + 1}/${new Date(entry.createdDate).getDate()}/${new Date(entry.createdDate).getFullYear()}</p>
                       </div> 
+
                       
                       <div class="text-center mb-4">
                           <small class="text-muted">
                           <a href="/entry/${entry._id}">Visit entry permalink</a>
                           </small>
                       </div>
+                    
 
                       <div class="">
                     

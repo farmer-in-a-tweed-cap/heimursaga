@@ -293,6 +293,39 @@ Entry.getFollowedFeed = async function(bounds, id) {
   ])
 }
 
+Entry.getJournalFeed = async function(bounds, id) {
+  let LngLatArray = bounds.split(',')
+  var LngWest = parseFloat(LngLatArray[0])
+  var LatSouth = parseFloat(LngLatArray[1])
+  var LngEast = parseFloat(LngLatArray[2])
+  var LatNorth = parseFloat(LngLatArray[3])
+  let userId = new ObjectID(id)
+
+  // look for posts where the author is in the above array of followed users
+  return Entry.reusableEntryQuery([
+    {$match: {author: userId}},
+    {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
+    {$match: {privacy: "public"}},
+    {$sort: {createdDate: -1}}
+  ])
+}
+
+Entry.getMyJournalFeed = async function(bounds, id) {
+  let LngLatArray = bounds.split(',')
+  var LngWest = parseFloat(LngLatArray[0])
+  var LatSouth = parseFloat(LngLatArray[1])
+  var LngEast = parseFloat(LngLatArray[2])
+  var LatNorth = parseFloat(LngLatArray[3])
+  let userId = new ObjectID(id)
+
+  // look for posts where the author is in the above array of followed users
+  return Entry.reusableEntryQuery([
+    {$match: {author: userId}},
+    {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
+    {$sort: {createdDate: -1}}
+  ])
+}
+
 Entry.returnAll = function() {
   return new Promise(async function(resolve,reject) {
     let entries = entriesCollection.find({}).sort({createdDate: -1}).toArray()

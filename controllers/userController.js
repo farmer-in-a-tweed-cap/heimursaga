@@ -468,40 +468,17 @@ exports.feedEntryList = async function(req, res) {
     })
 }
 
-
-exports.profileFollowersScreen = async function(req, res) {
-  try {
-    let followers = await Follow.getFollowersById(req.profileUser._id)
-    res.render('profile-followers', {
-      currentPage: "followers",
-      followers: followers,
-      profileUsername: req.profileUser.username,
-      profileAvatar: req.profileUser.avatar,
-      isFollowing: req.isFollowing,
-      isVisitorsProfile: req.isVisitorsProfile,
-      counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
-    })
-  } catch {
-    res.render("404")
-  }
-}
-
-exports.profileFollowingScreen = async function(req, res) {
-  try {
-    let following = await Follow.getFollowingById(req.profileUser._id)
-    res.render('profile-following', {
-      currentPage: "following",
-      following: following,
-      profileUsername: req.profileUser.username,
-      profileAvatar: req.profileUser.avatar,
-      isFollowing: req.isFollowing,
-      isVisitorsProfile: req.isVisitorsProfile,
-      counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
-    })
-  } catch {
-    res.render("404")
-  }
-}
+exports.journalEntryList = async function(req, res) {
+  if (req.isVisitorsProfile) {
+    await Entry.getMyJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
+      res.json(entries)})
+  } else {
+    await Entry.getJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
+      res.json(entries)
+    }).catch(() => {
+      res.json([])
+  })
+}}
 
 
 exports.viewAll = async function(req,res) {

@@ -25,9 +25,6 @@ router.get('/discovery', function (req, res) {
   res.render('discovery', {pageName: 'discovery'})
 })
 
-//router.get('/', entryController.getAll)
-//router.get('/discovery', entryController.getAll)
-
 router.get('/login', function (req, res) {
   res.render('login', {pageName: 'login'})
 })
@@ -62,7 +59,6 @@ router.post('/update-notifications/:username', userController.ifUserExists, user
 // entry related routes
 router.get('/create-entry', userController.mustBeLoggedIn, entryController.viewCreateScreen)
 router.post('/create-entry', userController.mustBeLoggedIn, multerUploads, entryController.create)
-//router.post('/create-entry', userController.mustBeLoggedIn, photoController.upload)
 
 
 router.get('/entry/:id', entryController.viewSingle)
@@ -81,6 +77,8 @@ router.post('/search', entryController.search)
 
 router.get('/entry-list/:bounds', entryController.entryList)
 router.get('/feed-entry-list/:bounds', userController.feedEntryList)
+router.get('/journal-entry-list/:username/:bounds', userController.ifUserExists, userController.sharedProfileData, userController.journalEntryList)
+
 
 
 // photo specific coutes
