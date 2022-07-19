@@ -81,21 +81,25 @@
 
     <% if (!entry.isVisitorOwner) { %>
   
-      <div class="pt-3 col-12 offset-2 row text-center">
+      <div class="pt-3 row text-center">
 
     <% } else { %>
 
-      <div class="pt-3 col-11 offset-2 row text-center">
+      <div class="pt-3 row text-center">
 
     <% } %>
 
+        <div class="col">
+
+        </div>
+
         <% if (!entry.isVisitorOwner) { %>
 
-        <div class="col-2">
+        <div class="col">
   
         <% } else { %>
   
-        <div class="col-3">
+        <div class="col">
   
         <% } %>
 
@@ -125,11 +129,11 @@
 
         <% if (!entry.isVisitorOwner) { %>
 
-        <div class="col-2">
+        <div class="col">
 
         <% } else { %>
 
-        <div class="col-3">
+        <div class="col">
 
         <% } %>
 
@@ -158,7 +162,7 @@
 
         <% if (!entry.isVisitorOwner) { %>
 
-        <div class="col-2">
+        <div class="col">
 
           <input type="hidden" id="is-following" class="is-following" value="<%= isVisitorFollowing %>">
           <input type="hidden" id="entry-username" class="entry-username" value="<%= entry.author.username %>">
@@ -188,7 +192,7 @@
 
         <% if (!entry.isVisitorOwner) { %>
 
-        <div class="col-2">
+        <div class="col">
 
           <!--<button id="fund-button" style="border: none; background: transparent;" class="text-blue" disabled>
             <i id="icon-heimursaga-fund-alt" style="font-size: x-large; color: #adb5bd;" class="icon-heimursaga-fund-alt"></i>
@@ -206,7 +210,7 @@
 
         <% } else { %>
 
-          <div class="col-3">
+          <div class="col">
   
             <button id="share-button" style="border: none; background: transparent;" class="text-blue" value="https://heimursaga.com/entry/<%= entry._id %>">
               <i id="icon-heimursaga-share" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-share"></i>
@@ -218,6 +222,9 @@
 
           <% } %>
 
+        <div class="col">
+          
+        </div>
 
       </div> 
 
