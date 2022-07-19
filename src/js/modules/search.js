@@ -121,7 +121,9 @@ export default class Search {
     
         <div class="search-overlay-bottom">
           <div class="container container--narrow py-3">
-            <div class="circle-loader"></div>
+            <div class="d-flex justify-content-center">
+                <div class="circle-loader"></div>
+            </div>
             <div class="live-search-results"></div>
           </div>
         </div>
