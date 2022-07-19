@@ -78,31 +78,13 @@
   </div>-->
 
   <% if (user) { %>
-
-    <% if (!entry.isVisitorOwner) { %>
   
       <div class="pt-3 row text-center">
 
-    <% } else { %>
-
-      <div class="pt-3 row text-center">
-
-    <% } %>
-
-        <div class="col">
-
-        </div>
-
-        <% if (!entry.isVisitorOwner) { %>
+        <div class="col"></div>
 
         <div class="col">
   
-        <% } else { %>
-  
-        <div class="col">
-  
-        <% } %>
-
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <input type="hidden" id="entry-id" class="entry-id" value="<%= entry._id %>">
           <input type="hidden" id="has-highlighted" class="has-highlighted" value="<%= hasVisitorHighlighted %>">
@@ -127,15 +109,7 @@
 
         </div>
 
-        <% if (!entry.isVisitorOwner) { %>
-
         <div class="col">
-
-        <% } else { %>
-
-        <div class="col">
-
-        <% } %>
 
           <input type="hidden" id="has-bookmarked" class="has-bookmarked" value="<%= hasVisitorBookmarked%>">
   
