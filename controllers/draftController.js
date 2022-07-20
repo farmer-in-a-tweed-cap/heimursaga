@@ -49,7 +49,6 @@ exports.viewEditScreen = async function(req, res) {
       let draft = await Draft.findSingleById(req.params.id, req.visitorId)
       let entryMarker = GeoJSON.parse(draft.GeoJSONcoordinates, {'Point': ['draft.GeoJSONcoordinates.coordinates[0]','draft.GeoJSONcoordinates.coordinates[1]']})
       if (draft.isVisitorOwner) {
-          console.log(draft)
         res.render("edit-draft", {draft: draft, entrymarker: JSON.stringify(entryMarker), pageName: "edit-draft"})
       } else {
         req.flash("errors", "You do not have permission to perform that action.")
@@ -159,7 +158,8 @@ exports.delete = function(req, res) {
 
 
 
-exports.postEntry = function(req, res) {
+exports.postEntry = async function(req, res) {
+    let draft = await Draft.findSingleById(req.params.id, req.visitorId)
     let draftId = req.params.id
     let entry = new Entry(req.body, req.files, draftId, req.session.user._id, req.session.user.username)
     if (req.files.length) {
@@ -174,8 +174,10 @@ exports.postEntry = function(req, res) {
         //errors.forEach(error => req.flash("errors", error))
         req.session.save(() => res.redirect(`/draft/${req.params.id}/edit`))
     })
-    } else {
-    entry.create().then(function(newId) {
+    } else if (draft.hasPhoto) {
+        console.log('has photo')
+    let entry2 = new Entry(req.body, 'hasPhoto', draftId, req.session.user._id, req.session.user.username)
+    entry2.create().then(function(newId) {
             Draft.delete(draftId, req.session.user._id)
             req.flash("success", "Entry successfully posted.")
             req.session.save(() => res.redirect(`/entry/${newId}`))
@@ -184,5 +186,16 @@ exports.postEntry = function(req, res) {
         //errors.forEach(error => req.flash("errors", error))
         req.session.save(() => res.redirect(`/draft/${req.params.id}/edit`))
     })
+} else {
+    console.log('no photo')
+    entry.create().then(function(newId) {
+        Draft.delete(draftId, req.session.user._id)
+        req.flash("success", "Entry successfully posted.")
+        req.session.save(() => res.redirect(`/entry/${newId}`))
+}).catch(function(errors){
+    req.flash("errors", "Error posting.")
+    //errors.forEach(error => req.flash("errors", error))
+    req.session.save(() => res.redirect(`/draft/${req.params.id}/edit`))
+})
 }
 }

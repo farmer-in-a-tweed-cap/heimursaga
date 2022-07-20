@@ -78,27 +78,13 @@
   </div>-->
 
   <% if (user) { %>
-
-    <% if (!entry.isVisitorOwner) { %>
   
-      <div class="pt-3 col-12 offset-2 row text-center">
+      <div class="pt-3 row text-center">
 
-    <% } else { %>
+        <div class="col"></div>
 
-      <div class="pt-3 col-11 offset-2 row text-center">
-
-    <% } %>
-
-        <% if (!entry.isVisitorOwner) { %>
-
-        <div class="col-2">
+        <div class="col">
   
-        <% } else { %>
-  
-        <div class="col-3">
-  
-        <% } %>
-
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <input type="hidden" id="entry-id" class="entry-id" value="<%= entry._id %>">
           <input type="hidden" id="has-highlighted" class="has-highlighted" value="<%= hasVisitorHighlighted %>">
@@ -123,15 +109,7 @@
 
         </div>
 
-        <% if (!entry.isVisitorOwner) { %>
-
-        <div class="col-2">
-
-        <% } else { %>
-
-        <div class="col-3">
-
-        <% } %>
+        <div class="col">
 
           <input type="hidden" id="has-bookmarked" class="has-bookmarked" value="<%= hasVisitorBookmarked%>">
   
@@ -158,7 +136,7 @@
 
         <% if (!entry.isVisitorOwner) { %>
 
-        <div class="col-2">
+        <div class="col">
 
           <input type="hidden" id="is-following" class="is-following" value="<%= isVisitorFollowing %>">
           <input type="hidden" id="entry-username" class="entry-username" value="<%= entry.author.username %>">
@@ -188,7 +166,7 @@
 
         <% if (!entry.isVisitorOwner) { %>
 
-        <div class="col-2">
+        <div class="col">
 
           <!--<button id="fund-button" style="border: none; background: transparent;" class="text-blue" disabled>
             <i id="icon-heimursaga-fund-alt" style="font-size: x-large; color: #adb5bd;" class="icon-heimursaga-fund-alt"></i>
@@ -198,26 +176,29 @@
 
           <button id="share-button" style="border: none; background: transparent;" class="text-blue" value="https://heimursaga.com/entry/<%= entry._id %>">
             <i id="icon-heimursaga-share" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-share"></i>
-            <div class="w-100 mt-n2"></div>
-            <small class="share-label text-primary" id="share-label" hidden>copied</small>
+            <div class="w-100"></div>
+            <i id="share-check" class="share-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check" hidden></i>
           </button>
 
         </div>
 
         <% } else { %>
 
-          <div class="col-3">
+          <div class="col">
   
             <button id="share-button" style="border: none; background: transparent;" class="text-blue" value="https://heimursaga.com/entry/<%= entry._id %>">
               <i id="icon-heimursaga-share" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-share"></i>
-              <div class="w-100 mt-n2"></div>
-              <small class="share-label text-primary" id="share-label" hidden>copied</small>
+              <div class="w-100"></div>
+              <i id="share-check" class="share-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check" hidden></i>
             </button>
   
           </div>
 
           <% } %>
 
+        <div class="col">
+          
+        </div>
 
       </div> 
 
