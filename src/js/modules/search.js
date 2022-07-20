@@ -71,7 +71,7 @@ export default class Search {
             ${entries.map(entry => {
                 let entryDate = new Date(entry.createdDate)
                 return `<a href="/entry/${entry._id}" class="list-group-item list-group-item-action">
-                <strong>${entry.title}</strong>
+                <img class="avatar img-fluid rounded-circle me-1" src="${entry.author.avatar}"> <strong>${entry.title}</strong>
                 <span class="text-muted small">by ${entry.author.username} on ${entryDate.getMonth() + 1}/${entryDate.getDate()}/${entryDate.getFullYear()}</span>
               </a>`
             }).join('')}
@@ -121,9 +121,7 @@ export default class Search {
     
         <div class="search-overlay-bottom">
           <div class="container container--narrow py-3">
-            <div class="d-flex justify-content-center">
-                <div class="circle-loader"></div>
-            </div>
+            <div class="circle-loader"></div>
             <div class="live-search-results"></div>
           </div>
         </div>
