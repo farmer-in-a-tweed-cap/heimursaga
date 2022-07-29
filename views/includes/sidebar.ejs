@@ -10,7 +10,45 @@
 
                 <div class="mb-4"></div>
 
-				<ul class="sidebar-nav" style="padding-left: 2rem;">
+
+                    <% if (!user) { %>
+
+                <ul class="sidebar-nav text-center">
+
+
+                    <li <% if (pageName === 'discovery') { %>
+                            class="sidebar-item active" 
+                            <% } else { %>
+                            class="sidebar-item"
+                            <% } %> >
+                        <a class="sidebar-link" style="font-size: large" href="/discovery">Home</a>
+                    </li>
+
+                    <div <% if (pageName === 'about') { %>
+                        class="sidebar-item active" 
+                        <% } else { %>
+                        class="sidebar-item"
+                        <% } %> >
+                        <a class="sidebar-link" style="font-size: large" href="/about">About</a>
+                    </div>
+                    <div <% if (pageName === 'contact') { %>
+                        class="sidebar-item active" 
+                        <% } else { %>
+                        class="sidebar-item"
+                        <% } %> >
+                        <a class="sidebar-link" style="font-size: large" href="/contact">Contact</a>
+                    </div>
+
+                </ul>
+
+                    <% } %> 
+
+
+
+                    <% if (user) { %>
+
+                <ul class="sidebar-nav" style="padding-left: 2rem;">
+
 
                     <li <% if (pageName === 'discovery') { %>
                             class="sidebar-item active" 
@@ -21,8 +59,6 @@
                             <i class="align-middle" data-feather="compass"></i> <span class="align-middle">Discovery</span>
                         </a>
                     </li>
-
-                    <% if (user) { %>
 
                     <li <% if (pageName === 'my-feed') { %>
                             class="sidebar-item active" 
@@ -67,7 +103,7 @@
                         <% } %> >
                         <a class="sidebar-link" href="/explorer-code">The Explorer Code</a>
                     </div>
-                    <% } %>
+
                     <div <% if (pageName === 'about') { %>
                         class="sidebar-item active" 
                         <% } else { %>
@@ -82,5 +118,7 @@
                         <% } %> >
                         <a class="sidebar-link" href="/contact">Contact Us</a>
                     </div>
+
+                    <% } %>
                 </ul>
 			</div>

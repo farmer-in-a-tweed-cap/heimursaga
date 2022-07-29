@@ -314,7 +314,7 @@
 
 																  
 																			<div class="modal-body col-md-8 offset-md-2 pt-0">
-																				<h5 class="text-center text-muted">on <%= new Date(entry.date).toLocaleString('default', { month: 'long' }) %> <%= new Date(entry.date).getDate() %>, <%= new Date(entry.date).getFullYear() %> | by <a href="/journal/${entry.author.username}"><%= entry.author.username %></a></h5>
+																				<h5 class="text-center text-muted">on <%= new Date(entry.date).toLocaleString('default', { month: 'long' }) %> <%= new Date(entry.date).getDate() %>, <%= new Date(entry.date).getFullYear() %> | by <a href="/journal/<%= entry.author.username %>"><%= entry.author.username %></a></h5>
 																			</div>
 												  
 																			<div class="modal-body">
