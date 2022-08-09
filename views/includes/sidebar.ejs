@@ -85,7 +85,7 @@
 
 				</ul>
                 <% if (user) { %>
-                <hr class="col-md-8 offset-md-2" style="position:absolute; bottom:200px">
+                <hr class="col-md-8 offset-md-2" style="position:absolute; bottom:230px">
                 <% } %>
                 <ul class="sidebar-footer text-center" style="position: absolute; bottom: 0; padding-bottom: 1rem;">
                     <% if (user) { %>
@@ -117,6 +117,14 @@
                         class="sidebar-item"
                         <% } %> >
                         <a class="sidebar-link" href="/contact">Contact Us</a>
+                    </div>
+
+                    <div <% if (pageName === 'privacy') { %>
+                        class="sidebar-item active" 
+                        <% } else { %>
+                        class="sidebar-item"
+                        <% } %> >
+                        <a class="sidebar-link" href="/privacy">Privacy Policy</a>
                     </div>
 
                     <% } %>

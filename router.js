@@ -38,6 +38,10 @@ router.get('/recover', function(req, res) {
   res.render('recover', {pageName: "recover-password"})
 })
 
+router.get('/privacy', function (req, res) {
+  res.render('privacy-policy', {pageName: 'privacy'})
+})
+
 router.get('/user-guide', userController.mustBeLoggedIn, userController.userGuide)
 
 router.post('/recover', userController.recover)
