@@ -34,6 +34,7 @@ exports.addHighlight = async function(req, res) {
                     text: `Hello, ${highlightOwner.username} has highlighted "${entry.title}"! Visit your entry at https://heimursaga.com/entry/${entry._id}.`,
                     html: `Hello, <a href="https://heimursaga.com/journal/${highlightOwner.username}">${highlightOwner.username}</a> has highlighted <a href="https://heimursaga.com/entry/${entry._id}">${entry.title}</a> on Heimursaga!`
                 })
+            } if (entryOwner.settings.pushNotifications.likes == "true") {
 
                 axios({
                     method: 'post',

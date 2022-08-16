@@ -6,6 +6,7 @@ const sanitizeHTML = require('sanitize-html')
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
+usersCollection.updateMany({}, {$set: {settings: {emailNotifications: {followers: "true", likes: "true"}, pushNotifications: {followers: "true", likes: "true"}}}})
 
 
 let User = function(data, getAvatar, username) {
@@ -33,7 +34,7 @@ User.prototype.cleanUp = function() {
         instagram: this.data.instagram,
         website: this.data.website,
         type: this.data.type,
-        settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}},
+        settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}, pushNotifications: {followers: this.data.followerspushnotifications, likes: this.data.likespushnotifications}},
         resetPasswordToken: {type: String, required: false},
         resetPasswordExpires: {type: Date, required: false},
         registeredDate: new Date(),
@@ -151,7 +152,7 @@ User.prototype.update = function() {
       this.cleanUp()
       //this.validate()
       if (!this.errors.length) {
-        await usersCollection.findOneAndUpdate({username: this.data.username}, {$set: {username: this.data.username, email: this.data.email, bio: this.data.bio, currentlyin: this.data.currentlyin, livesin: this.data.livesin, from: this.data.from, type: this.data.type, settings: {emailNotifications: {followers: this.data.settings.emailNotifications.followers, likes: this.data.settings.emailNotifications.likes}}}})
+        await usersCollection.findOneAndUpdate({username: this.data.username}, {$set: {username: this.data.username, email: this.data.email, bio: this.data.bio, currentlyin: this.data.currentlyin, livesin: this.data.livesin, from: this.data.from, type: this.data.type, settings: {emailNotifications: {followers: this.data.settings.emailNotifications.followers, likes: this.data.settings.emailNotifications.likes}, pushNotifications: {followers: this.data.settings.pushNotifications.followers, likes: this.data.settings.pushNotifications.likes}}}})
         resolve("success")
       } else {
         resolve("failure")
@@ -177,7 +178,7 @@ User.prototype.updatePassword = function() {
 
 User.prototype.updateNotifications = function() {
     return new Promise(async (resolve, reject) => {
-        await usersCollection.findOneAndUpdate({username: this.data.username}, {$set: {settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}}}})
+        await usersCollection.findOneAndUpdate({username: this.data.username}, {$set: {settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}, pushNotifications: {followers: this.data.followerspushnotifications, likes: this.data.likespushnotifications}}}})
             resolve("success")
     })
 }

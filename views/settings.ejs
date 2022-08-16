@@ -203,7 +203,20 @@
 													<div class="mb-5">
 														<div class="form-check form-switch">
 															<input class="form-check-input" type="checkbox" value="true" name="likesemailnotifications" id="likesemailnotifications" <% if (settings.emailNotifications.likes == "true") { %> checked <% } %>/>
-															<label class="form-check-label">email notifications for new entry likes</label>
+															<label class="form-check-label">email notifications for new entry highlights</label>
+														</div>
+													</div>
+
+													<div class="mb-3">
+														<div class="form-check form-switch">
+															<input class="form-check-input" type="checkbox" value="true" name="followerspushnotifications" id="followerspushnotifications"<% if (settings.pushNotifications.followers == "true") { %> checked <% } %>/>
+															<label class="form-check-label">push notifications for new followers</label>
+														</div>
+													</div>
+													<div class="mb-5">
+														<div class="form-check form-switch">
+															<input class="form-check-input" type="checkbox" value="true" name="likespushnotifications" id="likespushnotifications" <% if (settings.pushNotifications.likes == "true") { %> checked <% } %>/>
+															<label class="form-check-label">push notifications for new entry highlights</label>
 														</div>
 													</div>
 
