@@ -46,6 +46,7 @@ exports.addFollow = async function(req, res) {
                     text: `Hello, ${user.username} has followed you on Heimursaga. Visit their Journal (https://heimursaga.com/journal/${user.username}) to see their travels!`,
                     html: `Hello, <strong>${user.username}</strong> has followed you on Heimursaga. <br><br>Visit their <a href="https://heimursaga.com/journal/${user.username}">Journal</a> to see their travels!`
                 })
+            }  if (followedUser.settings.pushNotifications.followers == "true") {
 
                 axios({
                     method: 'post',
