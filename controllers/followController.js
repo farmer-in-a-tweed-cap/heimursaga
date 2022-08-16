@@ -32,8 +32,9 @@ const csrf = require('csurf')
 
 exports.addFollow = async function(req, res) {
     let follow = new Follow(req.params.username, req.visitorId)
-    let followedUser = await User.findByUsername(req.session.user.username)
+    let followedUser = await User.findByUsername(req.params.username)
     let user = await User.findByUsername(req.session.user.username)
+    console.log(followedUser.email)
 
     follow.create().then(() => {
         req.session.save(async () => {
