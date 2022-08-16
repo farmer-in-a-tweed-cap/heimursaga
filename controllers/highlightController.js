@@ -22,40 +22,43 @@ exports.addHighlight = async function(req, res) {
     highlight.create().then(() => {
         req.session.save(async () => {
 
-            axios({
-                method: 'post',
-                url: "https://progressier.com/push/send",
-                data: {
-                    "recipients": {},
-                    "campaigns": [],
-                    "title": "programmatic push notification HIGHLIGHT",
-                    "body": "your entry has been highlighted",
-                    "url": "https://heimursaga.com",
-                    "badge": "https://firebasestorage.googleapis.com/v0/b/pwaa-8d87e.appspot.com/o/x5BC5jXNQTEvdfTutjGr%2FIeujfSdnTBeJxKb.png?alt=media&token=8046c514-5d5e-4a2f-a8f8-33c45f5112b6",
-                    "icon": "https://firebasestorage.googleapis.com/v0/b/pwaa-8d87e.appspot.com/o/x5BC5jXNQTEvdfTutjGr%2FspmHBGpeHpIeQhq.png?alt=media&token=3198025c-e988-485e-83cc-3dfd0bba7025",
-                },
-                headers: {
-                    "authorization": "Bearer 9zay5vfzh8vsu2lpea1c0w7pvj4jxdn221y9suiirkzvhc84e6th2zbpi65ia89n",
-                    "content-type": "application/json",
-                    "x-csrf-token": req.csrfToken()
-                }
-              })
-              .then((response) => {
-                console.log(response);
-              }, (error) => {
-                console.log(error);
-              })
+
             
             let entryOwner = await User.findByUsername(entry.author.username)
-            let likeOwner = await User.findByUsername(req.session.user.username)
+            let highlightOwner = await User.findByUsername(req.session.user.username)
             if (entryOwner.settings.emailNotifications.likes == "true") {
                 sendgrid.send({
                     to: `${entryOwner.email}`,
                     from: 'admin@heimursaga.com',
-                    subject: `Your entry "${entry.title}" has a new like!`,
-                    text: `Hello, ${likeOwner.username} has liked "${entry.title}"! Visit your entry at https://heimursaga.com/entry/${entry._id}.`,
-                    html: `Hello, <a href="https://heimursaga.com/journal/${likeOwner.username}">${likeOwner.username}</a> has liked <a href="https://heimursaga.com/entry/${entry._id}">${entry.title}</a> on Heimursaga!`
+                    subject: `Your entry "${entry.title}" has a new highlight!`,
+                    text: `Hello, ${highlightOwner.username} has highlighted "${entry.title}"! Visit your entry at https://heimursaga.com/entry/${entry._id}.`,
+                    html: `Hello, <a href="https://heimursaga.com/journal/${highlightOwner.username}">${highlightOwner.username}</a> has highlighted <a href="https://heimursaga.com/entry/${entry._id}">${entry.title}</a> on Heimursaga!`
                 })
+
+                axios({
+                    method: 'post',
+                    url: "https://progressier.com/push/send",
+                    data: {
+                        "recipients": `${entryOwner.email}`,
+                        "campaigns": [],
+                        "title": "Heimursaga Admin",
+                        "body": `Hello, <a href="https://heimursaga.com/journal/${highlightOwner.username}">${highlightOwner.username}</a> has highlighted <a href="https://heimursaga.com/entry/${entry._id}">${entry.title}</a> on Heimursaga!`,
+                        "url": `https://heimursaga.com/entry/${entry._id}`,
+                        "badge": "https://firebasestorage.googleapis.com/v0/b/pwaa-8d87e.appspot.com/o/x5BC5jXNQTEvdfTutjGr%2FIeujfSdnTBeJxKb.png?alt=media&token=8046c514-5d5e-4a2f-a8f8-33c45f5112b6",
+                        "icon": "https://firebasestorage.googleapis.com/v0/b/pwaa-8d87e.appspot.com/o/x5BC5jXNQTEvdfTutjGr%2FspmHBGpeHpIeQhq.png?alt=media&token=3198025c-e988-485e-83cc-3dfd0bba7025",
+                    },
+                    headers: {
+                        "authorization": "Bearer 9zay5vfzh8vsu2lpea1c0w7pvj4jxdn221y9suiirkzvhc84e6th2zbpi65ia89n",
+                        "content-type": "application/json",
+                        "x-csrf-token": req.csrfToken()
+                    }
+                  })
+                  .then((response) => {
+                    console.log(response);
+                  }, (error) => {
+                    console.log(error);
+                  })
+
             }
         })
     }).catch((errors) => {
