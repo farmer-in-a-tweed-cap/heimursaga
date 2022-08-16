@@ -53,7 +53,7 @@ exports.addFollow = async function(req, res) {
                     url: "https://progressier.com/push/send",
                     data: {
                         "recipients": {"email": `${followedUser.email}`},
-                        "campaigns": [],
+                        "campaigns": ["user activity notifications"],
                         "title": "Heimursaga Admin",
                         "body": `Hello, ${user.username} has followed you on Heimursaga!`,
                         "url": `https://heimursaga.com/journal/${user.username}`,

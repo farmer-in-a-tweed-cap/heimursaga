@@ -7,13 +7,7 @@ const sendgrid = require('@sendgrid/mail')
 const axios = require('axios')
 const csrf = require('csurf')
 
-var csrfProtection = csrf({ cookie: true })
-
 sendgrid.setApiKey(process.env.SENDGRIDAPIKEY)
-
-const options = {
-    headers: {'x-csrf-token': csrfProtection}
-  }
 
 
 exports.addHighlight = async function(req, res) {
@@ -41,7 +35,7 @@ exports.addHighlight = async function(req, res) {
                     url: "https://progressier.com/push/send",
                     data: {
                         "recipients": {"email": `${entryOwner.email}`},
-                        "campaigns": [],
+                        "campaigns": ["user activity notifications"],
                         "title": "Heimursaga Admin",
                         "body": `Hello, ${highlightOwner.username} has highlighted "${entry.title}" on Heimursaga!`,
                         "url": `https://heimursaga.com/entry/${entry._id}`,
