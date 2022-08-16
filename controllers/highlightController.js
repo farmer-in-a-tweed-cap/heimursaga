@@ -39,7 +39,7 @@ exports.addHighlight = async function(req, res) {
                     method: 'post',
                     url: "https://progressier.com/push/send",
                     data: {
-                        "recipients": {},
+                        "recipients": {"email": `${entryOwner.email}`},
                         "campaigns": [],
                         "title": "Heimursaga Admin",
                         "body": `Hello, ${highlightOwner.username} has highlighted "${entry.title}" on Heimursaga!`,
