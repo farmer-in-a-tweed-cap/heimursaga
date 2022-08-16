@@ -39,10 +39,10 @@ exports.addHighlight = async function(req, res) {
                     method: 'post',
                     url: "https://progressier.com/push/send",
                     data: {
-                        "recipients": `${entryOwner.email}`,
+                        "recipients": {},
                         "campaigns": [],
                         "title": "Heimursaga Admin",
-                        "body": `Hello, <a href="https://heimursaga.com/journal/${highlightOwner.username}">${highlightOwner.username}</a> has highlighted <a href="https://heimursaga.com/entry/${entry._id}">${entry.title}</a> on Heimursaga!`,
+                        "body": `Hello, ${highlightOwner.username} has highlighted "${entry.title}" on Heimursaga!`,
                         "url": `https://heimursaga.com/entry/${entry._id}`,
                         "badge": "https://firebasestorage.googleapis.com/v0/b/pwaa-8d87e.appspot.com/o/x5BC5jXNQTEvdfTutjGr%2FIeujfSdnTBeJxKb.png?alt=media&token=8046c514-5d5e-4a2f-a8f8-33c45f5112b6",
                         "icon": "https://firebasestorage.googleapis.com/v0/b/pwaa-8d87e.appspot.com/o/x5BC5jXNQTEvdfTutjGr%2FspmHBGpeHpIeQhq.png?alt=media&token=3198025c-e988-485e-83cc-3dfd0bba7025",

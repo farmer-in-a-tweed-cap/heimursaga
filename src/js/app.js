@@ -7,7 +7,9 @@ import "./modules/moment";
 import "./modules/sidebar";
 import "./modules/notyf";
 import "./modules/filepond"
-//import "./modules/progressier"
+
+import addProgressierUser from './modules/progressieruser';
+if (document.querySelector(".userlogin")) {new addProgressierUser()};
 
 import Search from './modules/search';
 if (document.querySelector(".header-search-icon")) {new Search()};
