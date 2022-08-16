@@ -272,7 +272,7 @@
 												
 												<div class="list-group list-group-flush">
 													<% entries.forEach(function(entry) { %>
-														<a data-bs-toggle="modal" href="#sizedModalMd-<%= entry._id %>" class="list-group-item list-group-item-action">
+														<a data-bs-toggle="modal" href="#sizedModalMd-<%= entry._id %>" class="list-group-item list-group-item-action sizedModalMd">
 															<% if (entry.privacy == "private") { %>
 																<strong><%= entry.title %></strong><br/>
 																<i class="align-middle me-0 fas fa-fw fa-lock text-blue"></i> <small class="align-middle"><%= entry.place %> | <%= entry.date %></small><br/>
@@ -397,6 +397,8 @@
 
 																			<div class="modal-body m-0">
 																				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+																				<!--<button type="button" class="btn btn-default btn-prev">Prev</button>
+																				<button type="button" class="btn btn-default btn-next">Next</button>-->
 																			</div>
 
 						
@@ -483,7 +485,9 @@
 			</main>
 
 			<script>
-						
+
+
+
 			</script>
 						
 

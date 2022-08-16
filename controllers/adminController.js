@@ -26,7 +26,7 @@ const ObjectID = require('mongodb').ObjectID
 
 exports.viewAdminDashboard = async function(req, res) {
   let entries = await entriesCollection.find({}).sort({createdDate: -1}).toArray()
-  let users = await usersCollection.find({}).sort({createdDate: -1}).toArray()
+  let users = await usersCollection.find({}).sort({registeredDate: -1}).toArray()
   users = users.map(function(user) {
     let completeuser = new User(user, true)
     return {id: new ObjectID(user.id), username: user.username, avatar: completeuser.avatar, email: user.email, bio: user.bio, currentlyin: user.currentlyin, livesin: user.livesin, from: user.from, registeredDate: user.registeredDate, settings: user.settings}
