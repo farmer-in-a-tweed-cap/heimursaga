@@ -33,7 +33,7 @@
     "cross-env": "7.0.3",
     "css-loader": "4.3.0",
     "eslint": "7.21.0",
-    "expose-loader": "^0.7.5",
+    "expose-loader": "^4.0.0",
     "file-loader": "6.2.0",
     "filemanager-webpack-plugin": "2.0.5",
     "hard-source-webpack-plugin": "0.13.1",
