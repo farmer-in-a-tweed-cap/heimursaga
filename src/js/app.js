@@ -61,7 +61,5 @@ import "./modules/wizard"; // requires jQuery
 import "./modules/vector-maps";
 
 
-// Tables
-import "./modules/datatables"; // requires jQueryimport app from "../../app";
 
 
