@@ -1,6 +1,6 @@
 const entriesCollection = require('../db').db().collection("entries")
 const flagsCollection = require('../db').db().collection("flags")
-const ObjectID = require('mongodb').ObjectID
+const { ObjectId } = require('mongodb')
 const Entry = require('./Entry')
 
 let Flag = function(id, authorId) {
@@ -15,14 +15,14 @@ Flag.prototype.cleanUp = function() {
 
 Flag.prototype.validate = async function(action) {
     //flagged entry must exist in database
-    let flaggedEntry = await entriesCollection.findOne({_id: ObjectID(this.EntryId)})
+    let flaggedEntry = await entriesCollection.findOne({_id: ObjectId(this.EntryId)})
     if (flaggedEntry) {
         this.flaggedEntryId = flaggedEntry._id
     } else {
         this.errors.push("You cannot flag an entry that does not exist.")
     }
 
-    let doesFlagAlreadyExist = await flagsCollection.findOne({flaggedEntryId: this.flaggedEntryId, authorId: new ObjectID(this.authorId)})
+    let doesFlagAlreadyExist = await flagsCollection.findOne({flaggedEntryId: this.flaggedEntryId, authorId: new ObjectId(this.authorId)})
     if (action == "create") {
         if (doesFlagAlreadyExist) {this.errors.push("You have already flagged this entry.")}
     }
@@ -37,7 +37,7 @@ Flag.prototype.create = function() {
         this.cleanUp()
         await this.validate("create")
         if (!this.errors.length) {
-            await flagsCollection.insertOne({flaggedEntryId: this.flaggedEntryId, authorId: new ObjectID(this.authorId), createdDate: new Date()})
+            await flagsCollection.insertOne({flaggedEntryId: this.flaggedEntryId, authorId: new ObjectId(this.authorId), createdDate: new Date()})
             resolve()
         } else {
             reject(this.errors)
@@ -46,7 +46,7 @@ Flag.prototype.create = function() {
 }
 
 Flag.hasVisitorFlagged = async function(flaggedEntryId, visitorId) {
-    let flagDoc = await flagsCollection.findOne({flaggedEntryId: new ObjectID(flaggedEntryId), authorId: new ObjectID(visitorId)})
+    let flagDoc = await flagsCollection.findOne({flaggedEntryId: new ObjectId(flaggedEntryId), authorId: new ObjectId(visitorId)})
     if (flagDoc) {
         return true
     } else {

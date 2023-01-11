@@ -1,6 +1,6 @@
 const entriesCollection = require('../db').db().collection("entries")
 const bookmarksCollection = require('../db').db().collection("bookmarks")
-const { ObjectID } = require('mongodb').ObjectID
+const { ObjectId } = require('mongodb')
 const Entry = require('./Entry')
 
 
@@ -17,14 +17,14 @@ Bookmark.prototype.cleanUp = function() {
 
 Bookmark.prototype.validate = async function(action) {
     //bookmarked entry must exist in database
-    let bookmarkedEntry = await entriesCollection.findOne({_id: ObjectID(this.EntryId)})
+    let bookmarkedEntry = await entriesCollection.findOne({_id: ObjectId(this.EntryId)})
     if (bookmarkedEntry) {
         this.bookmarkedEntryId = bookmarkedEntry._id
     } else {
         this.errors.push("You cannot bookmark an entry that does not exist.")
     }
 
-    let doesBookmarkAlreadyExist = await bookmarksCollection.findOne({bookmarkedEntryId: this.bookmarkedEntryId, authorId: new ObjectID(this.authorId)})
+    let doesBookmarkAlreadyExist = await bookmarksCollection.findOne({bookmarkedEntryId: this.bookmarkedEntryId, authorId: new ObjectId(this.authorId)})
     if (action == "create") {
         if (doesBookmarkAlreadyExist) {this.errors.push("You have already bookmarked this entry.")}
     }
@@ -39,7 +39,7 @@ Bookmark.prototype.create = function() {
         this.cleanUp()
         await this.validate("create")
         if (!this.errors.length) {
-            await bookmarksCollection.insertOne({bookmarkedEntryId: this.bookmarkedEntryId, authorId: new ObjectID(this.authorId), createdDate: new Date()})
+            await bookmarksCollection.insertOne({bookmarkedEntryId: this.bookmarkedEntryId, authorId: new ObjectId(this.authorId), createdDate: new Date()})
             resolve()
         } else {
             reject(this.errors)
@@ -52,7 +52,7 @@ Bookmark.prototype.delete = function() {
         this.cleanUp()
         await this.validate("delete")
         if (!this.errors.length) {
-            await bookmarksCollection.deleteOne({bookmarkedEntryId: this.bookmarkedEntryId, authorId: new ObjectID(this.authorId)})
+            await bookmarksCollection.deleteOne({bookmarkedEntryId: this.bookmarkedEntryId, authorId: new ObjectId(this.authorId)})
             resolve()
         } else {
             reject(this.errors)
@@ -64,7 +64,7 @@ Bookmark.authorDelete = async function(bookmarkToDelete, authorId) {
     let entry = await Entry.findSingleById(bookmarkToDelete, authorId)
     if (entry.isVisitorOwner) {
     return new Promise(async (resolve, reject) => {
-            await bookmarksCollection.deleteMany({bookmarkedEntryId: new ObjectID(bookmarkToDelete)})
+            await bookmarksCollection.deleteMany({bookmarkedEntryId: new ObjectId(bookmarkToDelete)})
             resolve()
     })
 } else {
@@ -73,7 +73,7 @@ Bookmark.authorDelete = async function(bookmarkToDelete, authorId) {
 }
 
 Bookmark.hasVisitorBookmarked = async function(bookmarkedEntryId, visitorId) {
-    let bookmarkDoc = await bookmarksCollection.findOne({bookmarkedEntryId: new ObjectID(bookmarkedEntryId), authorId: new ObjectID(visitorId)})
+    let bookmarkDoc = await bookmarksCollection.findOne({bookmarkedEntryId: new ObjectId(bookmarkedEntryId), authorId: new ObjectId(visitorId)})
     if (bookmarkDoc) {
         return true
     } else {
@@ -129,7 +129,7 @@ Bookmark.getBookmarkedById = function(id) {
 
 Bookmark.countBookmarksById = function(id) {
     return new Promise(async (resolve, reject) => {
-        let bookmarkCount = await bookmarksCollection.countDocuments({bookmarkedEntryId: new ObjectID(id)})
+        let bookmarkCount = await bookmarksCollection.countDocuments({bookmarkedEntryId: new ObjectId(id)})
         resolve(bookmarkCount)
     })
 }

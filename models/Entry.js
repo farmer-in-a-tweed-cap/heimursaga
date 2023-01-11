@@ -1,7 +1,7 @@
 const entriesCollection = require('../db').db().collection("entries")
 const followsCollection = require('../db').db().collection("follows")
 const usersCollection = require('../db').db().collection("users")
-const ObjectID = require('mongodb').ObjectID
+const { ObjectId }= require('mongodb')
 const User = require('./User')
 const sanitizeHTML = require('sanitize-html')
 const { Photo } = require('./Photo')
@@ -46,7 +46,7 @@ Entry.prototype.cleanUp = function() {
 
   // get rid of any bogus properties
   this.data = {
-    _id: ObjectID(this.id),
+    _id: ObjectId(this.id),
     title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
     place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
     date: sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}}),
@@ -54,7 +54,7 @@ Entry.prototype.cleanUp = function() {
     GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
     popup: popup,
     createdDate: new Date(),
-    author: ObjectID(this.userid),
+    author: ObjectId(this.userid),
     authorUsername: this.authorUsername,
     hasPhoto: this.photo,
     privacy: this.data.flexRadioDefault,
@@ -109,7 +109,7 @@ Entry.prototype.actuallyUpdate = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await entriesCollection.findOneAndUpdate({_id: new ObjectID(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup, privacy: this.data.privacy}})
+      await entriesCollection.findOneAndUpdate({_id: new ObjectId(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup, privacy: this.data.privacy}})
       resolve("success")
     } else {
       resolve("failure")
@@ -139,7 +139,7 @@ Entry.prototype.actuallyUpdate2 = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await entriesCollection.findOneAndUpdate({_id: new ObjectID(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup, hasPhoto: this.photo}})
+      await entriesCollection.findOneAndUpdate({_id: new ObjectId(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup, hasPhoto: this.photo}})
       resolve("success")
     } else {
       resolve("failure")
@@ -190,13 +190,13 @@ Entry.reusableEntryQuery = function(uniqueOperations, visitorId, finalOperations
 
 Entry.findSingleById = function(id, visitorId) {
   return new Promise(async function(resolve, reject) {
-    if (typeof(id) != "string" || !ObjectID.isValid(id)) {
+    if (typeof(id) != "string" || !ObjectId.isValid(id)) {
       reject()
       return
     }
     
     let entries = await Entry.reusableEntryQuery([
-      {$match: {_id: new ObjectID(id)}}
+      {$match: {_id: new ObjectId(id)}}
     ], visitorId)
 
     if (entries.length) {
@@ -227,7 +227,7 @@ Entry.delete = function(entryIdToDelete, currentUserId) {
     try {
       let entry = await Entry.findSingleById(entryIdToDelete, currentUserId)
       if (entry.isVisitorOwner) {
-        await entriesCollection.deleteOne({_id: new ObjectID(entryIdToDelete)})
+        await entriesCollection.deleteOne({_id: new ObjectId(entryIdToDelete)})
         resolve()
       } else {
         reject()
@@ -279,7 +279,7 @@ Entry.getFollowedFeed = async function(bounds, id) {
   var LngEast = parseFloat(LngLatArray[2])
   var LatNorth = parseFloat(LngLatArray[3])
   // create an array of the user ids that the current user follows
-  let followedUsers = await followsCollection.find({authorId: new ObjectID(id)}).toArray()
+  let followedUsers = await followsCollection.find({authorId: new ObjectId(id)}).toArray()
   followedUsers = followedUsers.map(function(followDoc) {
     return followDoc.followedId
   })
@@ -299,7 +299,7 @@ Entry.getJournalFeed = async function(bounds, id) {
   var LatSouth = parseFloat(LngLatArray[1])
   var LngEast = parseFloat(LngLatArray[2])
   var LatNorth = parseFloat(LngLatArray[3])
-  let userId = new ObjectID(id)
+  let userId = new ObjectId(id)
 
   // look for posts where the author is in the above array of followed users
   return Entry.reusableEntryQuery([
@@ -316,7 +316,7 @@ Entry.getMyJournalFeed = async function(bounds, id) {
   var LatSouth = parseFloat(LngLatArray[1])
   var LngEast = parseFloat(LngLatArray[2])
   var LatNorth = parseFloat(LngLatArray[3])
-  let userId = new ObjectID(id)
+  let userId = new ObjectId(id)
 
   // look for posts where the author is in the above array of followed users
   return Entry.reusableEntryQuery([

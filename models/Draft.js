@@ -1,7 +1,7 @@
 const draftsCollection = require('../db').db().collection("drafts")
 const followsCollection = require('../db').db().collection("follows")
 const usersCollection = require('../db').db().collection("users")
-const ObjectID = require('mongodb').ObjectID
+const { ObjectId } = require('mongodb')
 const User = require('./User')
 const sanitizeHTML = require('sanitize-html')
 
@@ -33,7 +33,7 @@ Draft.prototype.cleanUp = function() {
     body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
     GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
     createdDate: new Date(),
-    author: ObjectID(this.userid),
+    author: ObjectId(this.userid),
     hasPhoto: this.photo,
     privacy: this.data.flexRadioDefault
   }
@@ -86,7 +86,7 @@ Draft.prototype.actuallyUpdate = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await draftsCollection.findOneAndUpdate({_id: new ObjectID(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, body: this.data.body, date: this.data.date, privacy: this.data.privacy}})
+      await draftsCollection.findOneAndUpdate({_id: new ObjectId(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, body: this.data.body, date: this.data.date, privacy: this.data.privacy}})
       resolve("success")
     } else {
       resolve("failure")
@@ -116,7 +116,7 @@ Draft.prototype.actuallyUpdate2 = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await draftsCollection.findOneAndUpdate({_id: new ObjectID(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, body: this.data.body, date: this.data.date, hasPhoto: this.photo}})
+      await draftsCollection.findOneAndUpdate({_id: new ObjectId(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, body: this.data.body, date: this.data.date, hasPhoto: this.photo}})
       resolve("success")
     } else {
       resolve("failure")
@@ -166,13 +166,13 @@ Draft.reusableDraftQuery = function(uniqueOperations, visitorId, finalOperations
 
 Draft.findSingleById = function(id, visitorId) {
   return new Promise(async function(resolve, reject) {
-    if (typeof(id) != "string" || !ObjectID.isValid(id)) {
+    if (typeof(id) != "string" || !ObjectId.isValid(id)) {
       reject()
       return
     }
     
     let drafts = await Draft.reusableDraftQuery([
-      {$match: {_id: new ObjectID(id)}}
+      {$match: {_id: new ObjectId(id)}}
     ], visitorId)
 
     if (drafts.length) {
@@ -195,7 +195,7 @@ Draft.delete = function(draftIdToDelete, currentUserId) {
     try {
       let draft = await Draft.findSingleById(draftIdToDelete, currentUserId)
       if (draft.isVisitorOwner) {
-        await draftsCollection.deleteOne({_id: new ObjectID(draftIdToDelete)})
+        await draftsCollection.deleteOne({_id: new ObjectId(draftIdToDelete)})
         resolve()
       } else {
         reject()

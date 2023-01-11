@@ -1,6 +1,6 @@
 const entriesCollection = require('../db').db().collection("entries")
 const likesCollection = require('../db').db().collection("likes")
-const { ObjectID } = require('mongodb').ObjectID
+const { ObjectId } = require('mongodb')
 const Entry = require('./Entry')
 const highlightsCollection = require('../db').db().collection("highlights")
 
@@ -18,14 +18,14 @@ Highlight.prototype.cleanUp = function() {
 
 Highlight.prototype.validate = async function(action) {
     //highlighted entry must exist in database
-    let highlightedEntry = await entriesCollection.findOne({_id: ObjectID(this.EntryId)})
+    let highlightedEntry = await entriesCollection.findOne({_id: ObjectId(this.EntryId)})
     if (highlightedEntry) {
         this.highlightedEntryId = highlightedEntry._id
     } else {
         this.errors.push("You cannot highlight an entry that does not exist.")
     }
 
-    let doesHighlightAlreadyExist = await highlightsCollection.findOne({highlightedEntryId: this.highlightedEntryId, authorId: new ObjectID(this.authorId)})
+    let doesHighlightAlreadyExist = await highlightsCollection.findOne({highlightedEntryId: this.highlightedEntryId, authorId: new ObjectId(this.authorId)})
     if (action == "create") {
         if (doesHighlightAlreadyExist) {this.errors.push("You have already highlighted this entry.")}
     }
@@ -40,7 +40,7 @@ Highlight.prototype.create = function() {
         this.cleanUp()
         await this.validate("create")
         if (!this.errors.length) {
-            await highlightsCollection.insertOne({highlightedEntryId: this.highlightedEntryId, authorId: new ObjectID(this.authorId), createdDate: new Date()})
+            await highlightsCollection.insertOne({highlightedEntryId: this.highlightedEntryId, authorId: new ObjectId(this.authorId), createdDate: new Date()})
             resolve()
         } else {
             reject(this.errors)
@@ -53,7 +53,7 @@ Highlight.prototype.delete = function() {
         this.cleanUp()
         await this.validate("delete")
         if (!this.errors.length) {
-            await highlightsCollection.deleteOne({highlightedEntryId: this.highlightedEntryId, authorId: new ObjectID(this.authorId)})
+            await highlightsCollection.deleteOne({highlightedEntryId: this.highlightedEntryId, authorId: new ObjectId(this.authorId)})
             resolve()
         } else {
             reject(this.errors)
@@ -65,7 +65,7 @@ Highlight.authorDelete = async function(highlightToDelete, authorId) {
     let entry = await Entry.findSingleById(highlightToDelete, authorId)
     if (entry.isVisitorOwner) {
     return new Promise(async (resolve, reject) => {
-            await highlightsCollection.deleteMany({highlightedEntryId: new ObjectID(highlightToDelete)})
+            await highlightsCollection.deleteMany({highlightedEntryId: new ObjectId(highlightToDelete)})
             resolve()
     })
 } else {
@@ -74,7 +74,7 @@ Highlight.authorDelete = async function(highlightToDelete, authorId) {
 }
 
 Highlight.hasVisitorHighlighted= async function(highlightedEntryId, visitorId) {
-    let highlightDoc = await highlightsCollection.findOne({highlightedEntryId: new ObjectID(highlightedEntryId), authorId: new ObjectID(visitorId)})
+    let highlightDoc = await highlightsCollection.findOne({highlightedEntryId: new ObjectId(highlightedEntryId), authorId: new ObjectId(visitorId)})
     if (highlightDoc) {
         return true
     } else {
@@ -130,7 +130,7 @@ Highlight.getHighlightedById = function(id) {
 
 Highlight.countHighlightsById = function(id) {
     return new Promise(async (resolve, reject) => {
-        let highlightCount = await highlightsCollection.countDocuments({highlightedEntryId: new ObjectID(id)})
+        let highlightCount = await highlightsCollection.countDocuments({highlightedEntryId: new ObjectId(id)})
         resolve(highlightCount)
     })
 }
