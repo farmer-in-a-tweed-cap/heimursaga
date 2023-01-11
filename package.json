@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Heimuraga - The Explorer's Journal. A social media platform for explorers and travellers.",
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack -p --config webpack.config.js --openssl-legacy-provider",
+    "build": "cross-env NODE_ENV=production webpack p --config webpack.config.js --openssl-legacy-provider",
     "start": "node db.js",
     "watch": "nodemon db & webpack --watch"
   },
@@ -46,6 +46,7 @@
     "tempusdominus-core": "5.19.0",
     "terser-webpack-plugin": "4.2.3",
     "url-loader": "4.1.1",
+    "webpack": "^5.75.0",
     "webpack-cli": "3.3.12",
     "webpack-dev-server": "3.11.2",
     "webpack-fix-style-only-entries": "0.6.1"
@@ -128,7 +129,6 @@
     "tempusdominus-bootstrap-4": "5.39.0",
     "util": "^0.12.4",
     "validator": "^13.5.2",
-    "webpack": "^5.0.0",
     "xml": "^1.0.1",
     "yarn": "^1.22.19"
   }
