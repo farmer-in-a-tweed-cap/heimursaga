@@ -67,9 +67,11 @@ module.exports = {
     new HardSourceWebpackPlugin(),
     // Copy dist folder to docs/dist
     new FileManagerPlugin({
+      events: {
       onEnd: {
         copy: [{ source: "./dist/**/*", destination: "./views" }]
       }
+    }
     }),
     // Ignore momentjs locales
     new Webpack.IgnorePlugin({
