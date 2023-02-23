@@ -27,7 +27,7 @@ app.use(flash())
 app.use(function(req, res, next) {
     // make our markdown function available within ejs templates
     res.locals.filterUserHTML = function(content) {
-        return sanitizeHTML(markdown(content), {allowedTags: ['p', 'br', 'ul', 'ol', 'li', 'strong', 'bold', 'i', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'], allowedAttributes: {}})
+        return sanitizeHTML(markdown.marked(content), {allowedTags: ['p', 'br', 'ul', 'ol', 'li', 'strong', 'bold', 'i', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'], allowedAttributes: {}})
     }
     
     // make all error and success messages available from all templates
@@ -63,7 +63,7 @@ app.use(function(req, res, next) {
 app.use('/', router)
 
 
-app.use(function(err, req, res, next){
+/*app.use(function(err, req, res, next){
     if(err) {
         if(err.code == "EBADCSRFTOKEN") {
             req.flash('errors', "Cross-site request forgery detected.")
@@ -73,7 +73,7 @@ app.use(function(err, req, res, next){
             res.render("404")
         }
     }
-})
+})*/
 
 
 
