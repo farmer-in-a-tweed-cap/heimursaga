@@ -1,5 +1,3 @@
-# Heimursaga - The Explorer's Journal
+# AppStack – Admin & Dashboard Template
 
-The adventure has only just begun.
-
--dev team at the peripety company
+Thanks for buying. Navigate to `docs/docs-installation.html` to get started.

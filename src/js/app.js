@@ -42,8 +42,6 @@ if (document.querySelector("#follow-button")) {new Follow()};
 import Flag from './modules/flag'
 if (document.querySelector("#flag-button")) {new Flag()};
 
-import "./modules/datetimepicker"
-if (document.querySelector("datetimepicker")) {new TempusDominus()}
 
 // Charts
 import "./modules/chartjs";

@@ -2,10 +2,11 @@ const Webpack = require("webpack");
 const Path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
 const FileManagerPlugin = require("filemanager-webpack-plugin");
-const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
+const FixStyleOnlyEntriesPlugin = require("webpack-fix-style-only-entries");
 
 const opts = {
   rootDir: process.cwd(),
@@ -15,13 +16,17 @@ const opts = {
 module.exports = {
   entry: {
     app: "./src/js/app.js",
+    //settings: "./src/js/settings/index.js",
+    light: "./src/scss/light.scss",
+    dark: "./src/scss/dark.scss",
   },
   mode: process.env.NODE_ENV === "production" ? "production" : "development",
-  devtool: process.env.NODE_ENV === "production" ? false : "inline-source-map",
+  devtool:
+    process.env.NODE_ENV === "production" ? "none" : "inline-source-map",
   output: {
-    filename: "js/[name].js",
     path: Path.join(opts.rootDir, "dist"),
-    pathinfo: opts.devBuild
+    pathinfo: opts.devBuild,
+    filename: "js/[name].js"
   },
   performance: { hints: false },
   optimization: {
@@ -32,12 +37,12 @@ module.exports = {
           ecma: 5
         }
       }),
-      new CssMinimizerPlugin({})
+      new OptimizeCSSAssetsPlugin({})
     ]
   },
   plugins: [
     // Remove empty js files from /dist
-    new RemoveEmptyScriptsPlugin(),
+    new FixStyleOnlyEntriesPlugin(),
     // Extract css files to seperate bundle
     new MiniCssExtractPlugin({
       filename: "css/[name].css",
@@ -46,22 +51,24 @@ module.exports = {
     // jQuery
     new Webpack.ProvidePlugin({
       $: "jquery",
-      jQuery: "jquery"
+      jQuery: "jquery",
+      jquery: "jquery",
+      "window.$": "jquery",
+      "window.jQuery": "jquery"
     }),
     // Copy fonts and images to dist
     new CopyWebpackPlugin({
       patterns: [
+        { from: "src/fonts", to: "fonts" },
         { from: "src/img", to: "img" }
       ]
     }),
+    // Speed up webpack build
+    new HardSourceWebpackPlugin(),
     // Copy dist folder to docs/dist
     new FileManagerPlugin({
-      events: {
-        onEnd: {
-          copy: [
-            { source: "./dist/", destination: "./docs" }
-          ]
-        }
+      onEnd: {
+        copy: [{ source: "./dist/**/*", destination: "./views" }]
       }
     }),
     // Ignore momentjs locales
@@ -76,12 +83,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /(node_modules)/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            cacheDirectory: true
-          }
-        }
+        loader: ["babel-loader?cacheDirectory=true"]
       },
       // Css-loader & sass-loader
       {
@@ -96,26 +98,44 @@ module.exports = {
       // Load fonts
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        type: "asset/resource",
-        generator: {
-          filename: "fonts/[name][ext]"
-        }
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "/[name].[ext]",
+              outputPath: "fonts/",
+              publicPath: "../fonts/"
+            }
+          }
+        ]
       },
       // Load images
       {
         test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/,
-        type: "asset/resource",
-        generator: {
-          filename: "img/[name][ext]"
-        }
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+              outputPath: "img/",
+              publicPath: "../img/"
+            }
+          }
+        ]
       },
       // Expose loader
       {
         test: require.resolve("jquery"),
-        loader: "expose-loader",
-        options: {
-          exposes: ["$", "jQuery"],
-        }
+        use: [
+          {
+            loader: "expose-loader",
+            options: "jQuery"
+          },
+          {
+            loader: "expose-loader",
+            options: "$"
+          }
+        ]
       }
     ]
   },
@@ -126,11 +146,4 @@ module.exports = {
       request$: "xhr"
     }
   },
-  devServer: {
-    static: {
-      directory: Path.join(__dirname, "docs"),
-    },
-    port: 8080,
-    open: true
-  }
 };
