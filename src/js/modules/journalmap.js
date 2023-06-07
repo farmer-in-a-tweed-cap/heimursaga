@@ -15,7 +15,9 @@ export default class JournalMap {
   constructor() {
     this.journalmap = new mapboxgl.Map({
       container: 'journalmap',
-      style: 'mapbox://styles/cnh1187/ckwqyxju41h0c14o695dd3fdt',
+            //style: 'mapbox://styles/cnh1187/ckwqyxju41h0c14o695dd3fdt',
+            style: 'mapbox://styles/cnh1187/clikkzykm00wb01qf28pz4adt',
+
       zoom: 0,
       center: [-33.609412,36.749601],
       attributionControl: false,
@@ -62,9 +64,9 @@ export default class JournalMap {
       ['cubic-bezier', 0, 0.5, 1, 0.5],
       ['get', 'DEPTH'],
       200,
-      '#8c8c8c',
+      '#4676ac',
       9000,
-      '#4d4d4d'
+      '#385E89'
       ]
       }
       },

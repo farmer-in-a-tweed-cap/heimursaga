@@ -146,9 +146,8 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ
 
 const singlemap = new mapboxgl.Map({
     container: 'singlemap',
-    //style: 'mapbox://styles/mapbox/light-v10',
-  	//style: 'mapbox://styles/cnh1187/ckwqxzg5w196n14ml3snpoo7m', // heimursaga custom style blue water
-	  style: 'mapbox://styles/cnh1187/ckwqyxju41h0c14o695dd3fdt', // heimursaga custom style grey water
+	  //style: 'mapbox://styles/cnh1187/ckwqyxju41h0c14o695dd3fdt', // heimursaga custom style grey water
+    style: 'mapbox://styles/cnh1187/clikkzykm00wb01qf28pz4adt',
     center: singlemarker.properties.coordinates,
     zoom: 1,
     attributionControl: false,
@@ -176,17 +175,17 @@ singlemap.on('load', () => {
 				'source-layer': '10m-bathymetry-81bsvj',
 				'layout': {},
 				'paint': {
-				'fill-outline-color': 'hsla(337, 82%, 62%, 0)',
+				//'fill-outline-color': 'hsla(337, 82%, 62%, 0)',
 				// cubic bezier is a four point curve for smooth and precise styling
 				// adjust the points to change the rate and intensity of interpolation
 				'fill-color': [
 				'interpolate',
 				['cubic-bezier', 0, 0.5, 1, 0.5],
 				['get', 'DEPTH'],
-				200,
-				'#8c8c8c',
-				9000,
-				'#4d4d4d'
+        200,
+        '#4676ac',
+      9000,
+      '#385E89'
 				]
 				}
 				},

@@ -91,7 +91,7 @@ exports.upgrade = async function(req, res) {
 
 exports.accounttype = async function(req, res) {
   if (req.isVisitorsProfile == true) {
-    User.findByUsername(req.profileUser.username).then(function(user){
+    User.findByUsername(req.params.username).then(function(user){
     res.render('account-type', {
       pageName: "account-type",
       email: user.email,
@@ -122,6 +122,7 @@ exports.register = function(req, res) {
       })
     req.session.user = {username: user.data.username, avatar: user.avatar, _id: user.data._id}
     req.session.save(function() {
+      req.flash("success", `Welcome to Heimursaga, ${user.data.username}!`)
       //res.redirect(`/account-type/${user.data.username}`)
       res.redirect('/user-guide')
     })
