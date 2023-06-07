@@ -369,7 +369,7 @@ export default class DiscoveryMap {
 
                         <div class="modal-body">
                           <div class="text-center mb-1 overflow-hidden">
-                            <img src="https://api.mapbox.com/styles/v1/cnh1187/ckwqyxju41h0c14o695dd3fdt/static/pin-s+ac6d46(${entry.GeoJSONcoordinates.coordinates})/${entry.GeoJSONcoordinates.coordinates},6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
+                            <img src="https://api.mapbox.com/styles/v1/cnh1187/clikkzykm00wb01qf28pz4adt/static/pin-s+ac6d46(${entry.GeoJSONcoordinates.coordinates})/${entry.GeoJSONcoordinates.coordinates},6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
                           </div>
                           <div class="mb-4 text-center">
                             <small>Longitude: ${entry.GeoJSONcoordinates.coordinates[0]}, Latitude: ${entry.GeoJSONcoordinates.coordinates[1]}</small>
