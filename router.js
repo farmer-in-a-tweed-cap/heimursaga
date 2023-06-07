@@ -140,10 +140,10 @@ router.get('/admin-dashboard', userController.mustBeLoggedIn, adminController.vi
 
 //Explorer Pro Routes
 
-/*router.post('/update-type/:username', userController.ifUserExists, userController.sharedProfileData, userController.updateType)
-router.get('/upgrade', userController.mustBeLoggedIn, userController.upgrade)
+router.post('/update-type/:username', userController.ifUserExists, userController.sharedProfileData, userController.updateType)
+router.get('/upgrade/:username', userController.mustBeLoggedIn, userController.ifUserExists, userController.sharedProfileData, userController.upgrade)
 router.get('/account-type/:username', userController.mustBeLoggedIn, userController.ifUserExists, userController.sharedProfileData, userController.accounttype)
-router.post('/select-type/:username', userController.mustBeLoggedIn, userController.ifUserExists, userController.sharedProfileData, userController.selectType)*/
+router.post('/select-type/:username', userController.mustBeLoggedIn, userController.ifUserExists, userController.sharedProfileData, userController.selectType)
 
 
 

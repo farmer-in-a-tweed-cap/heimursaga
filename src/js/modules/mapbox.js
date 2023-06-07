@@ -14,9 +14,10 @@ export default class Map {
 constructor() {
   var map = new mapboxgl.Map({
     container: 'map',
-    //style: 'mapbox://styles/mapbox/light-v10',
-  	//style: 'mapbox://styles/cnh1187/ckwqxzg5w196n14ml3snpoo7m', // heimursaga custom style blue water
-		style: 'mapbox://styles/cnh1187/ckwqyxju41h0c14o695dd3fdt', // heimursaga custom style grey water
+
+          //style: 'mapbox://styles/cnh1187/ckwqyxju41h0c14o695dd3fdt', // heimursaga custom style grey water
+          style: 'mapbox://styles/cnh1187/clikkzykm00wb01qf28pz4adt', // heimursaga custom style blue water
+
     center: [-33.609412,36.749601],
     zoom: 0,
     attributionControl: false,
@@ -46,9 +47,9 @@ constructor() {
       ['cubic-bezier', 0, 0.5, 1, 0.5],
       ['get', 'DEPTH'],
       200,
-      '#8c8c8c',
+      '#4676ac',
       9000,
-      '#4d4d4d'
+      '#385E89'
       ]
       }
       },
