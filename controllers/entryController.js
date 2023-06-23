@@ -9,7 +9,7 @@ const sendgrid = require('@sendgrid/mail')
 const { Photo } = require('../models/Photo')
 sendgrid.setApiKey(process.env.SENDGRIDAPIKEY)
 const { Notyf } = require('notyf')
-const ObjectID = require('mongodb').ObjectID
+const { ObjectId } = require('mongodb')
 const { hasVisitorHighlighted } = require('../models/Highlight')
 const Bookmark = require('../models/Bookmark')
 const Follow = require('../models/Follow')
@@ -25,7 +25,7 @@ exports.viewCreateScreen = function(req, res) {
 }
 
 exports.create = function(req, res) {
-    let entry = new Entry(req.body, req.files, ObjectID(), req.session.user._id, req.session.user.username)
+    let entry = new Entry(req.body, req.files, ObjectId(), req.session.user._id, req.session.user.username)
     if (req.files.length) {
     let photo = new Photo(req.files)
     entry.create().then(function(newId) {

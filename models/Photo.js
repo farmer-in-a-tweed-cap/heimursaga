@@ -46,7 +46,7 @@ Photo.prototype.uploadPhoto = async function(id) {
         }).then(() => {
             resolve()
     }).catch(() => {
-        reject()
+        reject(console.log("photo upload unsuccesful"))
     })
 })    
 }
