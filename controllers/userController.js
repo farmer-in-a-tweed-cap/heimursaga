@@ -17,6 +17,9 @@ sendgrid.setApiKey(process.env.SENDGRIDAPIKEY)
 const sanitizeHTML = require('sanitize-html')
 const validator = require("validator")
 const Bookmark = require('../models/Bookmark')
+const Stripe = require('../stripe')
+const billingController =  require('../models/Billing');
+const billingCollection = require('../db').db().collection("billing")
 
 
 exports.sharedProfileData = async function(req, res, next) {
@@ -57,6 +60,26 @@ exports.login = function(req, res) {
   let user = new User(req.body)
   user.login().then(function(result) {
     req.session.user = {avatar: user.avatar, username: user.data.username, _id: user.data._id}
+    
+    //check form biling if trial expired or not 
+    billingCollection.findOne({explorerId:user.data._id}).then((billingInfo)=>{
+      req.session.user['billingId'] = billingInfo.billingId;
+       console.log(billingInfo);
+       const isTrialExpired = billingInfo.plan != 'none' && billingInfo.endDate < new Date().getTime()
+       if (isTrialExpired) {
+         console.log('trial expired')
+         billingCollection.hasTrial = false
+         billingCollection.save()
+       } else {
+         console.log(
+           'no trial information',
+           billingInfo?.hasTrial,
+           billingInfo?.plan != 'none',
+           billingInfo?.endDate < new Date().getTime()
+         )
+       }
+     })
+
     req.session.save(function() {
       req.flash("success", `Welcome, ${user.data.username}!`)
       res.redirect('my-feed')
@@ -81,12 +104,20 @@ exports.userGuide = function(req, res) {
 }
 
 exports.upgrade = async function(req, res) {
-    User.findByUsername(req.profileUser.username).then(function(user){
-    res.render('upgrade', {
+  //get billing details for upgrade page
+  const billing = await billingCollection.findOne({
+    billingId:  req.session.user.billingId,
+  });
+  User.findByUsername(req.profileUser.username).then(function (user) {
+    res.render("upgrade", {
       pageName: "upgrade",
       email: user.email,
-    })
-    })
+      plan: billing.plan,
+      endDate: billing.endDate,
+      hasTrial: billing.hasTrial,
+      billingId: req.session.user.billingId,
+    });
+  });
 }
 
 exports.accounttype = async function(req, res) {
@@ -120,6 +151,17 @@ exports.register = function(req, res) {
             text: `Greetings ${user.data.username}, I wanted to personally welcome you to Heimursaga. We're so excited you've decided to join this community. Please read The Explorer Code (https://heimursaga.com/explorer-code) before posting any entries, and don't forget to follow and support your favorite explorers! Regards, explorer1`,
             html: `<p>Greetings ${user.data.username},</p><p>I want to personally welcome you to Heimursaga! We're so excited you've decided to join this community.</p><p>Please read <a href="https://heimursaga.com/explorer-code">The Explorer Code</a> before posting any entries, and don't forget to follow and support your favorite explorers!</p><br><p>Regards, <br>explorer1</p>`
       })
+
+      //add customer to stripe and add billing details in billing on signup
+      Stripe.addNewCustomer(user.data.email).then(async (customerInfo)=>{
+       await billingCollection.insertOne({
+          explorerId : user.data._id,
+          plan : 'none',
+          endDate : null,
+          billingId : customerInfo.id
+        });
+      })
+
     req.session.user = {username: user.data.username, avatar: user.avatar, _id: user.data._id}
     req.session.save(function() {
       req.flash("success", `Welcome to Heimursaga, ${user.data.username}!`)

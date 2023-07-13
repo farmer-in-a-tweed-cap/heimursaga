@@ -1,8 +1,10 @@
 const express = require('express')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')
+const Stripe = require('./stripe')
 const flash = require('connect-flash')
 const markdown = require('marked')
+const bodyParser = require('body-parser')
 const csrf = require('csurf')
 const app = express()
 const sanitizeHTML = require('sanitize-html')
@@ -11,6 +13,8 @@ const entriesCollection = require('./db').db().collection("entries")
 const usersCollection = require('./db').db().collection("users")
 const dotenv = require('dotenv')
 dotenv.config()
+const billingController = require('./controllers/billingController')
+
 
 let sessionOptions = session({
     secret: process.env.JWT_SECRET,
@@ -23,6 +27,9 @@ let sessionOptions = session({
 
 
 app.use(sessionOptions)
+app.use('/webhook', bodyParser.raw({ type: 'application/json' }))
+app.post('/webhook', billingController.webhook
+)
 app.use(flash())
 
 app.use(function(req, res, next) {

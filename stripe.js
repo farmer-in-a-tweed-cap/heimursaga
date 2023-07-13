@@ -1,7 +1,10 @@
 const stripe = require("stripe");
 const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2020-08-27",
+<<<<<<< HEAD
   maxNetworkRetries: 2,
+=======
+>>>>>>> d86ca3b (billing, monthly subs, cancel subs, webhook)
 });
 
 const createCheckoutSession = async (customerID, price) => {

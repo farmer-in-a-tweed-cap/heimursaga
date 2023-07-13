@@ -14,7 +14,6 @@ exports.subscribe = async function (req, res, next) {
     if (req.session.user) {
       const product = req.params.product_type;
       const customerID = req.session.user.billingId;
-      console.log(customerID, product);
       if (!product || !customerID)
         throw new Error("subscription type or customerId is mandatory");
 
@@ -96,7 +95,7 @@ exports.webhook = async (req, res) => {
     case "invoice.paid":
       break;
     case "customer.subscription.created": {
-      const billing = await billingCollection.find({
+      const billing = await billingCollection.findOne({
         billingId: data.customer,
       });
       console.log(billing, "in webhook");
@@ -130,7 +129,7 @@ exports.webhook = async (req, res) => {
     }
     case "customer.subscription.updated": {
       // started trial
-      const billing = await billingCollection.find({
+      const billing = await billingCollection.findOne({
         billingId: data.customer,
       });
 
@@ -184,7 +183,7 @@ exports.webhook = async (req, res) => {
       break;
     }
     // case "customer.subscription.deleted": {
-    //   const billing = await billingCollection.find({
+    //   const billing = await billingCollection.findOne({
     //     billingId: data.customer,
     //   });
     //   billing.plan = "none";
