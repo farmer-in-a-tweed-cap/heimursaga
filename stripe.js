@@ -3,12 +3,15 @@ const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2020-08-27",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   maxNetworkRetries: 2,
 =======
 >>>>>>> d86ca3b (billing, monthly subs, cancel subs, webhook)
 =======
   maxNetworkRetries: 2,
 >>>>>>> b041262 (Add rate limiter)
+=======
+>>>>>>> d86ca3b (billing, monthly subs, cancel subs, webhook)
 });
 
 const createCheckoutSession = async (customerID, price) => {
@@ -58,6 +61,10 @@ const addNewCustomer = async (email) => {
 };
 
 const createWebhook = (rawBody, sig) => {
+<<<<<<< HEAD
+=======
+  console.log(process.env.STRIPE_WEBHOOK_SECRET, "webhook sec");
+>>>>>>> d86ca3b (billing, monthly subs, cancel subs, webhook)
   const event = Stripe.webhooks.constructEvent(
     rawBody,
     sig,

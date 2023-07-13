@@ -14,7 +14,6 @@ exports.subscribe = async function (req, res, next) {
     if (req.session.user) {
       const product = req.params.product_type;
       const customerID = req.session.user.billingId;
-      console.log(customerID, product, "lol");
       if (!product || !customerID)
         throw new Error("subscription type or customerId is mandatory");
 
@@ -26,7 +25,6 @@ exports.subscribe = async function (req, res, next) {
           new Date().getTime() + 1000 * 60 * 60 * 24 * process.env.TRIAL_DAYS;
         const n = new Date(ms);
 
-        //only update of payment success, this is adding data on clicking back  link too
         const updatedBillingInfo = {
           $set: {
             plan: product,
@@ -43,7 +41,6 @@ exports.subscribe = async function (req, res, next) {
         req.session.user["plan"] = product;
         req.session.user["endDate"] = n;
         req.session.user["hasTrial"] = true;
-        console.log(req.session.user);
 
         res.send({
           sessionId: session.id,
@@ -65,7 +62,6 @@ exports.subscribe = async function (req, res, next) {
   }
 };
 
-//mange subscription
 exports.Billing = async (req, res) => {
   const { customer } = req.params;
   const session = await Stripe.createBillingSession(customer);
@@ -75,6 +71,7 @@ exports.Billing = async (req, res) => {
 //webhook
 exports.webhook = async (req, res) => {
   let event;
+  console.log("entered");
 
   try {
     event = Stripe.createWebhook(req.body, req.header("Stripe-Signature"));
@@ -85,17 +82,18 @@ exports.webhook = async (req, res) => {
 
   const data = event.data.object;
 
-  console.log(event.type, "in webhook");
+  console.log(event.type, data, "in webhook");
   switch (event.type) {
     case "customer.created":
-      // console.log(JSON.stringify(data));
+      console.log(JSON.stringify(data));
       break;
     case "invoice.paid":
       break;
     case "customer.subscription.created": {
-      const billing = await billingCollection.find({
+      const billing = await billingCollection.findOne({
         billingId: data.customer,
       });
+      console.log(billing, "in webhook");
 
       if (data.plan.id === process.env.PRODUCT_PRO) {
         console.log("You are talking about pro plan ");
@@ -136,7 +134,7 @@ exports.webhook = async (req, res) => {
     }
     case "customer.subscription.updated": {
       // started trial
-      const billing = await billingCollection.find({
+      const billing = await billingCollection.findOne({
         billingId: data.customer,
       });
 
