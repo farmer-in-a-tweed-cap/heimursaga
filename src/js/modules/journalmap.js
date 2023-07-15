@@ -8,7 +8,6 @@ import { map } from 'jquery';
 import pointerUrl from '/src/img/line pointer heimursaga (40 × 40 px).png'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
-console.log('xwxw');
 
 export default class JournalMap {
 

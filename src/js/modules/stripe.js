@@ -1,7 +1,4 @@
 const stripe = require("stripe");
-console.log("====================================");
-console.log("xsxsxsxs", process.env.STRIPE_SECRET_KEY);
-console.log("====================================");
 const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2020-08-27",
 });
@@ -80,33 +77,4 @@ export default class Subscription {
     );
     return event;
   };
-
-  // buttonClickHandler() {
-
-  //     if (document.querySelector(".icon-heimursaga-highlight").style.color == "rgb(60, 115, 170)"){
-
-  //         this.changePrimary()
-  //         parent.window.notyf.success(`You have highlighted this entry`);
-  //         this.waitTimer = setTimeout(() => this.sendRequest(), 750)
-
-  //     } else {
-
-  //         this.changeBlue()
-  //         parent.window.notyf.error({background: '#3C73AA', message: `Your highlight has been removed`});
-  //         this.waitTimer = setTimeout(() => this.sendRequest(), 750)
-
-  //     }
-  // }
-
-  // sendRequest() {
-  //     if (document.querySelector(".icon-heimursaga-highlight").style.color != "rgb(60, 115, 170)"){
-  //         axios.post(`/addHighlight/${this.entryId}`, {_csrf: this._csrf, id: this.entryId}).then(() => {
-  //             console.log('highlight added')
-  //         })
-  //     } else {
-  //         axios.post(`/removeHighlight/${this.entryId}`, {_csrf: this._csrf, id: this.entryId}).then(() => {
-  //             console.log('highlight removed')
-  //         })
-  //     }
-  // }
 }
