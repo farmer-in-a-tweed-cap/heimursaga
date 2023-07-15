@@ -63,22 +63,26 @@ exports.login = function(req, res) {
     
     //check from billing collection if trial expired or not 
     billingCollection.findOne({explorerId:user.data._id}).then((billingInfo)=>{
-      console.log(billingInfo, 'on login');
-      req.session.user['billingId'] = billingInfo.billingId;
-       console.log(billingInfo);
-       const isTrialExpired = billingInfo.plan != 'none' && billingInfo.endDate < new Date().getTime()
-       if (isTrialExpired) {
-         console.log('trial expired')
-         billingCollection.hasTrial = false
-         billingCollection.save()
-       } else {
-         console.log(
-           'no trial information',
-           billingInfo?.hasTrial,
-           billingInfo?.plan != 'none',
-           billingInfo?.endDate < new Date().getTime()
-         )
-       }
+      if (billingInfo) {
+        console.log(billingInfo, "on login");
+        req.session.user["billingId"] = billingInfo.billingId;
+        console.log(billingInfo);
+        const isTrialExpired =
+          billingInfo.plan != "none" &&
+          billingInfo.endDate < new Date().getTime();
+        if (isTrialExpired) {
+          console.log("trial expired");
+          billingCollection.hasTrial = false;
+          billingCollection.save();
+        } else {
+          console.log(
+            "no trial information",
+            billingInfo?.hasTrial,
+            billingInfo?.plan != "none",
+            billingInfo?.endDate < new Date().getTime()
+          );
+        }
+      }
       req.session.save(function() {
         req.flash("success", `Welcome, ${user.data.username}!`)
         res.redirect('my-feed')
@@ -113,10 +117,10 @@ exports.upgrade = async function(req, res) {
     res.render("upgrade", {
       pageName: "upgrade",
       email: user.email,
-      plan: billing.plan,
-      endDate: billing.endDate,
-      hasTrial: billing.hasTrial,
-      billingId: req.session.user.billingId,
+      plan: billing?.plan,
+      endDate: billing?.endDate,
+      hasTrial: billing?.hasTrial,
+      billingId: req.session.user?.billingId,
     });
   });
 }

@@ -13,15 +13,22 @@
     <div class="container-fluid p-0">
 
         <!--<h1 class="h3 mb-3">Plans & Pricing</h1>-->
-        <% if (plan !== 'none' ) { %>
+        <%  if (!billingId) { %>
+
+            <div>
+                <h3 style="color: red;">You are not linked with stripe right now!</h3>
+                <button>Linked with stripe</button>
+            </div>
+
+        <% } else if (plan !== 'none' && plan ) { %>
 
             <div>
                 <div>You have subscribed to
 
                     <% if(plan === 'pro_plus'){ %>
-                        <span style="color: green;">Explorer Pro Plus</span>
+                        <span style="color: green; font-weight: bold;">Explorer Pro Plus</span>
                     <% } else{ %>  
-                        <span style="color: green;">Explorer Pro</span>
+                        <span style="color: green; font-weight: bold;">Explorer Pro</span>
                     <% } %>
                     
                     Plan
