@@ -61,8 +61,9 @@ exports.login = function(req, res) {
   user.login().then(function(result) {
     req.session.user = {avatar: user.avatar, username: user.data.username, _id: user.data._id}
     
-    //check form biling if trial expired or not 
+    //check from billing collection if trial expired or not 
     billingCollection.findOne({explorerId:user.data._id}).then((billingInfo)=>{
+      console.log(billingInfo, 'on login');
       req.session.user['billingId'] = billingInfo.billingId;
        console.log(billingInfo);
        const isTrialExpired = billingInfo.plan != 'none' && billingInfo.endDate < new Date().getTime()
@@ -78,11 +79,10 @@ exports.login = function(req, res) {
            billingInfo?.endDate < new Date().getTime()
          )
        }
-     })
-
-    req.session.save(function() {
-      req.flash("success", `Welcome, ${user.data.username}!`)
-      res.redirect('my-feed')
+      req.session.save(function() {
+        req.flash("success", `Welcome, ${user.data.username}!`)
+        res.redirect('my-feed')
+      })
     })
   }).catch(function(e) {
     req.flash('errors', e)
@@ -108,6 +108,7 @@ exports.upgrade = async function(req, res) {
   const billing = await billingCollection.findOne({
     billingId:  req.session.user.billingId,
   });
+  console.log(billing,req.session.user,  'billing on upgrade')
   User.findByUsername(req.profileUser.username).then(function (user) {
     res.render("upgrade", {
       pageName: "upgrade",

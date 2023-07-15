@@ -41,7 +41,6 @@ exports.subscribe = async function (req, res, next) {
         req.session.user["plan"] = product;
         req.session.user["endDate"] = n;
         req.session.user["hasTrial"] = true;
-
         console.log(req.session.user);
         res.send({
           sessionId: session.id,
