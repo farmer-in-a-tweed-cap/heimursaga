@@ -150,10 +150,7 @@ router.get('/account-type/:username', userController.mustBeLoggedIn, userControl
 router.post('/select-type/:username', userController.mustBeLoggedIn, userController.ifUserExists, userController.sharedProfileData, userController.selectType)
 
 //subscription Routes
-<<<<<<< HEAD
-=======
 router.post('/checkout',  billingController.checkout)
->>>>>>> d86ca3b (billing, monthly subs, cancel subs, webhook)
 router.get('/subscribe/:product_type',  billingController.subscribe)
 router.get('/billing/:email/:customer',  billingController.Billing)
 
