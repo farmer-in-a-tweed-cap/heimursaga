@@ -112,6 +112,7 @@ exports.upgrade = async function(req, res) {
   const billing = await billingCollection.findOne({
     billingId:  req.session.user.billingId,
   });
+  console.log(billing,req.session.user,  'billing on upgrade')
   User.findByUsername(req.profileUser.username).then(function (user) {
     res.render("upgrade", {
       pageName: "upgrade",
