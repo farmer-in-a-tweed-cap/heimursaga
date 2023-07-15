@@ -117,10 +117,10 @@ exports.upgrade = async function(req, res) {
     res.render("upgrade", {
       pageName: "upgrade",
       email: user.email,
-      plan: billing.plan,
-      endDate: billing.endDate,
-      hasTrial: billing.hasTrial,
-      billingId: req.session.user.billingId,
+      plan: billing?.plan,
+      endDate: billing?.endDate,
+      hasTrial: billing?.hasTrial,
+      billingId: req.session.user?.billingId,
     });
   });
 }
