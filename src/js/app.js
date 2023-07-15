@@ -6,11 +6,10 @@ import "./modules/feather";
 import "./modules/moment";
 import "./modules/sidebar";
 import "./modules/notyf";
-import "./modules/filepond";
+import "./modules/filepond"
 
 import Subscription from "./modules/stripe";
 if (document.querySelector("#explorer-pro-plus")) {
-  console.log("log on stripe");
   new Subscription();
 }
 
