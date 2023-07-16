@@ -61,7 +61,7 @@ exports.addFollow = async function(req, res) {
                         "icon": "https://firebasestorage.googleapis.com/v0/b/pwaa-8d87e.appspot.com/o/x5BC5jXNQTEvdfTutjGr%2FspmHBGpeHpIeQhq.png?alt=media&token=3198025c-e988-485e-83cc-3dfd0bba7025",
                     },
                     headers: {
-                        "authorization": "Bearer 9zay5vfzh8vsu2lpea1c0w7pvj4jxdn221y9suiirkzvhc84e6th2zbpi65ia89n",
+                        "authorization": process.env.PROGRESSIER_KEY,
                         "content-type": "application/json",
                         "x-csrf-token": req.csrfToken()
                     }

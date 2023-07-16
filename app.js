@@ -9,10 +9,11 @@ const sanitizeHTML = require('sanitize-html')
 const expressSitemapXml = require('express-sitemap-xml')
 const entriesCollection = require('./db').db().collection("entries")
 const usersCollection = require('./db').db().collection("users")
-
+const dotenv = require('dotenv')
+dotenv.config()
 
 let sessionOptions = session({
-    secret: "we are such stuff as dreams are made of",
+    secret: process.env.JWT_SECRET,
     store: new MongoStore({client: require('./db')}),
     resave: false,
     saveUninitialized: false,
