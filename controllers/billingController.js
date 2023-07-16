@@ -90,7 +90,7 @@ exports.webhook = async (req, res) => {
     case "invoice.paid":
       break;
     case "customer.subscription.created": {
-      const billing = await billingCollection.findOne({
+      const billing = await billingCollection.find({
         billingId: data.customer,
       });
       console.log(billing, "in webhook");
@@ -134,7 +134,7 @@ exports.webhook = async (req, res) => {
     }
     case "customer.subscription.updated": {
       // started trial
-      const billing = await billingCollection.findOne({
+      const billing = await billingCollection.find({
         billingId: data.customer,
       });
 
