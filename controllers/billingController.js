@@ -14,6 +14,7 @@ exports.subscribe = async function (req, res, next) {
     if (req.session.user) {
       const product = req.params.product_type;
       const customerID = req.session.user.billingId;
+      console.log(customerID, product);
       if (!product || !customerID)
         throw new Error("subscription type or customerId is mandatory");
 
@@ -41,6 +42,10 @@ exports.subscribe = async function (req, res, next) {
         req.session.user["plan"] = product;
         req.session.user["endDate"] = n;
         req.session.user["hasTrial"] = true;
+<<<<<<< HEAD
+=======
+
+>>>>>>> b041262 (Add rate limiter)
         console.log(req.session.user);
         res.send({
           sessionId: session.id,

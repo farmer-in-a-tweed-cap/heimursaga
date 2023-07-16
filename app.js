@@ -28,8 +28,7 @@ let sessionOptions = session({
 
 app.use(sessionOptions)
 app.use('/webhook', bodyParser.raw({ type: 'application/json' }))
-app.post('/webhook', billingController.webhook
-)
+app.post('/webhook', billingController.webhook)
 app.use(flash())
 
 app.use(function(req, res, next) {
@@ -77,7 +76,7 @@ app.use('/', router)
             req.flash('errors', "Cross-site request forgery detected.")
             req.session.save(() => res.redirect('/'))
         } else {
-            console.log("unknown csrf error")
+            console.log("unknown csrf error", err)
             res.render("404")
         }
     }
