@@ -14,6 +14,7 @@ exports.subscribe = async function (req, res, next) {
     if (req.session.user) {
       const product = req.params.product_type;
       const customerID = req.session.user.billingId;
+      console.log(customerID, product);
       if (!product || !customerID)
         throw new Error("subscription type or customerId is mandatory");
 
@@ -70,7 +71,7 @@ exports.Billing = async (req, res) => {
 //webhook
 exports.webhook = async (req, res) => {
   let event;
-  console.log("entered");
+  console.log("webhook entered");
 
   try {
     event = Stripe.createWebhook(req.body, req.header("Stripe-Signature"));

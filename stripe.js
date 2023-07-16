@@ -4,6 +4,7 @@ const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   maxNetworkRetries: 2,
 =======
 >>>>>>> d86ca3b (billing, monthly subs, cancel subs, webhook)
@@ -12,6 +13,9 @@ const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
 >>>>>>> b041262 (Add rate limiter)
 =======
 >>>>>>> d86ca3b (billing, monthly subs, cancel subs, webhook)
+=======
+  maxNetworkRetries: 2,
+>>>>>>> b041262 (Add rate limiter)
 });
 
 const createCheckoutSession = async (customerID, price) => {
