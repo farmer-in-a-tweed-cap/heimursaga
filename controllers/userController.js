@@ -143,36 +143,40 @@ exports.register = function(req, res) {
   let user = new User(req.body)
   user.register().then(() => {
     sendgrid.send({
-            to: 'admin@heimursaga.com',
-            from: 'admin@heimursaga.com',
-            subject: `New Explorer Account: ${user.data.username}`,
-            text: `An explorer has signed up for a new account. Username: ${user.data.username}, Email: ${user.data.email}, Journal link: https://heimursaga.com/journal/${user.data.username}.`,
-            html: `An explorer has signed up for a new account. </p>Username: ${user.data.username} </br>Email: ${user.data.email} </br>Journal Link: <a href="https://heimursaga.com/journal/${user.data.username}">https://heimursaga.com/journal/${user.data.username}</a>`
-        })
-      sendgrid.send({
-            to: `${user.data.email}`,
-            from: 'explorer1@heimursaga.com',
-            subject: `Welcome to Heimursaga, ${user.data.username}!`,
-            text: `Greetings ${user.data.username}, I wanted to personally welcome you to Heimursaga. We're so excited you've decided to join this community. Please read The Explorer Code (https://heimursaga.com/explorer-code) before posting any entries, and don't forget to follow and support your favorite explorers! Regards, explorer1`,
-            html: `<p>Greetings ${user.data.username},</p><p>I want to personally welcome you to Heimursaga! We're so excited you've decided to join this community.</p><p>Please read <a href="https://heimursaga.com/explorer-code">The Explorer Code</a> before posting any entries, and don't forget to follow and support your favorite explorers!</p><br><p>Regards, <br>explorer1</p>`
-      })
+      to: "admin@heimursaga.com",
+      from: "admin@heimursaga.com",
+      subject: `New Explorer Account: ${user.data.username}`,
+      text: `An explorer has signed up for a new account. Username: ${user.data.username}, Email: ${user.data.email}, Journal link: https://heimursaga.com/journal/${user.data.username}.`,
+      html: `An explorer has signed up for a new account. </p>Username: ${user.data.username} </br>Email: ${user.data.email} </br>Journal Link: <a href="https://heimursaga.com/journal/${user.data.username}">https://heimursaga.com/journal/${user.data.username}</a>`,
+    });
+    sendgrid.send({
+      to: `${user.data.email}`,
+      from: "explorer1@heimursaga.com",
+      subject: `Welcome to Heimursaga, ${user.data.username}!`,
+      text: `Greetings ${user.data.username}, I wanted to personally welcome you to Heimursaga. We're so excited you've decided to join this community. Please read The Explorer Code (https://heimursaga.com/explorer-code) before posting any entries, and don't forget to follow and support your favorite explorers! Regards, explorer1`,
+      html: `<p>Greetings ${user.data.username},</p><p>I want to personally welcome you to Heimursaga! We're so excited you've decided to join this community.</p><p>Please read <a href="https://heimursaga.com/explorer-code">The Explorer Code</a> before posting any entries, and don't forget to follow and support your favorite explorers!</p><br><p>Regards, <br>explorer1</p>`,
+    });
 
-      //add customer to stripe and add billing details in billing on signup
-      Stripe.addNewCustomer(user.data.email).then(async (customerInfo)=>{
-       await billingCollection.insertOne({
-          explorerId : user.data._id,
-          plan : 'none',
-          endDate : null,
-          billingId : customerInfo.id
-        });
-      })
-
-    req.session.user = {username: user.data.username, avatar: user.avatar, _id: user.data._id}
-    req.session.save(function() {
-      req.flash("success", `Welcome to Heimursaga, ${user.data.username}!`)
-      //res.redirect(`/account-type/${user.data.username}`)
-      res.redirect('/user-guide')
-    })
+    //add customer to stripe and add billing details in billing on signup
+    Stripe.addNewCustomer(user.data.email).then(async (customerInfo) => {
+      await billingCollection.insertOne({
+        explorerId: user.data._id,
+        plan: "none",
+        endDate: null,
+        billingId: customerInfo.id,
+      });
+    });
+    //todo: added billing id, any new customer should be able to subscribe
+    req.session.user = {
+      username: user.data.username,
+      avatar: user.avatar,
+      _id: user.data._id,
+      billingId: customerInfo.id,
+    };
+    req.session.save(function () {
+      req.flash("success", `Welcome to Heimursaga, ${user.data.username}!`);
+      res.redirect(`/account-type/${user.data.username}`);
+    });
   }).catch(function(e) {
     req.flash('errors', e)
     req.session.save(function() {

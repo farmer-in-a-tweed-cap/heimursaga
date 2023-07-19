@@ -14,6 +14,7 @@ const usersCollection = require('./db').db().collection("users")
 const dotenv = require('dotenv')
 dotenv.config()
 const billingController = require('./controllers/billingController')
+const rateLimit = require('express-rate-limit');
 
 
 let sessionOptions = session({
