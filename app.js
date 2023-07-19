@@ -29,16 +29,7 @@ let sessionOptions = session({
 
 app.use(sessionOptions)
 app.use('/webhook', bodyParser.raw({ type: 'application/json' }))
-<<<<<<< HEAD
-<<<<<<< HEAD
 app.post('/webhook', billingController.webhook)
-=======
-app.post('/webhook', billingController.webhook
-)
->>>>>>> d86ca3b (billing, monthly subs, cancel subs, webhook)
-=======
-app.post('/webhook', billingController.webhook)
->>>>>>> b041262 (Add rate limiter)
 app.use(flash())
 
 app.use(function(req, res, next) {
@@ -86,7 +77,7 @@ app.use('/', router)
             req.flash('errors', "Cross-site request forgery detected.")
             req.session.save(() => res.redirect('/'))
         } else {
-            console.log("unknown csrf error", err)
+            console.log("unknown csrf error")
             res.render("404")
         }
     }

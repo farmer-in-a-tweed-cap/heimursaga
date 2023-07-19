@@ -121,6 +121,7 @@ exports.upgrade = async function(req, res) {
       endDate: billing?.endDate,
       hasTrial: billing?.hasTrial,
       billingId: req.session.user?.billingId,
+      stripeAccountId: user.stripeAccountId || null
     });
   });
 }

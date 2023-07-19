@@ -150,7 +150,6 @@ router.get('/account-type/:username', userController.mustBeLoggedIn, userControl
 router.post('/select-type/:username', userController.mustBeLoggedIn, userController.ifUserExists, userController.sharedProfileData, userController.selectType)
 
 //subscription Routes
-router.post('/checkout',  billingController.checkout)
 router.get('/subscribe/:product_type',  billingController.subscribe)
 router.get('/billing/:email/:customer',  billingController.Billing)
 
