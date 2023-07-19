@@ -8,11 +8,6 @@ import "./modules/sidebar";
 import "./modules/notyf";
 import "./modules/filepond"
 
-import Subscription from "./modules/stripe";
-if (document.querySelector("#explorer-pro-plus")) {
-  new Subscription();
-}
-
 import Search from './modules/search';
 if (document.querySelector(".header-search-icon")) {new Search()};
 
