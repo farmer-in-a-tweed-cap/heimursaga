@@ -14,10 +14,10 @@ import "./modules/filepond"
 if (document.querySelector(".userlogin")) {new addProgressierUser()};*/
 
 
-import Subscription from "./modules/stripe";
+/*import Subscription from "./modules/stripe";
 if (document.querySelector("#explorer-pro-plus")) {
   new Subscription();
-}
+}*/
 
 >>>>>>> ed5c1cc (remove unnessary code)
 import Search from './modules/search';
