@@ -14,7 +14,7 @@ exports.subscribe = async function (req, res, next) {
     if (req.session.user) {
       const product = req.params.product_type;
       const customerID = req.session.user.billingId;
-      console.log(customerID, product);
+      console.log(customerID, product, "lol");
       if (!product || !customerID)
         throw new Error("subscription type or customerId is mandatory");
 
@@ -26,6 +26,7 @@ exports.subscribe = async function (req, res, next) {
           new Date().getTime() + 1000 * 60 * 60 * 24 * process.env.TRIAL_DAYS;
         const n = new Date(ms);
 
+        //only update of payment success, this is adding data on clicking back  link too
         const updatedBillingInfo = {
           $set: {
             plan: product,
@@ -42,11 +43,8 @@ exports.subscribe = async function (req, res, next) {
         req.session.user["plan"] = product;
         req.session.user["endDate"] = n;
         req.session.user["hasTrial"] = true;
-<<<<<<< HEAD
-=======
-
->>>>>>> b041262 (Add rate limiter)
         console.log(req.session.user);
+
         res.send({
           sessionId: session.id,
         });
@@ -61,16 +59,13 @@ exports.subscribe = async function (req, res, next) {
       }
 
       next();
-    } else next();
-    // let Customer = await Bookmark.countBookmarksById(req.params.id, req.visitorId).then((result) => {
-    //     console.log(result)
-    //     return result
-    // })
+    } else throw new Error("Billing Id is required for subscription");
   } catch (err) {
     console.log(err);
   }
 };
 
+//mange subscription
 exports.Billing = async (req, res) => {
   const { customer } = req.params;
   const session = await Stripe.createBillingSession(customer);
@@ -80,7 +75,6 @@ exports.Billing = async (req, res) => {
 //webhook
 exports.webhook = async (req, res) => {
   let event;
-  console.log("webhook entered");
 
   try {
     event = Stripe.createWebhook(req.body, req.header("Stripe-Signature"));
@@ -91,10 +85,10 @@ exports.webhook = async (req, res) => {
 
   const data = event.data.object;
 
-  console.log(event.type, data, "in webhook");
+  console.log(event.type, "in webhook");
   switch (event.type) {
     case "customer.created":
-      console.log(JSON.stringify(data));
+      // console.log(JSON.stringify(data));
       break;
     case "invoice.paid":
       break;
@@ -102,7 +96,6 @@ exports.webhook = async (req, res) => {
       const billing = await billingCollection.find({
         billingId: data.customer,
       });
-      console.log(billing, "in webhook");
 
       if (data.plan.id === process.env.PRODUCT_PRO) {
         console.log("You are talking about pro plan ");
@@ -112,6 +105,16 @@ exports.webhook = async (req, res) => {
       if (data.plan.id === process.env.PRODUCT_PRO_PLUS) {
         console.log("You are talking about pro plus plan");
         billing.plan = "pro_plus";
+      }
+
+      if (data.plan.id == process.env.ANNUAL_PRODUCT_PRO) {
+        console.log("You are talking about annual pro plan");
+        billing.plan = "annual_pro";
+      }
+
+      if (data.plan.id === process.env.ANNUAL_PRODUCT_PRO_PLUS) {
+        console.log("You are talking about annual pro plus product");
+        billing.plan = "annual_pro_plus";
       }
 
       billing.hasTrial = true;
@@ -145,6 +148,16 @@ exports.webhook = async (req, res) => {
       if (data.plan.id === process.env.PRODUCT_PRO_PLUS) {
         console.log("You are talking about pro plus product");
         billing.plan = "pro_plus";
+      }
+
+      if (data.plan.id == process.env.ANNUAL_PRODUCT_PRO) {
+        console.log("You are talking about annual pro plan");
+        billing.plan = "annual_pro";
+      }
+
+      if (data.plan.id === process.env.ANNUAL_PRODUCT_PRO_PLUS) {
+        console.log("You are talking about annual pro plus product");
+        billing.plan = "annual_pro_plus";
       }
 
       const isOnTrial = data.status === "trialing";
@@ -186,25 +199,6 @@ exports.webhook = async (req, res) => {
       console.log("customer changed", JSON.stringify(data));
       break;
     }
-    // case "customer.subscription.deleted": {
-    //   const billing = await billingCollection.find({
-    //     billingId: data.customer,
-    //   });
-    //   billing.plan = "none";
-    //   billing.hasTrial = false;
-    //   billing.endDate = null;
-    //   //update billing record
-    //   await billingCollection.updateOne(
-    //     { billingId: data.customer },
-    //     {
-    //       $set: {
-    //         plan: billing.plan,
-    //         hasTrial: billing.hasTrial,
-    //         endDate: billing.endDate,
-    //       },
-    //     }
-    //   );
-    // }
     default:
   }
   res.sendStatus(200);

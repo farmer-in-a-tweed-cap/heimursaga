@@ -27,7 +27,11 @@
 
                     <% if(plan === 'pro_plus'){ %>
                         <span style="color: green; font-weight: bold;">Explorer Pro Plus</span>
-                    <% } else{ %>  
+                    <% } else if(plan === 'annual_pro_plus') { %>  
+                        <span style="color: green; font-weight: bold;">Annual Explorer Pro Plus</span>
+                    <% }else if(plan === 'annual_pro') { %>  
+                        <span style="color: green; font-weight: bold;">Annual Explorer Pro</span>
+                    <% }else if(plan === 'pro') { %>  
                         <span style="color: green; font-weight: bold;">Explorer Pro</span>
                     <% } %>
                     
@@ -49,7 +53,6 @@
             
     
 
-        <% } else { %>
                 
                 <div class="row">
                     <div class="col-md-10 col-xl-8 mx-auto">
@@ -355,8 +358,8 @@
     let explorerProPlus = document.getElementById('explorer-pro-plus');
     let explorerPro = document.getElementById('explorer-pro');
 
-    // let annualExplorerPro = document.getElementById('annual-explorer-pro')
-    // let annualExplorerProPlus = document.getElementById('annual-explorer-pro-plus')
+    let annualExplorerPro = document.getElementById('annual-explorer-pro')
+    let annualExplorerProPlus = document.getElementById('annual-explorer-pro-plus')
 
     let manageSubscription = document.getElementById('manage_billing');
 
@@ -407,47 +410,47 @@
         }  
    
     //annual
-    // if(annualExplorerPro){
-    //     annualExplorerPro.addEventListener('click', function() {
+    if(annualExplorerPro){
+        annualExplorerPro.addEventListener('click', function() {
 
-    //     fetch(`/subscribe/annual_pro`, {
-    //     method: 'GET',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     })
-    //     .then(async (result) => {
-    //         const response =  await result.json();
-    //         return response
-    //     })
-    //     .then((response) => {
-    //         if(response?.sessionId)
-    //         stripe.redirectToCheckout({ sessionId: response.sessionId })
-    //     })
+        fetch(`/subscribe/annual_pro`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        })
+        .then(async (result) => {
+            const response =  await result.json();
+            return response
+        })
+        .then((response) => {
+            if(response?.sessionId)
+            stripe.redirectToCheckout({ sessionId: response.sessionId })
+        })
 
-    //     })  
-    // }  
+        })  
+    }  
 
-    // if(annualExplorerProPlus){
-    //     annualExplorerProPlus.addEventListener('click', function() {
+    if(annualExplorerProPlus){
+        annualExplorerProPlus.addEventListener('click', function() {
 
-    //     fetch(`/subscribe/annual_pro_plus`, {
-    //     method: 'GET',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     })
-    //     .then(async (result) => {
-    //         const response =  await result.json();
-    //         return response
-    //     })
-    //     .then((response) => {
-    //         if(response?.sessionId)
-    //         stripe.redirectToCheckout({ sessionId: response.sessionId })
-    //     })
+        fetch(`/subscribe/annual_pro_plus`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        })
+        .then(async (result) => {
+            const response =  await result.json();
+            return response
+        })
+        .then((response) => {
+            if(response?.sessionId)
+            stripe.redirectToCheckout({ sessionId: response.sessionId })
+        })
 
-    //     })  
-    // }  
+        })  
+    }  
 
     //manage Subscription link
     if(manageSubscription){
