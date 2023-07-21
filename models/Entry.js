@@ -76,7 +76,7 @@ Entry.prototype.create = function() {
     if (!this.errors.length) {
       // save entry into database
       entriesCollection.insertOne(this.data).then((info) => {
-        resolve(info.ops[0]._id)
+        resolve(info.insertedId)
       }).catch(() => {
         this.errors.push("Please try again later.")
         reject(this.errors)
