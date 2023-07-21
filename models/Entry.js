@@ -28,6 +28,8 @@ Entry.prototype.cleanUp = function() {
   if (typeof(this.data.title) != "string") {this.data.title = ""}
   if (typeof(this.data.place) != "string") {this.data.place = ""}
   if (typeof(this.data.body) != "string") {this.data.body = ""}
+  if (typeof(this.data.expedition) != "string") {this.data.expedition = ""}
+
 
   coordinatesString = sanitizeHTML(this.data.lnglatcoordinates.trim(), {allowedTags: [], allowedAttributes: {}}),
   coordinates = coordinatesString.split(',').map(Number)
@@ -51,6 +53,7 @@ Entry.prototype.cleanUp = function() {
     place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
     date: sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}}),
     body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
+    expedition: sanitizeHTML(this.data.expedition.trim(), {allowedTags: [], allowedAttributes: {}}),
     GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
     popup: popup,
     createdDate: new Date(),

@@ -74,6 +74,21 @@
 							</div>
 						  
 							<div class="col-12 col-xl-12">
+
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">3. Select Expedition</h5>
+								</div>
+								<div class="card-body">
+									<label class="form-label">Select your expedition or create one!</label>
+
+									<input name="expedition" class="form-select" list="datalistOptions" id="datalist" placeholder="Type to search or enter new expedition...">
+									<datalist id="datalistOptions">
+									</datalist>
+
+								</div>
+							</div>
+
 							  <div class="card">
 								<div class="card-header">
 								  <h5 class="card-title mb-0">3. Write entry content</h5>
@@ -250,6 +265,15 @@
 			<%- include('includes/footer') %>
 
 <script>
+
+	var expeditions = ['exp1','exp2','exp3'];
+	var list = document.getElementById('datalistOptions');
+
+	expeditions.forEach(function(item){
+	var option = document.createElement('option');
+	option.value = item;
+	list.appendChild(option);
+	});
 
 
     var form = document.getElementById("create-entry")
