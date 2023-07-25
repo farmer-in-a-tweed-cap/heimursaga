@@ -28,7 +28,7 @@ Entry.prototype.cleanUp = function() {
   if (typeof(this.data.title) != "string") {this.data.title = ""}
   if (typeof(this.data.place) != "string") {this.data.place = ""}
   if (typeof(this.data.body) != "string") {this.data.body = ""}
-  if (typeof(this.data.journey) != "string") {this.data.journey = ""}
+  if (typeof(this.data.journeyname) != "string") {this.data.journeyname = ""}
 
 
   coordinatesString = sanitizeHTML(this.data.lnglatcoordinates.trim(), {allowedTags: [], allowedAttributes: {}}),
@@ -47,22 +47,42 @@ Entry.prototype.cleanUp = function() {
 
 
   // get rid of any bogus properties
-  this.data = {
-    _id: ObjectId(this.id),
-    title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
-    place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
-    date: sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}}),
-    body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
-    journey: sanitizeHTML(this.data.journey.trim(), {allowedTags: [], allowedAttributes: {}}),
-    GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
-    popup: popup,
-    createdDate: new Date(),
-    author: ObjectId(this.userid),
-    authorUsername: this.authorUsername,
-    hasPhoto: this.photo,
-    privacy: this.data.flexRadioDefault,
-    url: `https://heimursaga.com/entry/${this.id}`
+
+  if (this.data.journeyname == "") {
+    this.data = {
+      _id: ObjectId(this.id),
+      title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
+      place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
+      date: sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}}),
+      body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
+      GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
+      popup: popup,
+      createdDate: new Date(),
+      author: ObjectId(this.userid),
+      authorUsername: this.authorUsername,
+      hasPhoto: this.photo,
+      privacy: this.data.flexRadioDefault,
+      url: `https://heimursaga.com/entry/${this.id}`
+    }
+  } else {
+    this.data = {
+      _id: ObjectId(this.id),
+      title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
+      place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
+      date: sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}}),
+      body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
+      journey: sanitizeHTML(this.data.journeyname.trim(), {allowedTags: [], allowedAttributes: {}}),
+      GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
+      popup: popup,
+      createdDate: new Date(),
+      author: ObjectId(this.userid),
+      authorUsername: this.authorUsername,
+      hasPhoto: this.photo,
+      privacy: this.data.flexRadioDefault,
+      url: `https://heimursaga.com/entry/${this.id}`
+    }
   }
+
 }
 
 Entry.prototype.validate = function() {

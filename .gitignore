@@ -5,6 +5,13 @@
 
 # production
 
+/dist/js/app.js
+/dist/css/app.css
+/dist/css/dark.css
+/dist/css/light.css
+/dist/fonts
+/dist/img
+
 # misc
 .env
 .DS_Store

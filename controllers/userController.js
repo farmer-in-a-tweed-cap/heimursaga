@@ -618,7 +618,7 @@ exports.feedEntryList = async function(req, res) {
 
 exports.journalEntryList = async function(req, res) {
   if (req.params.journey) {
-    console.log(req.params.journey)
+    
     if (req.isVisitorsProfile) {
       await Entry.getMyJournalFeedbyJourney(req.params.bounds, req.profileUser._id, req.params.journey).then(entries => {
         res.json(entries)})

@@ -75,13 +75,25 @@
 						  
 							<div class="col-12 col-xl-12">
 
+							<!--INCLUDE EXPLORER PRO GATE HERE-->
+
 							<div class="card">
 								<div class="card-header">
 									<h5 class="card-title mb-0">3. Select Journey</h5>
 								</div>
 								<div class="card-body">
-									<label class="form-label">Select your journey or create one!</label>
 
+									<input class="form-select" list="journeyselect" id="journeyname" name="journeyname" placeholder="Type to search or create, leave blank if not on a journey...">
+
+									<datalist id="journeyselect">
+
+										<% if (journeys) { %>
+
+											<% journeys.forEach(function(journey){ %>
+												<option value="<%= journey %>">
+											<% }) %>
+										<% } %>
+									</datalist>
 
 								</div>
 							</div>
