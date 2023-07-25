@@ -12,6 +12,8 @@
 /dist/fonts
 /dist/img
 
+/docs
+
 # misc
 .env
 .DS_Store
