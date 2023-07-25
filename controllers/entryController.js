@@ -20,8 +20,10 @@ const Follow = require('../models/Follow')
 
 
 
-exports.viewCreateScreen = function(req, res) {
-    res.render('create-entry', {pageName: 'create-entry'})
+exports.viewCreateScreen = async function(req, res) {
+    //include explorer pro gate here
+    let journeys = await Entry.findJourneysByUsername(req.session.user.username)
+    res.render('create-entry', {pageName: 'create-entry', journeys: journeys})
 }
 
 exports.create = function(req, res) {

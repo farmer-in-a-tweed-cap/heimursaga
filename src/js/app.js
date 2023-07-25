@@ -27,6 +27,9 @@ if (document.querySelector("#journalmap")) {new JournalMap()};
 import Notification from "./modules/notification";
 if (document.querySelector("#user-notifications")) {new Notification()};
 
+import Journey from './modules/journeyselection'
+if (document.querySelector("#journeyOptions")) {new Journey()};
+
 import ShareButton from './modules/sharebutton'
 if (document.querySelector("#share-button")) {new ShareButton()};
 
@@ -41,6 +44,8 @@ if (document.querySelector("#follow-button")) {new Follow()};
 
 import Flag from './modules/flag'
 if (document.querySelector("#flag-button")) {new Flag()};
+
+
 
 import "./modules/datetimepicker"
 if (document.querySelector("datetimepicker")) {new TempusDominus()}

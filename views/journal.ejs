@@ -56,7 +56,7 @@
 										<img src="<%= profileAvatar %>" class="img-fluid rounded-circle mb-3" width="128" height="128" />
 										<% } %>
 
-										<h5 class="card-title mb-4 profile-username"><%= profileUsername %></h5>
+										<h5 class="card-title mb-4 profile-username" value="<%= profileUsername %>"><%= profileUsername %></h5>
 										<!--<div class="text-muted mb-2"><%= type %></div>-->
 
 										<% if (user && !isVisitorsProfile) { %>
@@ -211,22 +211,62 @@
 									</div>
 								</div>
 							  </div>
+
+							
 							  
-							  <div class="col-12 col-lg-6 d-flex">
-								<div class="card flex-fill" style="height: 80vh;">
+								<div class="col-12 col-lg-6 d-flex">
+									<div class="flex-fill">
 
-									<input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-									<style>
-										.mapboxgl-popup {
-										max-width: 350px;
-										font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-										}
-									</style>
-									<div id="journalmap" class="journalmap" style='width: 100%; height: 80vh;'></div>	
-									<div id="start-geocoder" class="start-geocoder" style="display: none;"></div>							
+										<div class="card flex-fill mb-2">
+
+											<--INCLUDE EXPLORER PRO GATE HERE
+
+												<select class="form-select journeyOptions" name="journey" id="journeyOptions">
+
+													<% if (selectedJourney) { %>
+
+														<option value="<%= selectedJourney %>"><%= selectedJourney %></option>
+
+														<option value="All Journeys">All Journeys</option>
+
+														<% journeys.forEach(function(journey) { %>
+															 <option value= "<%= journey %>"><%= journey %></option>
+														 <% }) %>
+
+													<% } else { %>
+
+														<option value="All Journeys">All Journeys</option>
+
+													<% journeys.forEach(function(journey) { %>
+														 <option value= "<%= journey %>"><%= journey %></option>
+													 <% }) %>
+
+													<% } %>
+
+
+			
+												</select>
+										</div>
+
+										<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+										<style>
+											.mapboxgl-popup {
+											max-width: 350px;
+											font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+											}
+										</style>
+
+										<div class="card flex-fill">
+											<div id="journalmap" class="journalmap" style='width: 100%; height: 75vh;'></div>	
+											<div id="start-geocoder" class="start-geocoder" style="display: none;"></div>								
+										</div>
+
+									</div>
 								</div>
-							  </div>
+
+					
 
 							<div class="col-12 col-lg-3 d-flex">
 								<div class="card w-100" style="height: 80vh;">
@@ -271,8 +311,11 @@
 												<h5 class="card-title text-center pb-2">Entries</h5>
 												
 												<div class="list-group list-group-flush">
+
 													<% entries.forEach(function(entry) { %>
+
 														<a data-bs-toggle="modal" href="#sizedModalMd-<%= entry._id %>" class="list-group-item list-group-item-action sizedModalMd">
+															
 															<% if (entry.privacy == "private") { %>
 																<strong><%= entry.title %></strong><br/>
 																<i class="align-middle me-0 fas fa-fw fa-lock text-blue"></i> <small class="align-middle"><%= entry.place %> | <%= entry.date %></small><br/>
@@ -485,6 +528,23 @@
 			</main>
 
 			<script>
+
+					var csurf = document.querySelector('[name="_csrf"]').value
+
+					function showJourney(){
+					const Value = document.querySelector('#journeyOptions').value;
+
+					if(!Value) return;
+
+					console.log(Value)					
+					}
+
+					function submitJourney() {
+						const Value = document.querySelector('#journeyOptions').value;
+						axios.post(`/journal/${Value}`, {_csrf: csurf}).then(() => {
+                		console.log('journey sent to server')
+						})
+					}
 
 
 			</script>
