@@ -28,6 +28,7 @@ export default class JournalMap {
     this.journalmapcontainer = document.querySelector('#journalmap')
     this.startgeocoder = document.querySelector('#start-geocoder')
     this.profileusername = document.querySelector('.profile-username').innerHTML
+    this.journey = document.querySelector('#journeyOptions').value
     this.loadzoom = 0
     this.timeout = 500
     this.events()
@@ -175,9 +176,17 @@ export default class JournalMap {
   sendRequest(bounds) {
     //console.log('sending request')
     //console.log(this.profileusername)
-    axios.get(`/journal-entry-list/${this.profileusername}/${bounds}`).then(response => {
-          this.loadMarkers(response)
-    })
+    if (this.journey != "All Journeys") {
+      axios.get(`/journal-entry-list/${this.profileusername}/${bounds}/${this.journey}`).then(response => {
+        this.loadMarkers(response)
+      })
+    } else {
+      axios.get(`/journal-entry-list/${this.profileusername}/${bounds}`).then(response => {
+        this.loadMarkers(response)
+      })
+
+    }
+
   }
 
   loadMarkers(entries) {

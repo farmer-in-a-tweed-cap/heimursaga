@@ -332,11 +332,15 @@ exports.journalScreen = function(req, res) {
     let bookmarkedEntries = await Bookmark.getBookmarkedById(req.profileUser._id)
     let drafts = await Draft.findByAuthorId(req.profileUser._id)
     let user = await User.findByUsername(req.profileUser.username)
+    let journeys = await Entry.findJourneysByUsername(req.profileUser.username)
 
     if (req.isVisitorsProfile == true){
       res.render('journal', {
         pageName: "my-journal",
         entries: entries,
+        selectedJourney: null,
+        journeys: journeys,
+        selectedJourney: null,
         drafts: drafts,
         followers: followers,
         following: following,
@@ -360,6 +364,8 @@ exports.journalScreen = function(req, res) {
     res.render('journal', {
       pageName: "journal",
       entries: entries,
+      journeys: journeys,
+      selectedJourney: null,
       drafts: drafts,
       followers: followers,
       following: following,
@@ -393,11 +399,15 @@ exports.journalScreen = function(req, res) {
     let bookmarkedEntries = await Bookmark.getBookmarkedById(req.profileUser._id)
     let drafts = await Draft.findByAuthorId(req.profileUser._id)
     let user = await User.findByUsername(req.profileUser.username)
+    let journeys = await Entry.findJourneysByUsername(req.profileUser.username)
+
 
     if (req.isVisitorsProfile == true){
       res.render('journal', {
         pageName: "my-journal",
         entries: entries,
+        journeys: journeys,
+        selectedJourney: null,
         drafts: drafts,
         followers: followers,
         following: following,
@@ -421,6 +431,8 @@ exports.journalScreen = function(req, res) {
     res.render('journal', {
       pageName: "journal",
       entries: entries,
+      journeys: journeys,
+      selectedJourney: null,
       drafts: drafts,
       followers: followers,
       following: following,
@@ -445,6 +457,143 @@ exports.journalScreen = function(req, res) {
   })
 }}
 
+exports.journalScreenPro = function(req, res) {
+
+  if (req.isVisitorsProfile == true) {
+  // ask our post model for posts by a certain author id
+
+  Entry.findByAuthorIdandJourney(req.params.journey, req.profileUser._id).then(async function(entries) {
+
+    let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
+    let following = await Follow.getFollowingById(req.profileUser._id)
+    let followers = await Follow.getFollowersById(req.profileUser._id)
+    let highlightedEntries = await Highlight.getHighlightedById(req.profileUser._id)
+    let bookmarkedEntries = await Bookmark.getBookmarkedById(req.profileUser._id)
+    let drafts = await Draft.findByAuthorId(req.profileUser._id)
+    let user = await User.findByUsername(req.profileUser.username)
+    let journeys = await Entry.findJourneysByUsername(req.profileUser.username)
+
+    if (req.isVisitorsProfile == true){
+      res.render('journal', {
+        pageName: "my-journal",
+        entries: entries,
+        selectedJourney: req.params.journey,
+        journeys: journeys,
+        drafts: drafts,
+        followers: followers,
+        following: following,
+        highlighted: highlightedEntries,
+        bookmarked: bookmarkedEntries,
+        bio: user.bio,
+        currentlyin: user.currentlyin,
+        livesin: user.livesin,
+        from: user.from,
+        instagram: user.instagram,
+        website: user.website,
+        type: user.type,
+        entrymarker: JSON.stringify(entryMarker),
+        profileUsername: req.profileUser.username,
+        profileAvatar: req.profileUser.avatar,
+        isFollowing: req.isFollowing,
+        isVisitorsProfile: req.isVisitorsProfile,
+        counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
+      })
+    } else {
+    res.render('journal', {
+      pageName: "journal",
+      entries: entries,
+      selectedJourney: req.params.journey,
+      drafts: drafts,
+      followers: followers,
+      following: following,
+      highlighted: highlightedEntries,
+      bookmarked: bookmarkedEntries,
+      bio: user.bio,
+      currentlyin: user.currentlyin,
+      livesin: user.livesin,
+      from: user.from,
+      instagram: user.instagram,
+      website: user.website,
+      type: user.type,
+      entrymarker: JSON.stringify(entryMarker),
+      profileUsername: req.profileUser.username,
+      profileAvatar: req.profileUser.avatar,
+      isFollowing: req.isFollowing,
+      isVisitorsProfile: req.isVisitorsProfile,
+      counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
+    })}
+  }).catch(function() {
+    res.render("404")
+  })
+
+} else {
+  Entry.findPublicByAuthorIdandJourney(req.params.journey, req.profileUser._id).then(async function(entries) {
+
+    let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
+    let following = await Follow.getFollowingById(req.profileUser._id)
+    let followers = await Follow.getFollowersById(req.profileUser._id)
+    let highlightedEntries = await Highlight.getHighlightedById(req.profileUser._id)
+    let bookmarkedEntries = await Bookmark.getBookmarkedById(req.profileUser._id)
+    let drafts = await Draft.findByAuthorId(req.profileUser._id)
+    let user = await User.findByUsername(req.profileUser.username)
+    let journeys = await Entry.findJourneysByUsername(req.profileUser.username)
+
+    if (req.isVisitorsProfile == true){
+      res.render('journal', {
+        pageName: "my-journal",
+        entries: entries,
+        selectedJourney: req.params.journey,
+        journeys: journeys,
+        drafts: drafts,
+        followers: followers,
+        following: following,
+        highlighted: highlightedEntries,
+        bookmarked: bookmarkedEntries,
+        bio: user.bio,
+        currentlyin: user.currentlyin,
+        livesin: user.livesin,
+        from: user.from,
+        instagram: user.instagram,
+        website: user.website,
+        type: user.type,
+        entrymarker: JSON.stringify(entryMarker),
+        profileUsername: req.profileUser.username,
+        profileAvatar: req.profileUser.avatar,
+        isFollowing: req.isFollowing,
+        isVisitorsProfile: req.isVisitorsProfile,
+        counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
+      })
+    } else {
+    res.render('journal', {
+      pageName: "journal",
+      entries: entries,
+      selectedJourney: req.params.journey,
+      journeys: journeys,
+      drafts: drafts,
+      followers: followers,
+      following: following,
+      highlighted: highlightedEntries,
+      bookmarked: bookmarkedEntries,
+      bio: user.bio,
+      currentlyin: user.currentlyin,
+      livesin: user.livesin,
+      from: user.from,
+      instagram: user.instagram,
+      website: user.website,
+      type: user.type,
+      entrymarker: JSON.stringify(entryMarker),
+      profileUsername: req.profileUser.username,
+      profileAvatar: req.profileUser.avatar,
+      isFollowing: req.isFollowing,
+      isVisitorsProfile: req.isVisitorsProfile,
+      counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
+    })}
+  }).catch(function() {
+    res.render("404")
+  })
+}}
+
+
 exports.myFeed = async function(req, res) {
   if (req.session.user){
   let userData = await User.findByUsername(req.session.user.username)
@@ -468,15 +617,32 @@ exports.feedEntryList = async function(req, res) {
 }
 
 exports.journalEntryList = async function(req, res) {
-  if (req.isVisitorsProfile) {
-    await Entry.getMyJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
-      res.json(entries)})
+  if (req.params.journey) {
+    console.log(req.params.journey)
+    if (req.isVisitorsProfile) {
+      await Entry.getMyJournalFeedbyJourney(req.params.bounds, req.profileUser._id, req.params.journey).then(entries => {
+        res.json(entries)})
+    } else {
+      await Entry.getJournalFeedbyJourney(req.params.bounds, req.profileUser._id, req.params.journey).then(entries => {
+        res.json(entries)
+      }).catch(() => {
+        res.json([])
+    })
+  }
   } else {
-    await Entry.getJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
-      res.json(entries)
-    }).catch(() => {
-      res.json([])
-  })
+
+    if (req.isVisitorsProfile) {
+      await Entry.getMyJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
+        res.json(entries)})
+    } else {
+      await Entry.getJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
+        res.json(entries)
+      }).catch(() => {
+        res.json([])
+    })
+
+  }
+
 }}
 
 

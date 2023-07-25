@@ -28,6 +28,8 @@ Entry.prototype.cleanUp = function() {
   if (typeof(this.data.title) != "string") {this.data.title = ""}
   if (typeof(this.data.place) != "string") {this.data.place = ""}
   if (typeof(this.data.body) != "string") {this.data.body = ""}
+  if (typeof(this.data.journey) != "string") {this.data.journey = ""}
+
 
   coordinatesString = sanitizeHTML(this.data.lnglatcoordinates.trim(), {allowedTags: [], allowedAttributes: {}}),
   coordinates = coordinatesString.split(',').map(Number)
@@ -51,6 +53,7 @@ Entry.prototype.cleanUp = function() {
     place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
     date: sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}}),
     body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
+    journey: sanitizeHTML(this.data.journey.trim(), {allowedTags: [], allowedAttributes: {}}),
     GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
     popup: popup,
     createdDate: new Date(),
@@ -158,6 +161,7 @@ Entry.reusableEntryQuery = function(uniqueOperations, visitorId, finalOperations
         date: 1,
         GeoJSONcoordinates: 1,
         coordinates: "$GeoJSONcoordinates.coordinates",
+        journey: 1,
         body: 1,
         popup: 1,
         createdDate: 1,
@@ -183,6 +187,21 @@ Entry.reusableEntryQuery = function(uniqueOperations, visitorId, finalOperations
       return entry
     })
     resolve(entries)
+  })
+}
+
+Entry.journeyList = function(uniqueOperations) {
+  return new Promise(async function(resolve, reject) {
+    let aggOperations = uniqueOperations.concat([
+      {$project: {
+        _id: 0,
+        journey: 1
+      }}
+    ])
+
+    let journeys = await entriesCollection.aggregate(aggOperations).toArray()
+
+    resolve(journeys)
   })
 }
 
@@ -214,12 +233,44 @@ Entry.findByAuthorId = function(authorId) {
   ])
 }
 
+Entry.findByAuthorIdandJourney = function(journey, authorId) {
+  return Entry.reusableEntryQuery([
+    {$match: {author: authorId}},
+    {$match: {journey: journey}},
+    {$sort: {createdDate: -1}}
+  ])
+}
+
 Entry.findPublicByAuthorId = function(authorId) {
   return Entry.reusableEntryQuery([
     {$match: {author: authorId}},
     {$match: {privacy: "public"}},
     {$sort: {createdDate: -1}}
   ])
+}
+
+Entry.findPublicByAuthorIdandJourney = function(journey, authorId) {
+  return Entry.reusableEntryQuery([
+    {$match: {author: authorId}},
+    {$match: {privacy: "public"}},
+    {$match: {journey: journey}},
+    {$sort: {createdDate: -1}}
+  ])
+}
+
+Entry.findByJourneyAndAuthor = function(authorId, journey) {
+  return Entry.reusableEntryQuery([
+    {$match: {author: authorId}},
+    {$match: {privacy: "public"}},
+    {$match: {journey: journey}},
+    {$sort: {createdDate: -1}}
+  ])
+}
+
+
+Entry.findJourneysByUsername = async function(username) {
+  let journeys = await entriesCollection.distinct('journey',{authorUsername: username}, {journey: {exists: true}})
+  return journeys
 }
 
 Entry.delete = function(entryIdToDelete, currentUserId) {
@@ -310,7 +361,7 @@ Entry.getJournalFeed = async function(bounds, id) {
   ])
 }
 
-Entry.getMyJournalFeed = async function(bounds, id) {
+Entry.getJournalFeedbyJourney = async function(bounds, id, journey) {
   let LngLatArray = bounds.split(',')
   var LngWest = parseFloat(LngLatArray[0])
   var LatSouth = parseFloat(LngLatArray[1])
@@ -322,7 +373,40 @@ Entry.getMyJournalFeed = async function(bounds, id) {
   return Entry.reusableEntryQuery([
     {$match: {author: userId}},
     {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
+    {$match: {privacy: "public"}},
+    {$match: {journey: journey}},
     {$sort: {createdDate: -1}}
+  ])
+}
+
+Entry.getMyJournalFeed = async function(bounds, id) {
+  let LngLatArray = bounds.split(',')
+  var LngWest = parseFloat(LngLatArray[0])
+  var LatSouth = parseFloat(LngLatArray[1])
+  var LngEast = parseFloat(LngLatArray[2])
+  var LatNorth = parseFloat(LngLatArray[3])
+  let userId = new ObjectId(id)
+
+  return Entry.reusableEntryQuery([
+    {$match: {author: userId}},
+    {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
+    {$sort: {createdDate: -1}}
+  ])
+}
+
+Entry.getMyJournalFeedbyJourney = async function(bounds, id, journey) {
+  let LngLatArray = bounds.split(',')
+  var LngWest = parseFloat(LngLatArray[0])
+  var LatSouth = parseFloat(LngLatArray[1])
+  var LngEast = parseFloat(LngLatArray[2])
+  var LatNorth = parseFloat(LngLatArray[3])
+  let userId = new ObjectId(id)
+
+  return Entry.reusableEntryQuery([
+    {$match: {author: userId}},
+    {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
+    {$sort: {createdDate: -1}},
+    {$match: {journey: journey}},
   ])
 }
 

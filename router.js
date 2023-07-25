@@ -51,6 +51,7 @@ router.post('/reset-password/:token', userController.resetPassword)
 
 // profile related routes
 router.get('/journal/:username', userController.ifUserExists, userController.sharedProfileData, userController.journalScreen)
+router.get('/journal/:username/:journey', userController.ifUserExists, userController.sharedProfileData, userController.journalScreenPro)
 router.get('/my-feed', userController.mustBeLoggedIn, userController.myFeed)
 router.get('/settings/:username', userController.ifUserExists, userController.sharedProfileData, userController.viewSettings)
 
@@ -81,6 +82,8 @@ router.post('/search', entryController.search)
 router.get('/entry-list/:bounds', entryController.entryList)
 router.get('/feed-entry-list/:bounds', userController.feedEntryList)
 router.get('/journal-entry-list/:username/:bounds', userController.ifUserExists, userController.sharedProfileData, userController.journalEntryList)
+router.get('/journal-entry-list/:username/:bounds/:journey', userController.ifUserExists, userController.sharedProfileData, userController.journalEntryList)
+
 
 
 
