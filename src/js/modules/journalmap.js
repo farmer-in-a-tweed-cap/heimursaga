@@ -34,12 +34,10 @@ export default class JournalMap {
     this.events()
   }
 
-
   events() {
     this.journalmap.on('load', () => this.loadResources())
     this.journalmap.on('moveend', () => this.loadEntries())
   }
-
 
   loadResources() {
     //console.log('loading resources')
@@ -156,16 +154,12 @@ export default class JournalMap {
   }
 
   loadedFeed() {
-    //console.log('loaded')
     this.entryfeed.innerHTML = '<div class="text-center text-muted">Loading...</div>'
   }
-
 
   loadEntries() {
     var bounds = this.journalmap.getBounds().toArray()
     if (this.journalmap.getZoom() >= this.loadzoom) {
-      //console.log('loading entries')
-      //console.log(bounds)
       this.loader = "loader"
       setTimeout(() => this.sendRequest(bounds), this.timeout)
     } else {
@@ -174,8 +168,6 @@ export default class JournalMap {
   }
 
   sendRequest(bounds) {
-    //console.log('sending request')
-    //console.log(this.profileusername)
     if (this.journey != "All Journeys") {
       axios.get(`/journal-entry-list/${this.profileusername}/${bounds}/${this.journey}`).then(response => {
         this.loadMarkers(response)
@@ -190,7 +182,6 @@ export default class JournalMap {
   }
 
   loadMarkers(entries) {
-    //console.log('loading markers')
       var markers = GeoJSON.parse(entries.data, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
       var sourceID = Math.random().toString(36).slice(2)
       this.journalmap.addSource(`entrymarkers${sourceID}`, {
