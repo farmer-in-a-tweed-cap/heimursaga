@@ -32,7 +32,7 @@
               <% if (entry.privacy == "private") { %>
 
             <div class="mb-2 text-center">
-              <h5><i class="align-middle mr-5 fas fa-fw fa-lock text-blue"></i><%= entry.place %></h5>
+              <h5><i class="align-middle fas fa-fw fa-lock text-blue"></i> <%= entry.place %></h5>
             </div>
 
               <% } else { %>
@@ -47,6 +47,15 @@
             <div class="mb-2">
               <h5 class="text-center text-muted">on <%= new Date(entry.date).toLocaleString('default', { month: 'long' }) %> <%= new Date(entry.date).getDate() %>, <%= new Date(entry.date).getFullYear() %> | by <a href="/journal/<%= entry.author.username %>"><%= entry.author.username %></a></h5>
             </div>
+
+            <% if (entry.journey) { %>
+
+              <div class="modal-body text-center pt-0 pb-0">
+                <h5 class="text-center"><%= entry.journey %></h5>
+              </div>
+
+
+            <% } %>
 
           </div>
 

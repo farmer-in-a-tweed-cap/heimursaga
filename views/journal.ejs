@@ -343,7 +343,7 @@
 																			<% if (entry.privacy == "private") { %>
 
 																			<div class="modal-body col-md-8 offset-md-2 pb-0 pt-0 text-center">
-																				<h5><i class="align-middle mr-5 fas fa-fw fa-lock text-blue"></i><%= entry.place %></h5>
+																				<h5><i class="align-middle fas fa-fw fa-lock text-blue"></i><text class="align-middle"> <%= entry.place %></text></h5>
 																			</div>
 
 																			<% } else { %>
@@ -363,7 +363,7 @@
 																			<% if (entry.journey) { %>
 
 																				<div class="modal-body text-center pt-0 pb-0">
-																					<h6 class="text-center text-muted">journey: <%= entry.journey %></h6>
+																					<h5 class="text-center"><%= entry.journey %></h5>
 																				</div>
 	
 

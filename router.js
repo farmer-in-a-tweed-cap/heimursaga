@@ -82,7 +82,7 @@ router.post('/search', entryController.search)
 router.get('/entry-list/:bounds', entryController.entryList)
 router.get('/feed-entry-list/:bounds', userController.feedEntryList)
 router.get('/journal-entry-list/:username/:bounds', userController.ifUserExists, userController.sharedProfileData, userController.journalEntryList)
-router.get('/journal-entry-list/:username/:bounds/:journey', userController.ifUserExists, userController.sharedProfileData, userController.journalEntryList)
+router.get('/journal-entry-list/:username/:bounds/:journey', userController.ifUserExists, userController.sharedProfileData, userController.journalEntryListDate)
 
 
 

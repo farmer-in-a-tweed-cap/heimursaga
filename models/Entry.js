@@ -132,7 +132,13 @@ Entry.prototype.actuallyUpdate = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await entriesCollection.findOneAndUpdate({_id: new ObjectId(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup, privacy: this.data.privacy}})
+      if (this.data.journey == "REMOVE JOURNEY") {
+        await entriesCollection.findOneAndUpdate({_id: new ObjectId(this.requestedEntryId)}, {$unset: {journey: ""}}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup, privacy: this.data.privacy}})
+      } else if (this.data.journey == undefined) {
+        await entriesCollection.findOneAndUpdate({_id: new ObjectId(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup, privacy: this.data.privacy}})
+      } else {
+        await entriesCollection.findOneAndUpdate({_id: new ObjectId(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, journey: this.data.journey, popup: this.data.popup, privacy: this.data.privacy}})
+      }
       resolve("success")
     } else {
       resolve("failure")
@@ -162,7 +168,15 @@ Entry.prototype.actuallyUpdate2 = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await entriesCollection.findOneAndUpdate({_id: new ObjectId(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup, hasPhoto: this.photo}})
+
+      if (this.data.journey == "REMOVE JOURNEY") {
+        await entriesCollection.findOneAndUpdate({_id: new ObjectId(this.requestedEntryId)}, {$unset: {journey: ""}}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup, privacy: this.data.privacy, hasPhoto: this.photo}})
+      } else if (this.data.journey == undefined) {
+        await entriesCollection.findOneAndUpdate({_id: new ObjectId(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, popup: this.data.popup, privacy: this.data.privacy, hasPhoto: this.photo}})
+      } else {
+        await entriesCollection.findOneAndUpdate({_id: new ObjectId(this.requestedEntryId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, journey: this.data.journey, popup: this.data.popup, privacy: this.data.privacy, hasPhoto: this.photo}})
+      }
+      
       resolve("success")
     } else {
       resolve("failure")
@@ -399,6 +413,24 @@ Entry.getJournalFeedbyJourney = async function(bounds, id, journey) {
   ])
 }
 
+Entry.getJournalFeedbyJourneyandDate = async function(bounds, id, journey) {
+  let LngLatArray = bounds.split(',')
+  var LngWest = parseFloat(LngLatArray[0])
+  var LatSouth = parseFloat(LngLatArray[1])
+  var LngEast = parseFloat(LngLatArray[2])
+  var LatNorth = parseFloat(LngLatArray[3])
+  let userId = new ObjectId(id)
+
+  // look for posts where the author is in the above array of followed users
+  return Entry.reusableEntryQuery([
+    {$match: {author: userId}},
+    {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
+    {$match: {privacy: "public"}},
+    {$match: {journey: journey}},
+    {$sort: {date: 1}}
+  ])
+}
+
 Entry.getMyJournalFeed = async function(bounds, id) {
   let LngLatArray = bounds.split(',')
   var LngWest = parseFloat(LngLatArray[0])
@@ -426,6 +458,22 @@ Entry.getMyJournalFeedbyJourney = async function(bounds, id, journey) {
     {$match: {author: userId}},
     {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
     {$sort: {createdDate: -1}},
+    {$match: {journey: journey}},
+  ])
+}
+
+Entry.getMyJournalFeedbyJourneyandDate = async function(bounds, id, journey) {
+  let LngLatArray = bounds.split(',')
+  var LngWest = parseFloat(LngLatArray[0])
+  var LatSouth = parseFloat(LngLatArray[1])
+  var LngEast = parseFloat(LngLatArray[2])
+  var LatNorth = parseFloat(LngLatArray[3])
+  let userId = new ObjectId(id)
+
+  return Entry.reusableEntryQuery([
+    {$match: {author: userId}},
+    {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
+    {$sort: {date: 1}},
     {$match: {journey: journey}},
   ])
 }

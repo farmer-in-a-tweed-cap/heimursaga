@@ -645,6 +645,35 @@ exports.journalEntryList = async function(req, res) {
 
 }}
 
+exports.journalEntryListDate = async function(req, res) {
+  if (req.params.journey) {
+    
+    if (req.isVisitorsProfile) {
+      await Entry.getMyJournalFeedbyJourneyandDate(req.params.bounds, req.profileUser._id, req.params.journey).then(entries => {
+        res.json(entries)})
+    } else {
+      await Entry.getJournalFeedbyJourneyandDate(req.params.bounds, req.profileUser._id, req.params.journey).then(entries => {
+        res.json(entries)
+      }).catch(() => {
+        res.json([])
+    })
+  }
+  } else {
+
+    if (req.isVisitorsProfile) {
+      await Entry.getMyJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
+        res.json(entries)})
+    } else {
+      await Entry.getJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
+        res.json(entries)
+      }).catch(() => {
+        res.json([])
+    })
+
+  }
+
+}}
+
 
 exports.viewAll = async function(req,res) {
   let entries = await entriesCollection.find({}).sort({createdDate: -1}).toArray()

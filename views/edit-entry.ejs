@@ -75,11 +75,43 @@
 								</div>
 							  </div>
 							</div>
+
+														<!--INCLUDE EXPLORER PRO GATE HERE-->
+
+														<div class="card col-md-8 offset-md-2">
+															<div class="card-header">
+																<h5 class="card-title mb-0">3. Select Journey</h5>
+															</div>
+															<div class="card-body">
+																<% if (entry.journey) { %>
+																	<label class="form-label">Current Journey: <b><%= entry.journey %></b></label>
+																<% } %>
+
+																<input class="form-select" list="journeyselect" id="journeyname" name="journeyname" placeholder="Type or select to create, modify, or remove journey...">
+							
+																<datalist id="journeyselect">
+
+																	<% if (entry.journey) { %>
+																		<option value="REMOVE JOURNEY" >
+																	<% } %>
+
+							
+																	<% if (journeys) { %>
+							
+																		<% journeys.forEach(function(journey){ %>
+																			<option value="<%= journey %>">
+																		<% }) %>
+																	<% } %>
+																</datalist>
+							
+															</div>
+														</div>
+
 						  
 							<div class="col-md-8 offset-md-2">
 							  <div class="card">
 								<div class="card-header">
-								  <h5 class="card-title mb-0">3. Write entry content</h5>
+								  <h5 class="card-title mb-0">4. Write entry content</h5>
 								</div>
 								<div class="card-body">
 								  <div class="mb-3">
@@ -138,7 +170,7 @@
 							<div class="col-md-8 offset-md-2">
 								<div class="card">
 								  <div class="card-header">
-									<h5 class="card-title mb-0">4. Upload your photo</h5>
+									<h5 class="card-title mb-0">5. Upload your photo</h5>
 									<label class="form-text text-muted pt-3">
 										Photos will be cropped to fit a 3:2 (landscape) aspect ratio and should be a minimum of 900x600px. For best results, edit your photo before upload. Photo uploads are optional.</label>
 
@@ -240,7 +272,7 @@
 							<div class="col-md-8 offset-md-2">
 							  <div class="card">
 								<div class="card-header">
-								  <h5 class="card-title mb-0">4. Update entry</h5>
+								  <h5 class="card-title mb-0">6. Update entry</h5>
 								</div>
 								<div class="card-body">
 
