@@ -12,7 +12,10 @@
 /dist/fonts
 /dist/img
 
-/docs
+/docs/css
+/docs/fonts
+/docs/img
+/docs/js
 
 # misc
 .env
