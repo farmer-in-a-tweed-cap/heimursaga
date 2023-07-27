@@ -198,7 +198,7 @@ exports.delete =  function(req, res) {
 
 exports.search = function(req, res) {
     Entry.search(req.body.searchTerm).then(entries => {
-        res.json(entries)
+        return entries
     }).catch(() => {
         res.json([])
     })
@@ -206,7 +206,7 @@ exports.search = function(req, res) {
 
 exports.entryList = async function(req, res) {
     await Entry.getFeed(req.params.bounds).then(entries => {
-        res.json(entries)
+        res.send(entries)
     }).catch(() => {
         res.json([])
     })

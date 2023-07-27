@@ -610,7 +610,7 @@ exports.myFeed = async function(req, res) {
 
 exports.feedEntryList = async function(req, res) {
     await Entry.getFollowedFeed(req.params.bounds, req.session.user._id).then(entries => {
-        res.json(entries)
+        res.send(entries)
     }).catch(() => {
         res.json([])
     })

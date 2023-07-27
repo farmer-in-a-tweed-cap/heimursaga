@@ -499,8 +499,8 @@ export default class JournalMap {
         },
         'paint': {
         'line-color': '#ac6d46',
-        'line-width': 4,
-        'line-opacity': 0.6
+        'line-width': 3,
+        'line-opacity': 0.5
         }
         })
 
@@ -510,7 +510,7 @@ export default class JournalMap {
           'id': 'line-dashed',
           'paint': {
           'line-color': '#ac6d46',
-          'line-width': 4,
+          'line-width': 3,
           'line-dasharray': [0, 4, 3]
           }
           });
