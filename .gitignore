@@ -7,8 +7,6 @@
 
 dist/
 
-docs/
-
 # misc
 .env
 .DS_Store

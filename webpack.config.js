@@ -55,7 +55,7 @@ module.exports = {
       ]
     }),
     // Copy dist folder to docs/dist
-    new FileManagerPlugin({
+   /* new FileManagerPlugin({
       events: {
         onEnd: {
           copy: [
@@ -63,7 +63,7 @@ module.exports = {
           ]
         }
       }
-    }),
+    }),*/
     // Ignore momentjs locales
     new Webpack.IgnorePlugin({
       resourceRegExp: /^\.\/locale$/,
@@ -128,7 +128,7 @@ module.exports = {
   },
   devServer: {
     static: {
-      directory: Path.join(__dirname, "docs"),
+      directory: Path.join(__dirname, "dist"),
     },
     port: 8080,
     open: true
