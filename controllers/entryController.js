@@ -198,7 +198,7 @@ exports.delete =  function(req, res) {
 
 exports.search = function(req, res) {
     Entry.search(req.body.searchTerm).then(entries => {
-        return entries
+        res.send(entries)
     }).catch(() => {
         res.json([])
     })

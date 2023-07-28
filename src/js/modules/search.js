@@ -53,9 +53,7 @@ export default class Search {
     }
 
     sendRequest() {
-        console.log(this.inputField.value)
         axios.post('/search', {_csrf: this._csrf, searchTerm: this.inputField.value}).then(response => {
-            console.log(response.data)
             this.renderResultsHTML(response.data)
         }).catch(() => {
             alert("hello the request failed")
