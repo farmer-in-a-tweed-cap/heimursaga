@@ -5,8 +5,6 @@
 
 # production
 
-dist/
-
 # misc
 .env
 .DS_Store
