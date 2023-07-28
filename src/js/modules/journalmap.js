@@ -5,7 +5,7 @@ const mapboxgl = require('mapbox-gl');
 import axios from 'axios'
 import GeoJSON from 'geojson'
 import { map } from 'jquery';
-import pointerUrl from '/src/img/linePointerHeimursaga.png'
+import pointerUrl from '/src/img/line pointer heimursaga (40 × 40 px).png'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
 
@@ -37,10 +37,11 @@ export default class JournalMap {
 
   events() {
     this.journalmap.on('load', () => this.loadResources())
-    this.journalmap.on('moveend', () => this.loadEntries())
+    //this.journalmap.on('moveend', () => this.loadEntries())
   }
 
   loadResources() {
+    
     //console.log('loading resources')
     this.loadControls()
     this.journalmap.addSource('10m-bathymetry-81bsvj', {
@@ -72,6 +73,7 @@ export default class JournalMap {
       },
       'land-structure-polygon'
       );
+      
     this.loadEntries()
     //)
 
@@ -145,6 +147,8 @@ export default class JournalMap {
 
     this.journalmap.addControl(new mapboxgl.NavigationControl())
 
+    this.journalmap.addControl(new mapboxgl.FullscreenControl());
+
     this.journalmap.addControl(new mapboxgl.GeolocateControl({
       positionOptions: {
       enableHighAccuracy: true
@@ -171,8 +175,8 @@ export default class JournalMap {
   sendRequest(bounds) {
     if (this.journey != "All Journeys") {
       axios.get(`/journal-entry-list/${this.profileusername}/${bounds}/${this.journey}`).then(response => {
-        this.loadMarkersWithoutCluster(response)
         this.loadJourneyRoute(response)
+        this.loadMarkersWithoutCluster(response)
       })
     } else {
       axios.get(`/journal-entry-list/${this.profileusername}/${bounds}`).then(response => {
@@ -296,11 +300,33 @@ export default class JournalMap {
           coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
         }
          
-       new mapboxgl.Popup({closeButton: false, focusAfterOpen: true})
-          .setLngLat(coordinates)
-          .setHTML(popup+`<a data-bs-toggle="modal" href="#sizedModalMd-${id}">Expand</a>`)
-          .addTo(this);
-      });
+          const innerHtmlContent = popup
+
+          const divElement = document.createElement('div');
+          const expandBtn = document.createElement('div');
+          expandBtn.innerHTML = `<a data-bs-toggle="modal" href="#sizedModalMd-${id}">Expand</a>`;
+          divElement.innerHTML = innerHtmlContent;
+          divElement.appendChild(expandBtn);
+          expandBtn.addEventListener('click', (e) => {
+            if (document.exitFullscreen) {
+              document.exitFullscreen();
+          } else if (document.mozCancelFullScreen) {
+              document.mozCancelFullScreen();
+          } else if (document.webkitCancelFullScreen) {
+              document.webkitCancelFullScreen();
+          }
+          });
+
+          new mapboxgl.Popup({
+              closeButton: false,
+              focusAfterOpen: true
+            })
+            .setLngLat(coordinates)
+            .setDOMContent(divElement)
+            .addTo(this)
+      })
+
+
     
       this.journalmap.on('mouseenter', `unclustered-point${sourceID}`, function () {
         this.getCanvas().style.cursor = 'pointer';
@@ -329,88 +355,20 @@ export default class JournalMap {
       clusterMaxZoom: 14, // Max zoom to cluster points on
       clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
       });
-  
-  
-       
-    this.journalmap.addLayer({
-      id: `clusters${sourceID}`,
-      type: 'circle',
-      source: `entrymarkers${sourceID}`,
-      minzoom: 0,
-      filter: ['has', 'point_count'],
-      paint: {
-      // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-      // with three steps to implement three types of circles:
-      'circle-color': [
-      'step',
-      ['get', 'point_count'],
-      '#ac6d46',
-      100,
-      '#ac6d46',
-      750,
-      '#ac6d46'
-      ],
-      'circle-radius': [
-      'step',
-      ['get', 'point_count'],
-      15,
-      100,
-      25,
-      750,
-      35
-      ],
-      'circle-stroke-width': 2,
-      'circle-stroke-color': '#fff'
-      }
-    });
-       
-    this.journalmap.addLayer({
-      id: `cluster-count${sourceID}`,
-      type: 'symbol',
-      source: `entrymarkers${sourceID}`,
-      minzoom: 0,
-      filter: ['has', 'point_count'],
-      layout: {
-      'text-field': '{point_count_abbreviated}',
-      'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-      'text-size': 12,
-      },
-      paint: {
-          "text-color": "#fff"
-      }
-    });
-       
-    this.journalmap.addLayer({
-      id: `unclustered-point${sourceID}`,
-      type: 'circle',
-      source: `entrymarkers${sourceID}`,
-      minzoom: 0,
-      filter: ['!', ['has', 'point_count']],
-      paint: { 
-      'circle-color': '#ac6d46',
-      'circle-radius': 5,
-      'circle-stroke-width': 2,
-      'circle-stroke-color': '#fff'
-      }
-    })
-  
-      // inspect a cluster on click
-    this.journalmap.on('click', `clusters${sourceID}`, function (e) {
-      var features = this.queryRenderedFeatures(e.point, {
-        layers: [`clusters${sourceID}`]
-      })
-      var clusterId = features[0].properties.cluster_id;
-        
-      this.getSource(`entrymarkers${sourceID}`).getClusterExpansionZoom(clusterId,  (err, zoom) => {
-        if (err) return
-        this.easeTo({
-          center: features[0].geometry.coordinates,
-          zoom: zoom
-        })
-      })
 
-    })
-
+      this.journalmap.addLayer({
+        id: `unclustered-point${sourceID}`,
+        type: 'circle',
+        source: `entrymarkers${sourceID}`,
+        minzoom: 0,
+        filter: ['!', ['has', 'point_count']],
+        paint: { 
+        'circle-color': '#ac6d46',
+        'circle-radius': 6,
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#fff'
+        }
+      })
        
   
     this.journalmap.on('click', `unclustered-point${sourceID}`, function (e) {
@@ -431,10 +389,30 @@ export default class JournalMap {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
       }
        
-     new mapboxgl.Popup({closeButton: false, focusAfterOpen: true})
+      const innerHtmlContent = popup
+
+      const divElement = document.createElement('div');
+      const expandBtn = document.createElement('div');
+      expandBtn.innerHTML = `<a data-bs-toggle="modal" href="#sizedModalMd-${id}">Expand</a>`;
+      divElement.innerHTML = innerHtmlContent;
+      divElement.appendChild(expandBtn);
+      expandBtn.addEventListener('click', (e) => {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+      } else if (document.webkitCancelFullScreen) {
+          document.webkitCancelFullScreen();
+      }
+      });
+
+      new mapboxgl.Popup({
+          closeButton: false,
+          focusAfterOpen: true
+        })
         .setLngLat(coordinates)
-        .setHTML(popup+`<a data-bs-toggle="modal" href="#sizedModalMd-${id}">Expand</a>`)
-        .addTo(this);
+        .setDOMContent(divElement)
+        .addTo(this)
     });
   
     this.journalmap.on('mouseenter', `unclustered-point${sourceID}`, function () {
@@ -445,13 +423,6 @@ export default class JournalMap {
       this.getCanvas().style.cursor = '';
     });
       
-    this.journalmap.on('mouseenter', `clusters${sourceID}`, function () {
-      this.getCanvas().style.cursor = 'pointer';
-    });
-
-    this.journalmap.on('mouseleave', `clusters${sourceID}`, function () {
-      this.getCanvas().style.cursor = '';
-    });
 }
 
 
@@ -462,7 +433,7 @@ export default class JournalMap {
     //return console.log(coordinates)
 
       ///* 
-      this.journalmap.addSource('journeyroute', {
+      this.journalmap.addSource('journeyroutelines', {
         'type': 'geojson',
           'data': {
           'type': 'Feature',
@@ -490,78 +461,21 @@ export default class JournalMap {
 
 
       this.journalmap.addLayer({
-        'id': 'journeyroute',
+        'id': 'journeyroutelines',
         'type': 'line',
-        'source': 'journeyroute',
+        'source': 'journeyroutelines',
         'layout': {
         'line-join': 'round',
         'line-cap': 'round'
         },
         'paint': {
         'line-color': '#ac6d46',
-        'line-width': 4,
-        'line-opacity': 0.5
+        'line-width': 2,
+        'line-opacity': 1
         }
         })
 
-        this.journalmap.addLayer({
-          'type': 'line',
-          'source': 'journeyroute',
-          'id': 'line-dashed',
-          'paint': {
-          'line-color': '#ac6d46',
-          'line-width': 4,
-          'line-dasharray': [0, 4, 3]
-          }
-          });
-           
-          // technique based on https://jsfiddle.net/2mws8y3q/
-          // an array of valid line-dasharray values, specifying the lengths of the alternating dashes and gaps that form the dash pattern
-          const dashArraySequence = [
-          [0, 4, 3],
-          [0.5, 4, 2.5],
-          [1, 4, 2],
-          [1.5, 4, 1.5],
-          [2, 4, 1],
-          [2.5, 4, 0.5],
-          [3, 4, 0],
-          [0, 0.5, 3, 3.5],
-          [0, 1, 3, 3],
-          [0, 1.5, 3, 2.5],
-          [0, 2, 3, 2],
-          [0, 2.5, 3, 1.5],
-          [0, 3, 3, 1],
-          [0, 3.5, 3, 0.5]
-          ];
-           
-          let step = 0;
-          let journalmap2 = this.journalmap
-           
-          function animateDashArray(timestamp) {
-          // Update line-dasharray using the next value in dashArraySequence. The
-          // divisor in the expression `timestamp / 50` controls the animation speed.
-          const newStep = parseInt(
-          (timestamp / 90) % dashArraySequence.length
-          );
-           
-          if (newStep !== step) {
-          journalmap2.setPaintProperty(
-          'line-dashed',
-          'line-dasharray',
-          dashArraySequence[step]
-          );
-          step = newStep;
-          }
-           
-          // Request the next frame of the animation.
-          requestAnimationFrame(animateDashArray);
-          }
-           
-          // start the animation
-          animateDashArray(0);
-
-
-        /*let journalmap2 = this.journalmap
+        let journalmap2 = this.journalmap
         var url = pointerUrl
         journalmap2.loadImage(url, function(err, image) {
           if (err) { throw err
@@ -570,19 +484,18 @@ export default class JournalMap {
           journalmap2.addLayer({
             'id': 'arrow-layer',
             'type': 'symbol',
-            'source': 'journeyroute',
+            'source': 'journeyroutelines',
             'layout': {
-              'symbol-placement': 'line-center',
-              'symbol-spacing': 20,
-              'icon-allow-overlap': true,
-              'icon-ignore-placement': true,
+              'symbol-placement': 'line',
+              'symbol-spacing': 50,
               'icon-image': 'arrow',
-              'icon-size': 0.13,
+              'icon-size': 0.25,
               'visibility': 'visible'
             }
           })
-        })*/
-
+          
+        })
+      
   }
 
 }
