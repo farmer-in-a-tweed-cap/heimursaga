@@ -5,6 +5,7 @@ const md5 = require('md5')
 const sanitizeHTML = require('sanitize-html')
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const billingCollection = require('../db').db().collection("billing")
 
 usersCollection.updateMany({}, {$set: {settings: {emailNotifications: {followers: "true", likes: "true"}, pushNotifications: {followers: "true", likes: "true"}}}})
 
@@ -238,7 +239,8 @@ User.findByEmail = function(email) {
                     username: userDoc.data.username,
                     email: userDoc.data.email,
                     resetPasswordToken: userDoc.data.resetPasswordToken,
-                    resetPasswordExpires: userDoc.data.resetPasswordExpires
+                    resetPasswordExpires: userDoc.data.resetPasswordExpires,
+                    url: userDoc.data.url,
                 }
                 resolve(userDoc)
             } else {
@@ -322,6 +324,19 @@ User.prototype.resetPassword = function() {
             resolve("failure")
         }
     })
+}
+
+//updating stripeId to null on subscription cancellation 
+User.findAndUpdateByBillingID = async function(billingId, stripeAccountId){
+    try{
+        const billingInfo = await billingCollection.findOne({ billingId });
+        if(billingInfo){
+            await usersCollection.updateOne({_id: billingInfo.explorerId}, { $set:{ stripeAccountId}})
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
 }
 
 module.exports = User

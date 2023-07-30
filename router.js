@@ -9,8 +9,8 @@ const flagController = require('./controllers/flagController')
 const adminController = require('./controllers/adminController')
 const photoController = require('./controllers/photoController')
 const User = require('./models/User')
-const billingController = require('./controllers/billingController');
 const router = express.Router()
+const billingController = require('./controllers/billingController')
 const { multerUploads } = require('./models/Photo')
 
 
@@ -152,6 +152,8 @@ router.post('/select-type/:username', userController.mustBeLoggedIn, userControl
 //subscription Routes
 router.get('/subscribe/:product_type',  billingController.subscribe)
 router.get('/billing/:email/:customer',  billingController.Billing)
+router.get('/connect_bank',  billingController.ConnectBank)
+router.get('/funding/:explorer/:stripeAccountId/:amount',  billingController.funding)
 
 
 module.exports = router
