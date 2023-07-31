@@ -2,10 +2,8 @@ const Stripe = require("../stripe");
 const billingCollection = require("../db").db().collection("billing");
 
 const productToPriceMap = {
-  pro: process.env.PRODUCT_PRO,
-  pro_plus: process.env.PRODUCT_PRO_PLUS,
-  annual_pro: process.env.ANNUAL_PRODUCT_PRO,
-  annual_pro_plus: process.env.ANNUAL_PRODUCT_PRO_PLUS,
+  explorer: process.env.EXPLORER,
+  explorer_pro: process.env.EXPLORER_PRO,
 };
 
 //checkout
@@ -14,7 +12,7 @@ exports.subscribe = async function (req, res, next) {
     if (req.session.user) {
       const product = req.params.product_type;
       const customerID = req.session.user.billingId;
-      console.log(customerID, product);
+      console.log(customerID, product, "lol");
       if (!product || !customerID)
         throw new Error("subscription type or customerId is mandatory");
 
@@ -22,28 +20,7 @@ exports.subscribe = async function (req, res, next) {
 
       try {
         const session = await Stripe.createCheckoutSession(customerID, price);
-        const ms =
-          new Date().getTime() + 1000 * 60 * 60 * 24 * process.env.TRIAL_DAYS;
-        const n = new Date(ms);
 
-        const updatedBillingInfo = {
-          $set: {
-            plan: product,
-            hasTrial: true,
-            endDate: n,
-          },
-        };
-
-        // Update the document in the collection using $set operator
-        await billingCollection.updateOne(
-          { billingId: customerID },
-          updatedBillingInfo
-        );
-        req.session.user["plan"] = product;
-        req.session.user["endDate"] = n;
-        req.session.user["hasTrial"] = true;
-
-        console.log(req.session.user);
         res.send({
           sessionId: session.id,
         });
@@ -58,16 +35,13 @@ exports.subscribe = async function (req, res, next) {
       }
 
       next();
-    } else next();
-    // let Customer = await Bookmark.countBookmarksById(req.params.id, req.visitorId).then((result) => {
-    //     console.log(result)
-    //     return result
-    // })
+    } else throw new Error("Billing Id is required for subscription");
   } catch (err) {
     console.log(err);
   }
 };
 
+//mange subscription
 exports.Billing = async (req, res) => {
   const { customer } = req.params;
   const session = await Stripe.createBillingSession(customer);
@@ -77,7 +51,6 @@ exports.Billing = async (req, res) => {
 //webhook
 exports.webhook = async (req, res) => {
   let event;
-  console.log("webhook entered");
 
   try {
     event = Stripe.createWebhook(req.body, req.header("Stripe-Signature"));
@@ -88,10 +61,10 @@ exports.webhook = async (req, res) => {
 
   const data = event.data.object;
 
-  console.log(event.type, data, "in webhook");
+  console.log(event.type, "in webhook");
   switch (event.type) {
     case "customer.created":
-      console.log(JSON.stringify(data));
+      // console.log(JSON.stringify(data));
       break;
     case "invoice.paid":
       break;
@@ -99,17 +72,17 @@ exports.webhook = async (req, res) => {
       const billing = await billingCollection.find({
         billingId: data.customer,
       });
-      console.log(billing, "in webhook");
 
-      if (data.plan.id === process.env.PRODUCT_PRO) {
-        console.log("You are talking about pro plan ");
-        billing.plan = "pro";
+      if (data.plan.id === process.env.EXPLORER_PRO) {
+        console.log("You are talking about explorer pro plan ");
+        billing.plan = "explorer_pro";
       }
 
-      if (data.plan.id === process.env.PRODUCT_PRO_PLUS) {
-        console.log("You are talking about pro plus plan");
-        billing.plan = "pro_plus";
+      if (data.plan.id === process.env.EXPLORER) {
+        console.log("You are talking about explorer plus plan");
+        billing.plan = "explorer";
       }
+
 
       billing.hasTrial = true;
       billing.endDate = new Date(data.current_period_end * 1000);
@@ -134,14 +107,14 @@ exports.webhook = async (req, res) => {
         billingId: data.customer,
       });
 
-      if (data.plan.id == process.env.PRODUCT_PRO) {
-        console.log("You are talking about pro plan");
-        billing.plan = "pro";
+      if (data.plan.id === process.env.EXPLORER_PRO) {
+        console.log("You are talking about explorer pro plan ");
+        billing.plan = "explorer_pro";
       }
 
-      if (data.plan.id === process.env.PRODUCT_PRO_PLUS) {
-        console.log("You are talking about pro plus product");
-        billing.plan = "pro_plus";
+      if (data.plan.id === process.env.EXPLORER) {
+        console.log("You are talking about explorer plus plan");
+        billing.plan = "explorer";
       }
 
       const isOnTrial = data.status === "trialing";
@@ -183,25 +156,6 @@ exports.webhook = async (req, res) => {
       console.log("customer changed", JSON.stringify(data));
       break;
     }
-    // case "customer.subscription.deleted": {
-    //   const billing = await billingCollection.find({
-    //     billingId: data.customer,
-    //   });
-    //   billing.plan = "none";
-    //   billing.hasTrial = false;
-    //   billing.endDate = null;
-    //   //update billing record
-    //   await billingCollection.updateOne(
-    //     { billingId: data.customer },
-    //     {
-    //       $set: {
-    //         plan: billing.plan,
-    //         hasTrial: billing.hasTrial,
-    //         endDate: billing.endDate,
-    //       },
-    //     }
-    //   );
-    // }
     default:
   }
   res.sendStatus(200);

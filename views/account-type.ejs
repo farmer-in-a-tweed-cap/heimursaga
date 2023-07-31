@@ -97,9 +97,11 @@
 															<div class="mt-auto">
 																<div class="text-center text-primary">In development - Coming October 2021!</div>
 
-																<button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary">
+																<!-- <button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary">
 																	Join Waitlist
-																</button>
+																</button> -->
+																<button class="btn btn-lg btn-primary" id="explorer-pro">Join Waitlist</button>
+
 																	<div class="modal fade" id="centeredModalPrimary" tabindex="-1" role="dialog" aria-hidden="true">
 																		<div class="modal-dialog modal-dialog-centered" role="document">
 																			<div class="modal-content">
@@ -163,9 +165,11 @@
 															<div class="mt-auto">
 																<div class="text-center text-primary">In development - Coming December 2021!</div>
 
-																<button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary0">
+																<!-- <button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary0">
 																	Join Waitlist
-																</button>
+																</button> -->
+																<button class="btn btn-lg btn-primary" id="explorer-pro-plus">Join Waitlist</button>
+
 																	<div class="modal fade" id="centeredModalPrimary0" tabindex="-1" role="dialog" aria-hidden="true">
 																		<div class="modal-dialog modal-dialog-centered" role="document">
 																			<div class="modal-content">
@@ -260,9 +264,11 @@
 															<div class="mt-auto">
 																<div class="text-center text-primary">In development - Coming October 2021!</div>
 
-																<button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary1">
+																<!-- <button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary1">
 																	Join Waitlist
-																</button>
+																</button> -->
+																<button class="btn btn-lg btn-primary" id="annual-explorer-pro">Join Waitlist</button>
+
 																	<div class="modal fade" id="centeredModalPrimary1" tabindex="-1" role="dialog" aria-hidden="true">
 																		<div class="modal-dialog modal-dialog-centered" role="document">
 																			<div class="modal-content">
@@ -326,9 +332,11 @@
 															<div class="mt-auto">
 																<div class="text-center text-primary">In development - Coming December 2021!</div>
 
-																<button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary2">
+																<!-- <button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#centeredModalPrimary2">
 																	Join Waitlist
-																</button>
+																</button> -->
+																<button class="btn btn-lg btn-primary" id="annual-explorer-pro-plus">Join Waitlist</button>
+
 																	<div class="modal fade" id="centeredModalPrimary2" tabindex="-1" role="dialog" aria-hidden="true">
 																		<div class="modal-dialog modal-dialog-centered" role="document">
 																			<div class="modal-content">
@@ -433,6 +441,107 @@
 
 	<script src="js/app.js"></script>
 
+	<script type="text/javascript" src="https://js.stripe.com/v3/"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const publishableKey = 'pk_test_51K2JRAFXr1UXQNSZbMzM0eTcrirEsCbBDJ8USeCrgPwWVt1zVGev7yGReOQoQACURXpdS2Cn8p7mLpemLqMbVrpL00ZBgmobdf'
+			const stripe = Stripe(publishableKey);
+			let explorerProPlus = document.getElementById('explorer-pro-plus');
+			let explorerPro = document.getElementById('explorer-pro');
+
+			let annualExplorerPro = document.getElementById('annual-explorer-pro')
+			let annualExplorerProPlus = document.getElementById('annual-explorer-pro-plus')
+
+			let manageSubscription = document.getElementById('manage_billing');
+
+
+			//monthly
+			if (explorerProPlus) {
+				explorerProPlus.addEventListener('click', function () {
+
+					fetch(`/subscribe/pro_plus`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+					})
+						.then(async (result) => {
+							const response = await result.json();
+							return response
+						})
+						.then((response) => {
+							if (response?.sessionId)
+								stripe.redirectToCheckout({ sessionId: response.sessionId })
+						})
+				})
+			}
+
+			if (explorerPro) {
+				explorerPro.addEventListener('click', function () {
+
+					fetch(`/subscribe/pro`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+					})
+						.then(async (result) => {
+							const response = await result.json();
+							return response
+						})
+						.then((response) => {
+							if (response?.sessionId)
+								stripe.redirectToCheckout({ sessionId: response.sessionId })
+						})
+
+				})
+			}
+
+			//annual
+			if (annualExplorerPro) {
+				annualExplorerPro.addEventListener('click', function () {
+
+					fetch(`/subscribe/annual_pro`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+					})
+						.then(async (result) => {
+							const response = await result.json();
+							return response
+						})
+						.then((response) => {
+							if (response?.sessionId)
+								stripe.redirectToCheckout({ sessionId: response.sessionId })
+						})
+
+				})
+			}  
+
+			if (annualExplorerProPlus) {
+				annualExplorerProPlus.addEventListener('click', function () {
+
+					fetch(`/subscribe/annual_pro_plus`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+					})
+						.then(async (result) => {
+							const response = await result.json();
+							return response
+						})
+						.then((response) => {
+							if (response?.sessionId)
+								stripe.redirectToCheckout({ sessionId: response.sessionId })
+						})
+
+				})
+			}  
+		});
+
+	</script>
 </body>
 
 </html>

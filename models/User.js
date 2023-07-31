@@ -211,7 +211,8 @@ User.findByUsername = function(username) {
                     instagram: userDoc.data.instagram,
                     website: userDoc.data.website,
                     type: userDoc.data.type,
-                    settings: userDoc.data.settings
+                    settings: userDoc.data.settings,
+                    stripeAccountId: userDoc.data.stripeAccountId
                 }
                 resolve(userDoc)
             } else {

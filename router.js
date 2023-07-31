@@ -9,6 +9,7 @@ const flagController = require('./controllers/flagController')
 const adminController = require('./controllers/adminController')
 const photoController = require('./controllers/photoController')
 const User = require('./models/User')
+const billingController = require('./controllers/billingController');
 const router = express.Router()
 const { multerUploads } = require('./models/Photo')
 
@@ -148,7 +149,9 @@ router.get('/upgrade/:username', userController.mustBeLoggedIn, userController.i
 router.get('/account-type/:username', userController.mustBeLoggedIn, userController.ifUserExists, userController.sharedProfileData, userController.accounttype)
 router.post('/select-type/:username', userController.mustBeLoggedIn, userController.ifUserExists, userController.sharedProfileData, userController.selectType)
 
-
+//subscription Routes
+router.get('/subscribe/:product_type',  billingController.subscribe)
+router.get('/billing/:email/:customer',  billingController.Billing)
 
 
 module.exports = router
