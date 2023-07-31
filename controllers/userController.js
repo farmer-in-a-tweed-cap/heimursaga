@@ -181,7 +181,7 @@ exports.register = function(req, res) {
   }).catch(function(e) {
     req.flash('errors', e)
     req.session.save(function() {
-      res.redirect('/register')
+      res.redirect('/join')
     })
   })
 }
