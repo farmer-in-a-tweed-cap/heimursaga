@@ -51,7 +51,6 @@ const addNewCustomer = async (email) => {
 };
 
 const createWebhook = (rawBody, sig) => {
-  console.log(process.env.STRIPE_WEBHOOK_SECRET, "webhook sec");
   const event = Stripe.webhooks.constructEvent(
     rawBody,
     sig,

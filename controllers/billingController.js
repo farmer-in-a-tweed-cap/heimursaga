@@ -12,7 +12,6 @@ exports.subscribe = async function (req, res, next) {
     if (req.session.user) {
       const product = req.params.product_type;
       const customerID = req.session.user.billingId;
-      console.log(customerID, product, "lol");
       if (!product || !customerID)
         throw new Error("subscription type or customerId is mandatory");
 
@@ -64,7 +63,6 @@ exports.webhook = async (req, res) => {
   console.log(event.type, "in webhook");
   switch (event.type) {
     case "customer.created":
-      // console.log(JSON.stringify(data));
       break;
     case "invoice.paid":
       break;
@@ -79,7 +77,7 @@ exports.webhook = async (req, res) => {
       }
 
       if (data.plan.id === process.env.EXPLORER) {
-        console.log("You are talking about explorer plus plan");
+        console.log("You are talking about explorer plan");
         billing.plan = "explorer";
       }
 
@@ -113,7 +111,7 @@ exports.webhook = async (req, res) => {
       }
 
       if (data.plan.id === process.env.EXPLORER) {
-        console.log("You are talking about explorer plus plan");
+        console.log("You are talking about explorer plan");
         billing.plan = "explorer";
       }
 
@@ -153,7 +151,6 @@ exports.webhook = async (req, res) => {
         }
       );
 
-      console.log("customer changed", JSON.stringify(data));
       break;
     }
     default:
