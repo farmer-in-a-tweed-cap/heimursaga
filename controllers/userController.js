@@ -17,9 +17,6 @@ sendgrid.setApiKey(process.env.SENDGRIDAPIKEY)
 const sanitizeHTML = require('sanitize-html')
 const validator = require("validator")
 const Bookmark = require('../models/Bookmark')
-const Stripe = require('../stripe')
-const billingController =  require('../models/Billing');
-const billingCollection = require('../db').db().collection("billing")
 
 
 exports.sharedProfileData = async function(req, res, next) {
@@ -63,24 +60,7 @@ exports.login = function(req, res) {
     
     //check from billing collection if trial expired or not 
     billingCollection.findOne({explorerId:user.data._id}).then((billingInfo)=>{
-      if (billingInfo) {
-        req.session.user["billingId"] = billingInfo.billingId;
-        const isTrialExpired =
-          billingInfo.plan != "none" &&
-          billingInfo.endDate < new Date().getTime();
-        if (isTrialExpired) {
-          console.log("trial expired");
-          billingCollection.hasTrial = false;
-          billingCollection.save();
-        } else {
-          console.log(
-            "no trial information",
-            billingInfo?.hasTrial,
-            billingInfo?.plan != "none",
-            billingInfo?.endDate < new Date().getTime()
-          );
-        }
-      }
+      if (billingInfo) req.session.user["billingId"] = billingInfo.billingId;
       req.session.save(function() {
         req.flash("success", `Welcome, ${user.data.username}!`)
         res.redirect('my-feed')
@@ -106,26 +86,17 @@ exports.userGuide = function(req, res) {
 }
 
 exports.upgrade = async function(req, res) {
-  //get billing details for upgrade page
-  const billing = await billingCollection.findOne({
-    billingId:  req.session.user.billingId,
-  });
-  User.findByUsername(req.profileUser.username).then(function (user) {
-    res.render("upgrade", {
+    User.findByUsername(req.profileUser.username).then(function(user){
+    res.render('upgrade', {
       pageName: "upgrade",
       email: user.email,
-      plan: billing?.plan,
-      endDate: billing?.endDate,
-      hasTrial: billing?.hasTrial,
-      billingId: req.session.user?.billingId,
-      stripeAccountId: user.stripeAccountId || null
-    });
-  });
+    })
+    })
 }
 
 exports.accounttype = async function(req, res) {
   if (req.isVisitorsProfile == true) {
-    User.findByUsername(req.params.username).then(function(user){
+    User.findByUsername(req.profileUser.username).then(function(user){
     res.render('account-type', {
       pageName: "account-type",
       email: user.email,
@@ -141,44 +112,28 @@ exports.register = function(req, res) {
   let user = new User(req.body)
   user.register().then(() => {
     sendgrid.send({
-      to: "admin@heimursaga.com",
-      from: "admin@heimursaga.com",
-      subject: `New Explorer Account: ${user.data.username}`,
-      text: `An explorer has signed up for a new account. Username: ${user.data.username}, Email: ${user.data.email}, Journal link: https://heimursaga.com/journal/${user.data.username}.`,
-      html: `An explorer has signed up for a new account. </p>Username: ${user.data.username} </br>Email: ${user.data.email} </br>Journal Link: <a href="https://heimursaga.com/journal/${user.data.username}">https://heimursaga.com/journal/${user.data.username}</a>`,
-    });
-    sendgrid.send({
-      to: `${user.data.email}`,
-      from: "explorer1@heimursaga.com",
-      subject: `Welcome to Heimursaga, ${user.data.username}!`,
-      text: `Greetings ${user.data.username}, I wanted to personally welcome you to Heimursaga. We're so excited you've decided to join this community. Please read The Explorer Code (https://heimursaga.com/explorer-code) before posting any entries, and don't forget to follow and support your favorite explorers! Regards, explorer1`,
-      html: `<p>Greetings ${user.data.username},</p><p>I want to personally welcome you to Heimursaga! We're so excited you've decided to join this community.</p><p>Please read <a href="https://heimursaga.com/explorer-code">The Explorer Code</a> before posting any entries, and don't forget to follow and support your favorite explorers!</p><br><p>Regards, <br>explorer1</p>`,
-    });
-
-    //add customer to stripe and add billing details in billing on signup
-    Stripe.addNewCustomer(user.data.email).then(async (customerInfo) => {
-      await billingCollection.insertOne({
-        explorerId: user.data._id,
-        plan: "none",
-        endDate: null,
-        billingId: customerInfo.id,
-      });
-
-      req.session.user = {
-        username: user.data.username,
-        avatar: user.avatar,
-        _id: user.data._id,
-        billingId: customerInfo.id,
-      };
-      req.session.save(function () {
-        req.flash("success", `Welcome to Heimursaga, ${user.data.username}!`);
-        res.redirect(`/account-type/${user.data.username}`);
-      });
-    });
+            to: 'admin@heimursaga.com',
+            from: 'admin@heimursaga.com',
+            subject: `New Explorer Account: ${user.data.username}`,
+            text: `An explorer has signed up for a new account. Username: ${user.data.username}, Email: ${user.data.email}, Journal link: https://heimursaga.com/journal/${user.data.username}.`,
+            html: `An explorer has signed up for a new account. </p>Username: ${user.data.username} </br>Email: ${user.data.email} </br>Journal Link: <a href="https://heimursaga.com/journal/${user.data.username}">https://heimursaga.com/journal/${user.data.username}</a>`
+        })
+      sendgrid.send({
+            to: `${user.data.email}`,
+            from: 'explorer1@heimursaga.com',
+            subject: `Welcome to Heimursaga, ${user.data.username}!`,
+            text: `Greetings ${user.data.username}, I wanted to personally welcome you to Heimursaga. We're so excited you've decided to join this community. Please read The Explorer Code (https://heimursaga.com/explorer-code) before posting any entries, and don't forget to follow and support your favorite explorers! Regards, explorer1`,
+            html: `<p>Greetings ${user.data.username},</p><p>I want to personally welcome you to Heimursaga! We're so excited you've decided to join this community.</p><p>Please read <a href="https://heimursaga.com/explorer-code">The Explorer Code</a> before posting any entries, and don't forget to follow and support your favorite explorers!</p><br><p>Regards, <br>explorer1</p>`
+      })
+    req.session.user = {username: user.data.username, avatar: user.avatar, _id: user.data._id}
+    req.session.save(function() {
+      //res.redirect(`/account-type/${user.data.username}`)
+      res.redirect('/user-guide')
+    })
   }).catch(function(e) {
     req.flash('errors', e)
     req.session.save(function() {
-      res.redirect('/join')
+      res.redirect('/register')
     })
   })
 }
@@ -381,15 +336,11 @@ exports.journalScreen = function(req, res) {
     let bookmarkedEntries = await Bookmark.getBookmarkedById(req.profileUser._id)
     let drafts = await Draft.findByAuthorId(req.profileUser._id)
     let user = await User.findByUsername(req.profileUser.username)
-    let journeys = await Entry.findJourneysByUsername(req.profileUser.username)
 
     if (req.isVisitorsProfile == true){
       res.render('journal', {
         pageName: "my-journal",
         entries: entries,
-        selectedJourney: null,
-        journeys: journeys,
-        selectedJourney: null,
         drafts: drafts,
         followers: followers,
         following: following,
@@ -413,8 +364,6 @@ exports.journalScreen = function(req, res) {
     res.render('journal', {
       pageName: "journal",
       entries: entries,
-      journeys: journeys,
-      selectedJourney: null,
       drafts: drafts,
       followers: followers,
       following: following,
@@ -448,15 +397,11 @@ exports.journalScreen = function(req, res) {
     let bookmarkedEntries = await Bookmark.getBookmarkedById(req.profileUser._id)
     let drafts = await Draft.findByAuthorId(req.profileUser._id)
     let user = await User.findByUsername(req.profileUser.username)
-    let journeys = await Entry.findJourneysByUsername(req.profileUser.username)
-
 
     if (req.isVisitorsProfile == true){
       res.render('journal', {
         pageName: "my-journal",
         entries: entries,
-        journeys: journeys,
-        selectedJourney: null,
         drafts: drafts,
         followers: followers,
         following: following,
@@ -480,8 +425,6 @@ exports.journalScreen = function(req, res) {
     res.render('journal', {
       pageName: "journal",
       entries: entries,
-      journeys: journeys,
-      selectedJourney: null,
       drafts: drafts,
       followers: followers,
       following: following,
@@ -505,143 +448,6 @@ exports.journalScreen = function(req, res) {
     res.render("404")
   })
 }}
-
-exports.journalScreenPro = function(req, res) {
-
-  if (req.isVisitorsProfile == true) {
-  // ask our post model for posts by a certain author id
-
-  Entry.findByAuthorIdandJourney(req.params.journey, req.profileUser._id).then(async function(entries) {
-
-    let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
-    let following = await Follow.getFollowingById(req.profileUser._id)
-    let followers = await Follow.getFollowersById(req.profileUser._id)
-    let highlightedEntries = await Highlight.getHighlightedById(req.profileUser._id)
-    let bookmarkedEntries = await Bookmark.getBookmarkedById(req.profileUser._id)
-    let drafts = await Draft.findByAuthorId(req.profileUser._id)
-    let user = await User.findByUsername(req.profileUser.username)
-    let journeys = await Entry.findJourneysByUsername(req.profileUser.username)
-
-    if (req.isVisitorsProfile == true){
-      res.render('journal', {
-        pageName: "my-journal",
-        entries: entries,
-        selectedJourney: req.params.journey,
-        journeys: journeys,
-        drafts: drafts,
-        followers: followers,
-        following: following,
-        highlighted: highlightedEntries,
-        bookmarked: bookmarkedEntries,
-        bio: user.bio,
-        currentlyin: user.currentlyin,
-        livesin: user.livesin,
-        from: user.from,
-        instagram: user.instagram,
-        website: user.website,
-        type: user.type,
-        entrymarker: JSON.stringify(entryMarker),
-        profileUsername: req.profileUser.username,
-        profileAvatar: req.profileUser.avatar,
-        isFollowing: req.isFollowing,
-        isVisitorsProfile: req.isVisitorsProfile,
-        counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
-      })
-    } else {
-    res.render('journal', {
-      pageName: "journal",
-      entries: entries,
-      selectedJourney: req.params.journey,
-      drafts: drafts,
-      followers: followers,
-      following: following,
-      highlighted: highlightedEntries,
-      bookmarked: bookmarkedEntries,
-      bio: user.bio,
-      currentlyin: user.currentlyin,
-      livesin: user.livesin,
-      from: user.from,
-      instagram: user.instagram,
-      website: user.website,
-      type: user.type,
-      entrymarker: JSON.stringify(entryMarker),
-      profileUsername: req.profileUser.username,
-      profileAvatar: req.profileUser.avatar,
-      isFollowing: req.isFollowing,
-      isVisitorsProfile: req.isVisitorsProfile,
-      counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
-    })}
-  }).catch(function() {
-    res.render("404")
-  })
-
-} else {
-  Entry.findPublicByAuthorIdandJourney(req.params.journey, req.profileUser._id).then(async function(entries) {
-
-    let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
-    let following = await Follow.getFollowingById(req.profileUser._id)
-    let followers = await Follow.getFollowersById(req.profileUser._id)
-    let highlightedEntries = await Highlight.getHighlightedById(req.profileUser._id)
-    let bookmarkedEntries = await Bookmark.getBookmarkedById(req.profileUser._id)
-    let drafts = await Draft.findByAuthorId(req.profileUser._id)
-    let user = await User.findByUsername(req.profileUser.username)
-    let journeys = await Entry.findJourneysByUsername(req.profileUser.username)
-
-    if (req.isVisitorsProfile == true){
-      res.render('journal', {
-        pageName: "my-journal",
-        entries: entries,
-        selectedJourney: req.params.journey,
-        journeys: journeys,
-        drafts: drafts,
-        followers: followers,
-        following: following,
-        highlighted: highlightedEntries,
-        bookmarked: bookmarkedEntries,
-        bio: user.bio,
-        currentlyin: user.currentlyin,
-        livesin: user.livesin,
-        from: user.from,
-        instagram: user.instagram,
-        website: user.website,
-        type: user.type,
-        entrymarker: JSON.stringify(entryMarker),
-        profileUsername: req.profileUser.username,
-        profileAvatar: req.profileUser.avatar,
-        isFollowing: req.isFollowing,
-        isVisitorsProfile: req.isVisitorsProfile,
-        counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
-      })
-    } else {
-    res.render('journal', {
-      pageName: "journal",
-      entries: entries,
-      selectedJourney: req.params.journey,
-      journeys: journeys,
-      drafts: drafts,
-      followers: followers,
-      following: following,
-      highlighted: highlightedEntries,
-      bookmarked: bookmarkedEntries,
-      bio: user.bio,
-      currentlyin: user.currentlyin,
-      livesin: user.livesin,
-      from: user.from,
-      instagram: user.instagram,
-      website: user.website,
-      type: user.type,
-      entrymarker: JSON.stringify(entryMarker),
-      profileUsername: req.profileUser.username,
-      profileAvatar: req.profileUser.avatar,
-      isFollowing: req.isFollowing,
-      isVisitorsProfile: req.isVisitorsProfile,
-      counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
-    })}
-  }).catch(function() {
-    res.render("404")
-  })
-}}
-
 
 exports.myFeed = async function(req, res) {
   if (req.session.user){
@@ -659,68 +465,22 @@ exports.myFeed = async function(req, res) {
 
 exports.feedEntryList = async function(req, res) {
     await Entry.getFollowedFeed(req.params.bounds, req.session.user._id).then(entries => {
-        res.send(entries)
+        res.json(entries)
     }).catch(() => {
         res.json([])
     })
 }
 
 exports.journalEntryList = async function(req, res) {
-  if (req.params.journey) {
-    
-    if (req.isVisitorsProfile) {
-      await Entry.getMyJournalFeedbyJourney(req.params.bounds, req.profileUser._id, req.params.journey).then(entries => {
-        res.json(entries)})
-    } else {
-      await Entry.getJournalFeedbyJourney(req.params.bounds, req.profileUser._id, req.params.journey).then(entries => {
-        res.json(entries)
-      }).catch(() => {
-        res.json([])
-    })
-  }
+  if (req.isVisitorsProfile) {
+    await Entry.getMyJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
+      res.json(entries)})
   } else {
-
-    if (req.isVisitorsProfile) {
-      await Entry.getMyJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
-        res.json(entries)})
-    } else {
-      await Entry.getJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
-        res.json(entries)
-      }).catch(() => {
-        res.json([])
-    })
-
-  }
-
-}}
-
-exports.journalEntryListDate = async function(req, res) {
-  if (req.params.journey) {
-    
-    if (req.isVisitorsProfile) {
-      await Entry.getMyJournalFeedbyJourneyandDate(req.params.bounds, req.profileUser._id, req.params.journey).then(entries => {
-        res.json(entries)})
-    } else {
-      await Entry.getJournalFeedbyJourneyandDate(req.params.bounds, req.profileUser._id, req.params.journey).then(entries => {
-        res.json(entries)
-      }).catch(() => {
-        res.json([])
-    })
-  }
-  } else {
-
-    if (req.isVisitorsProfile) {
-      await Entry.getMyJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
-        res.json(entries)})
-    } else {
-      await Entry.getJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
-        res.json(entries)
-      }).catch(() => {
-        res.json([])
-    })
-
-  }
-
+    await Entry.getJournalFeed(req.params.bounds, req.profileUser._id).then(entries => {
+      res.json(entries)
+    }).catch(() => {
+      res.json([])
+  })
 }}
 
 
