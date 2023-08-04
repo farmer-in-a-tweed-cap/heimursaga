@@ -2,8 +2,8 @@ const Stripe = require("../stripe");
 const billingCollection = require("../db").db().collection("billing");
 
 const productToPriceMap = {
-  explorer: process.env.EXPLORER,
-  explorer_pro: process.env.EXPLORER_PRO,
+  monthly_exp: process.env.MONTHLY_EXPLORER,
+  yearly_exp: process.env.ANNUAL_EXPLORER,
 };
 
 //checkout
@@ -71,16 +71,15 @@ exports.webhook = async (req, res) => {
         billingId: data.customer,
       });
 
-      if (data.plan.id === process.env.EXPLORER_PRO) {
-        console.log("You are talking about explorer pro plan ");
-        billing.plan = "explorer_pro";
+      if (data.plan.id === productToPriceMap.monthly_exp) {
+        console.log("You are talking about monthly explorer plan ");
+        billing.plan = "monthly_exp";
       }
 
-      if (data.plan.id === process.env.EXPLORER) {
-        console.log("You are talking about explorer plan");
-        billing.plan = "explorer";
+      if (data.plan.id === productToPriceMap.yearly_exp) {
+        console.log("You are talking about annual explorer plan");
+        billing.plan = "yearly_exp";
       }
-
 
       billing.hasTrial = true;
       billing.endDate = new Date(data.current_period_end * 1000);
@@ -105,14 +104,14 @@ exports.webhook = async (req, res) => {
         billingId: data.customer,
       });
 
-      if (data.plan.id === process.env.EXPLORER_PRO) {
-        console.log("You are talking about explorer pro plan ");
-        billing.plan = "explorer_pro";
+      if (data.plan.id === productToPriceMap.monthly_exp) {
+        console.log("You are talking about monthly explorer plan ");
+        billing.plan = "monthly_exp";
       }
 
-      if (data.plan.id === process.env.EXPLORER) {
-        console.log("You are talking about explorer plan");
-        billing.plan = "explorer";
+      if (data.plan.id === productToPriceMap.yearly_exp) {
+        console.log("You are talking about annual explorer plan");
+        billing.plan = "yearly_exp";
       }
 
       const isOnTrial = data.status === "trialing";
@@ -150,6 +149,33 @@ exports.webhook = async (req, res) => {
           },
         }
       );
+
+      break;
+    }
+    case "customer.subscription.deleted": {
+      const billing = await billingCollection.find({
+        billingId: data.customer,
+      });
+
+      // cancelled
+      if (billing) {
+        console.log("You just canceled the subscription " + data.canceled_at);
+        billing.plan = "none";
+        billing.hasTrial = false;
+        billing.endDate = null;
+
+        // update billing record
+        await billingCollection.updateOne(
+          { billingId: data.customer },
+          {
+            $set: {
+              plan: billing.plan,
+              hasTrial: billing.hasTrial,
+              endDate: billing.endDate,
+            },
+          }
+        );
+      }
 
       break;
     }

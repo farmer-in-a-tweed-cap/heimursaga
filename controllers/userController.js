@@ -59,33 +59,22 @@ exports.mustBeLoggedIn = function(req, res, next) {
 exports.login = function(req, res) {
   let user = new User(req.body)
   user.login().then(function(result) {
-    req.session.user = {avatar: user.avatar, username: user.data.username, _id: user.data._id}
-    
-    //check from billing collection if trial expired or not 
-    billingCollection.findOne({explorerId:user.data._id}).then((billingInfo)=>{
-      if (billingInfo) {
-        req.session.user["billingId"] = billingInfo.billingId;
-        const isTrialExpired =
-          billingInfo.plan != "none" &&
-          billingInfo.endDate < new Date().getTime();
-        if (isTrialExpired) {
-          console.log("trial expired");
-          billingCollection.hasTrial = false;
-          billingCollection.save();
-        } else {
-          console.log(
-            "no trial information",
-            billingInfo?.hasTrial,
-            billingInfo?.plan != "none",
-            billingInfo?.endDate < new Date().getTime()
-          );
-        }
-      }
-      req.session.save(function() {
-        req.flash("success", `Welcome, ${user.data.username}!`)
-        res.redirect('my-feed')
-      })
-    })
+    req.session.user = {
+      avatar: user.avatar,
+      username: user.data.username,
+      _id: user.data._id,
+    };
+
+    //check from billing collection if trial expired or not
+    billingCollection
+      .findOne({ explorerId: user.data._id })
+      .then((billingInfo) => {
+        if (billingInfo) req.session.user["billingId"] = billingInfo.billingId;
+        req.session.save(function () {
+          req.flash("success", `Welcome, ${user.data.username}!`);
+          res.redirect("my-feed");
+        });
+      });
   }).catch(function(e) {
     req.flash('errors', e)
     req.session.save(function() {

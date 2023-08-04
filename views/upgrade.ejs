@@ -22,14 +22,14 @@
         <% } else if ( plan && plan !=='none' ) { %>
 
                 <div>
-                    <% if (plan==='explorer_pro' ) { %>
+                    <% if (plan==='yearly_exp' ) { %>
                         <div>You have subscribed to
-                            <span style="color: green; font-weight: bold;">Explorer Pro</span>
+                            <span style="color: green; font-weight: bold;">Annual Explorer Pro</span>
                             Plan
                         </div>
-                    <% } else if(plan==='explorer' ) { %>
+                    <% } else if(plan==='monthly_exp' ) { %>
                         <div>You have subscribed to
-                            <span style="color: green; font-weight: bold;"> Explorer </span>
+                            <span style="color: green; font-weight: bold;"> Monthly Explorer Pro</span>
                             Plan
                         </div>
                     <% } %>
@@ -111,12 +111,13 @@
 
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="monthly">
-                                    <div class="row py-4">
+                                    <div class="row py-4 justify-content-center">
                                         <div class="col-sm-4 mb-3 mb-md-0">
                                             <div class="card text-center h-100">
                                                 <div class="card-body d-flex flex-column">
                                                     <div class="mb-4" style="height: 110px;">
                                                         <h3 class="mb-4 text-primary">EXPLORER</h3><br>
+                                                        <h6 class="text-primary ">Basic</h6>
                                                         <span style="font-size: xx-large;">Free</span>
                                                     </div>
                                                     <ul class="list-unstyled mt-4">
@@ -137,14 +138,28 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-4 mb-3 mb-md-0">
-                                            <div class="card text-center h-100">
+                                        <div class="col-sm-4 mb-3 mb-md-0 ">
+                                            <div class="card text-center h-100 d-flex flex-row">
                                                 <div class="card-body d-flex flex-column">
                                                     <div class="mb-4" style="height: 110px;">
-                                                        <h3 class="text-primary">EXPLORER PRO</h3><h6 class="text-primary mb-4">monthly subscription</h6>
-                                                        <span class="display-4">$12</span>
-                                                        <span>/mo</span>
-                                                    </div>
+                                                        <h3 class="text-primary">EXPLORER PRO</h3>
+                                                        <div class="d-flex flex-row gap-2  justify-content-center">
+                                                            <button id="monthlyBtn" class="btn btn-lg btn-outline-primary btn-sm active">monthly</button>
+                                                            <button id="yearlyBtn" class="btn btn-lg btn-outline-primary btn-sm">annualy</button>
+                                                        </div>
+                                                        <div class="m-2">
+                                                            <div id="monthly-detail">
+                                                                <h6 class="text-primary ">monthly subscription</h6>
+                                                                <span class="display-4">$12</span>
+                                                                <span>/mo</span>
+                                                            </div>
+                                                            <div id="yearly-detail" style="display: none;">
+                                                                <h6 class="text-primary">annual subscription</h6>
+                                                                <span class="display-4">$115</span>
+                                                                <span>/yr</span>
+                                                            </div>
+                                                            </div>
+                                                            </div>
                                                     <ul class="list-unstyled mt-4">
                                                         <li class="mb-2">
                                                             Post journal entries
@@ -173,49 +188,7 @@
                                                     </ul>
                                                     <div class="mt-auto">
                                                         <button class="btn btn-lg btn-primary"
-                                                            id="explorer">Join Waitlist</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4 mb-3 mb-md-0">
-                                            <div class="card text-center h-100">
-                                                <div class="card-body d-flex flex-column">
-                                                    <div class="mb-4" style="height: 110px;">
-                                                        <h3 class="text-primary">EXPLORER PRO</h3><h6 class="text-primary mb-4">annual subscription</h6>
-                                                        <span class="display-4">$112</span>
-                                                        <span>/yr</span>
-                                                    </div>
-                                                    <ul class="list-unstyled mt-4">
-                                                        <li class="mb-2">
-                                                            Post journal entries
-                                                        </li>
-                                                        <li class="mb-2">
-                                                            Like journal entries
-                                                        </li>
-                                                        <li class="mb-2">
-                                                            Follow explorers
-                                                        </li>
-                                                        <li class="mb-2">
-                                                            Journal metrics
-                                                        </li>
-                                                        <li class="mb-2">
-                                                            Journey Mode
-                                                        </li>
-                                                        <li class="mb-2">
-                                                            Private messaging
-                                                        </li>
-                                                        <li class="mb-2">
-                                                            Personal website and instagram links
-                                                        </li>
-                                                        <li class="mb-2">
-                                                            Explorers Fund
-                                                        </li>
-                                                    </ul>
-                                                    <div class="mt-auto">
-                                                        <button class="btn btn-lg btn-primary"
-                                                            id="explorer-pro">Join
-                                                            Waitlist</button>
+                                                            id="explorer">Select</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -302,25 +275,66 @@
 
     </div>
 </main>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const monthlyBtn = document.getElementById("monthlyBtn");
+        const yearlyBtn = document.getElementById("yearlyBtn");
+        const monthlyContent = document.getElementById("monthly-detail");
+        const yearlyContent = document.getElementById("yearly-detail");
+        if (yearlyContent)
+            yearlyContent.style.display = "none";
+
+        if (monthlyBtn)
+            monthlyBtn.addEventListener("click", function () {
+                monthlyContent.style.display = "block";
+                yearlyContent.style.display = "none";
+                monthlyBtn.classList.add("active");
+                yearlyBtn.classList.remove("active");
+            });
+
+        if (yearlyBtn)
+            yearlyBtn.addEventListener("click", function () {
+                monthlyContent.style.display = "none";
+                yearlyContent.style.display = "block";
+                monthlyBtn.classList.remove("active");
+                yearlyBtn.classList.add("active");
+            });
+    });
+
+</script>
+
 <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const publishableKey = 'pk_test_51K2JRAFXr1UXQNSZbMzM0eTcrirEsCbBDJ8USeCrgPwWVt1zVGev7yGReOQoQACURXpdS2Cn8p7mLpemLqMbVrpL00ZBgmobdf'
         const stripe = Stripe(publishableKey);
 
-        let explorerProSubs = document.getElementById('explorer-pro');
+        // selected subscription
+        const monthlyBtn = document.getElementById("monthlyBtn");
+        const yearlyBtn = document.getElementById("yearlyBtn");
+        let monthlySubsActive = true;
+        if (yearlyBtn)
+            yearlyBtn.addEventListener('click', () => {
+                monthlySubsActive = false;
+            })
+
+        if (monthlyBtn)
+            monthlyBtn.addEventListener('click', () => {
+                monthlySubsActive = true
+            })
+
         let explorerSubs = document.getElementById('explorer');
 
         let manageSubscription = document.getElementById('manage_billing');
 
         let connectBank = document.getElementById('connect-bank')
 
+        //select your country for connecting bank
         let dropdownList = document.getElementById('select_country');
         let selectedCountry;
         if (dropdownList)
             dropdownList.onchange = (ev) => {
                 selectedCountry = dropdownList.value
-                console.log("Selected value is: " + dropdownList.value);
                 let errorBox = document.getElementById('error-box').innerHTML = ''
             }
 
@@ -329,47 +343,42 @@
         let customer = `<%- billingId %>`;
         let country = selectedCountry;
 
-        //monthly
-        //currently using only explorer-pro plan
+        //monthly + annually
         if (explorerSubs) {
             explorerSubs.addEventListener('click', function () {
-
-                fetch(`/subscribe/explorer`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                })
-                    .then(async (result) => {
-                        const response = await result.json();
-                        return response
+                if (monthlySubsActive) {
+                    fetch(`/subscribe/monthly_exp`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
                     })
-                    .then((response) => {
-                        if (response?.sessionId)
-                            stripe.redirectToCheckout({ sessionId: response.sessionId })
+                        .then(async (result) => {
+                            const response = await result.json();
+                            return response
+                        })
+                        .then((response) => {
+                            if (response?.sessionId)
+                                stripe.redirectToCheckout({ sessionId: response.sessionId })
+                        })
+                }
+                else {
+                    fetch(`/subscribe/yearly_exp`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
                     })
+                        .then(async (result) => {
+                            const response = await result.json();
+                            return response
+                        })
+                        .then((response) => {
+                            if (response?.sessionId)
+                                stripe.redirectToCheckout({ sessionId: response.sessionId })
+                        })
 
-            })
-        }
-
-        //annual
-        if (explorerProSubs) {
-            explorerProSubs.addEventListener('click', function () {
-
-                fetch(`/subscribe/explorer_pro`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                })
-                    .then(async (result) => {
-                        const response = await result.json();
-                        return response
-                    })
-                    .then((response) => {
-                        if (response?.sessionId)
-                            stripe.redirectToCheckout({ sessionId: response.sessionId })
-                    })
+                }
 
             })
         }
