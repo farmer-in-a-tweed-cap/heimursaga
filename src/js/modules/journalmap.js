@@ -366,8 +366,12 @@ export default class JournalMap {
         'circle-radius': 6,
         'circle-stroke-width': 2,
         'circle-stroke-color': '#fff'
+        }, 
+        layout: {
+          'circle-sort-key': 5,
         }
       })
+
        
   
     this.journalmap.on('click', `unclustered-point${sourceID}`, function (e) {
@@ -421,6 +425,8 @@ export default class JournalMap {
     this.journalmap.on('mouseleave', `unclustered-point${sourceID}`, function () {
       this.getCanvas().style.cursor = '';
     });
+
+
       
 }
 
@@ -487,12 +493,13 @@ export default class JournalMap {
             'layout': {
               'symbol-placement': 'line',
               'symbol-spacing': 50,
+              'symbol-sort-key': 1,
+              'symbol-z-order': 'source',
               'icon-image': 'arrow',
               'icon-size': 0.25,
               'visibility': 'visible'
             }
-          })
-          
+          })          
         })
       
   }
