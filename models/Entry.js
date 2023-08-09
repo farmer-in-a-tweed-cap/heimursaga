@@ -1,4 +1,5 @@
 const entriesCollection = require('../db').db().collection("entries")
+const draftsCollection = require('../db').db().collection("drafts")
 const followsCollection = require('../db').db().collection("follows")
 const usersCollection = require('../db').db().collection("users")
 const { ObjectId }= require('mongodb')
@@ -44,9 +45,6 @@ Entry.prototype.cleanUp = function() {
   popup = popup.replace (/(^")|("$)/g, '')
 
   if (this.photo.length) {this.photo = true} else {this.photo = false}
-
-
-  // get rid of any bogus properties
 
   if (this.data.journeyname == "") {
     this.data = {
@@ -305,6 +303,15 @@ Entry.findByJourneyAndAuthor = function(authorId, journey) {
 Entry.findJourneysByUsername = async function(username) {
   let journeys = await entriesCollection.distinct('journey',{authorUsername: username}, {journey: {exists: true}})
   return journeys
+}
+
+Entry.findAllJourneysByUsername = async function(username) {
+  let draftJourneys = await draftsCollection.distinct('journey',{authorUsername: username}, {journey: {exists: true}})
+  let entryJourneys = await entriesCollection.distinct('journey',{authorUsername: username}, {journey: {exists: true}})
+  let journeys = draftJourneys.concat(entryJourneys)
+  let cleanJourneys = [...new Set(journeys)]
+
+  return cleanJourneys
 }
 
 Entry.delete = function(entryIdToDelete, currentUserId) {

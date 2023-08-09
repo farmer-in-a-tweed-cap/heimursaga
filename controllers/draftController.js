@@ -5,12 +5,13 @@ const { Photo } = require('../models/Photo')
 
 
 
-exports.viewCreateScreen = function(req, res) {
-    res.render('create-entry', {pageName: 'create-entry'})
+exports.viewCreateScreen = async function(req, res) {
+    let journeys = await Entry.findJourneysByUsername(req.session.user.username)
+    res.render('create-entry', {pageName: 'create-entry', journeys: journeys})
 }
 
 exports.create = function(req, res) {
-    let draft = new Draft(req.body, req.files, req.session.user._id)
+    let draft = new Draft(req.body, req.files, req.session.user._id, req.session.user.username)
     if (req.files.length) {
     let photo = new Photo(req.files)
     draft.create().then(function(newId) {
@@ -47,9 +48,10 @@ exports.viewSingle = async function(req, res) {
 exports.viewEditScreen = async function(req, res) {
     try {
       let draft = await Draft.findSingleById(req.params.id, req.visitorId)
+      let journeys = await Draft.findJourneysByUsername(req.session.user.username)
       let entryMarker = GeoJSON.parse(draft.GeoJSONcoordinates, {'Point': ['draft.GeoJSONcoordinates.coordinates[0]','draft.GeoJSONcoordinates.coordinates[1]']})
       if (draft.isVisitorOwner) {
-        res.render("edit-draft", {draft: draft, entrymarker: JSON.stringify(entryMarker), pageName: "edit-draft"})
+        res.render("edit-draft", {draft: draft, journeys: journeys, entrymarker: JSON.stringify(entryMarker), pageName: "edit-draft"})
       } else {
         req.flash("errors", "You do not have permission to perform that action.")
         req.session.save(() => res.redirect("/"))

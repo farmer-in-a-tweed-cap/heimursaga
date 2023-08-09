@@ -1,4 +1,5 @@
 const draftsCollection = require('../db').db().collection("drafts")
+const entriesCollection = require('../db').db().collection("entries")
 const followsCollection = require('../db').db().collection("follows")
 const usersCollection = require('../db').db().collection("users")
 const { ObjectId } = require('mongodb')
@@ -19,24 +20,45 @@ Draft.prototype.cleanUp = function() {
   if (typeof(this.data.title) != "string") {this.data.title = ""}
   if (typeof(this.data.place) != "string") {this.data.place = ""}
   if (typeof(this.data.body) != "string") {this.data.body = ""}
+  if (typeof(this.data.journeyname) != "string") {this.data.journeyname = ""}
 
   coordinatesString = sanitizeHTML(this.data.lnglatcoordinates.trim(), {allowedTags: [], allowedAttributes: {}}),
   coordinates = coordinatesString.split(',').map(Number)
   
   if (this.photo.length) {this.photo = true} else {this.photo = false}
 
-  // get rid of any bogus properties
-  this.data = {
-    title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
-    place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
-    date: sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}}),
-    body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
-    GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
-    createdDate: new Date(),
-    author: ObjectId(this.userid),
-    hasPhoto: this.photo,
-    privacy: this.data.flexRadioDefault
+  if (this.data.journeyname == "") {
+    this.data = {
+      title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
+      place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
+      date: sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}}),
+      body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
+      GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
+      createdDate: new Date(),
+      author: ObjectId(this.userid),
+      authorUsername: this.username,
+      hasPhoto: this.photo,
+      privacy: this.data.flexRadioDefault
+    }
+
+  } else {
+    this.data = {
+      title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
+      place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
+      date: sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}}),
+      body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
+      journey: sanitizeHTML(this.data.journeyname.trim(), {allowedTags: [], allowedAttributes: {}}),
+      GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
+      createdDate: new Date(),
+      author: ObjectId(this.userid),
+      authorUsername: this.username,
+      hasPhoto: this.photo,
+      privacy: this.data.flexRadioDefault
+    }
+
   }
+
+
 }
 
 Draft.prototype.validate = function() {
@@ -53,7 +75,7 @@ Draft.prototype.create = function() {
     if (!this.errors.length) {
       // save draft into database
       draftsCollection.insertOne(this.data).then((info) => {
-        resolve(info.ops[0]._id)
+        resolve(info.insertedId)
       }).catch(() => {
         this.errors.push("Please try again later.")
         reject(this.errors)
@@ -86,7 +108,13 @@ Draft.prototype.actuallyUpdate = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await draftsCollection.findOneAndUpdate({_id: new ObjectId(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, body: this.data.body, date: this.data.date, privacy: this.data.privacy}})
+      if (this.data.journey == "REMOVE JOURNEY") {
+        await draftsCollection.findOneAndUpdate({_id: new ObjectId(this.requestedDraftId)}, {$unset: {journey: ""}}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, privacy: this.data.privacy}})
+      } else if (this.data.journey == undefined) {
+        await draftsCollection.findOneAndUpdate({_id: new ObjectId(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, privacy: this.data.privacy}})
+      } else {
+        await draftsCollection.findOneAndUpdate({_id: new ObjectId(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, journey: this.data.journey, privacy: this.data.privacy}})
+      }
       resolve("success")
     } else {
       resolve("failure")
@@ -116,7 +144,13 @@ Draft.prototype.actuallyUpdate2 = function() {
     this.cleanUp()
     this.validate()
     if (!this.errors.length) {
-      await draftsCollection.findOneAndUpdate({_id: new ObjectId(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, body: this.data.body, date: this.data.date, hasPhoto: this.photo}})
+      if (this.data.journey == "REMOVE JOURNEY") {
+        await draftsCollection.findOneAndUpdate({_id: new ObjectId(this.requestedDraftId)}, {$unset: {journey: ""}}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, privacy: this.data.privacy}})
+      } else if (this.data.journey == undefined) {
+        await draftsCollection.findOneAndUpdate({_id: new ObjectId(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, privacy: this.data.privacy}})
+      } else {
+        await draftsCollection.findOneAndUpdate({_id: new ObjectId(this.requestedDraftId)}, {$set: {GeoJSONcoordinates: this.data.GeoJSONcoordinates, title: this.data.title, place: this.data.place, date: this.data.date, body: this.data.body, journey: this.data.journey, privacy: this.data.privacy}})
+      }
       resolve("success")
     } else {
       resolve("failure")
@@ -133,6 +167,7 @@ Draft.reusableDraftQuery = function(uniqueOperations, visitorId, finalOperations
         place: 1,
         date: 1,
         GeoJSONcoordinates: 1,
+        journey: 1,
         body: 1,
         popup: 1,
         createdDate: 1,
@@ -162,6 +197,15 @@ Draft.reusableDraftQuery = function(uniqueOperations, visitorId, finalOperations
   })
 }
 
+
+Draft.findJourneysByUsername = async function(username) {
+  let draftJourneys = await draftsCollection.distinct('journey',{authorUsername: username}, {journey: {exists: true}})
+  let entryJourneys = await entriesCollection.distinct('journey',{authorUsername: username}, {journey: {exists: true}})
+  let journeys = draftJourneys.concat(entryJourneys)
+  let cleanJourneys = [...new Set(journeys)]
+
+  return cleanJourneys
+}
 
 
 Draft.findSingleById = function(id, visitorId) {

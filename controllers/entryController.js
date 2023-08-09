@@ -22,7 +22,7 @@ const Follow = require('../models/Follow')
 
 exports.viewCreateScreen = async function(req, res) {
     //include explorer pro gate here
-    let journeys = await Entry.findJourneysByUsername(req.session.user.username)
+    let journeys = await Entry.findAllJourneysByUsername(req.session.user.username)
     res.render('create-entry', {pageName: 'create-entry', journeys: journeys})
 }
 
@@ -83,7 +83,7 @@ exports.viewEntryButtons = async function(req, res) {
 exports.viewEditScreen = async function(req, res) {
     try {
       let entry = await Entry.findSingleById(req.params.id, req.visitorId)
-      let journeys = await Entry.findJourneysByUsername(req.session.user.username)
+      let journeys = await Entry.findAllJourneysByUsername(req.session.user.username)
       let entryMarker = GeoJSON.parse(entry.GeoJSONcoordinates, {'Point': ['entry.GeoJSONcoordinates.coordinates[0]','entry.GeoJSONcoordinates.coordinates[1]']})
       if (entry.isVisitorOwner) {
         res.render("edit-entry", {entry: entry, journeys: journeys, entrymarker: JSON.stringify(entryMarker), pageName: "edit-entry"})
