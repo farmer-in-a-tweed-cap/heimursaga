@@ -367,12 +367,19 @@ export default class FeedMap {
                           <h5><i class="align-middle mr-5 fas fa-fw fa-map-marker-alt text-primary"></i>${entry.place}</h5>
                         </div>
 
-                        <div class="modal-body col-md-8 offset-md-2 pt-0">
+                        <div class="modal-body col-md-8 offset-md-2 pt-0 pb-0">
                           <h5 class="text-center text-muted">on ${new Date(entry.date).toLocaleString('default', { month: 'long' })} ${new Date(entry.date).getDate()}, ${new Date(entry.date).getFullYear()} | by <a href="/journal/${entry.author.username}">${entry.author.username}</a></h5>
                         </div>
 
+                        ${(entry.journey) ? `
+
+                        <div class="modal-body text-center pt-0 pb-0">
+                        <a href="/journal/${entry.author.username}/${entry.journey}"><h5 class="text-center text-primary">${entry.journey}</h5></a>
+                        </div>
+                        ` : ``}
+
                         <div class="modal-body">
-                          <div class="text-center mb-1 overflow-hidden">
+                          <div class="text-center mb-1 mt-1 overflow-hidden">
                             <img src="https://api.mapbox.com/styles/v1/cnh1187/clikkzykm00wb01qf28pz4adt/static/pin-s+ac6d46(${entry.GeoJSONcoordinates.coordinates})/${entry.GeoJSONcoordinates.coordinates},6/300x300?access_token=pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w">
                           </div>
                           <div class="mb-4 text-center">

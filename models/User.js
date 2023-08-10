@@ -6,7 +6,7 @@ const sanitizeHTML = require('sanitize-html')
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-usersCollection.updateMany({}, {$set: {settings: {emailNotifications: {followers: "true", likes: "true"}, pushNotifications: {followers: "true", likes: "true"}}}})
+//usersCollection.updateMany({}, {$set: {settings: {emailNotifications: {followers: "true", likes: "true"}, pushNotifications: {followers: "true", likes: "true"}}}})
 
 
 let User = function(data, getAvatar, username) {

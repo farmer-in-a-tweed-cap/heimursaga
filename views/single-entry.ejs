@@ -51,7 +51,7 @@
             <% if (entry.journey) { %>
 
               <div class="modal-body text-center pt-0 pb-0">
-                <h5 class="text-center"><%= entry.journey %></h5>
+                <a href="/journal/<%= entry.author.username %>/<%= entry.journey %>"><h5 class="text-center text-primary"><%= entry.journey %></h5></a>
               </div>
 
 
