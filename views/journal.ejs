@@ -51,14 +51,14 @@
 
 									<div class="card-body text-center mt-2">
 										<% if (type == "ExplorerPro") { %>
-										<img src="<%= profileAvatar %>" class="img-fluid rounded-circle border border-blue mb-1" style="border-width: 3px !important;" width="128" height="128" />
-										<div class="mb-3">
-											<span class="badge bg-blue"><small>EXPLORER PRO</small></span>
-										</div>
-										<% } else if (type == "Historical") { %>
 										<img src="<%= profileAvatar %>" class="img-fluid rounded-circle border border-primary mb-1" style="border-width: 3px !important;" width="128" height="128" />
 										<div class="mb-3">
-											<span class="badge rounded-pill bg-primary"><small>HISTORICAL</small></span>
+											<span class="badge rounded-pill bg-primary"><small>EXPLORER PRO</small></span>
+										</div>
+										<% } else if (type == "Historical") { %>
+										<img src="<%= profileAvatar %>" class="img-fluid rounded-circle border border-blue mb-1" style="border-width: 3px !important;" width="128" height="128" />
+										<div class="mb-3">
+											<span class="badge rounded-pill bg-blue"><small>HISTORICAL</small></span>
 										</div>
 
 										<% } else { %>

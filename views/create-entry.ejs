@@ -16,7 +16,7 @@
 						<div class="col-12 col-xl-12">
 							<div class="card">
 								<div class="card-header">
-									<h5 class="card-title mb-0">1. Navigate to marker location</h5>
+									<h5 class="card-title mb-0">Navigate to marker location</h5>
 								</div>
 								<div class="card-body">
 									<div id="entrymap" style="height: 300px"></div>
@@ -30,7 +30,7 @@
 							<div class="col-12 col-xl-12">
 							  <div class="card">
 								<div class="card-header">
-								  <h5 class="card-title mb-0">2. Log marker coordinates</h5>
+								  <h5 class="card-title mb-0">Log marker coordinates</h5>
 								</div>
 								<div class="card-body">
 									
@@ -49,7 +49,7 @@
 								  <button
 									type="button"
 									class="btn btn-outline-secondary mb-3"
-									onclick="myFunction()"
+									onclick="logCoordinates()"
 								  >
 									Log Coordinates
 								  </button>
@@ -77,9 +77,9 @@
 
 							<!--INCLUDE EXPLORER PRO GATE HERE-->
 
-							<div class="card">
+							<div class="card" id="journeydiv">
 								<div class="card-header">
-									<h5 class="card-title mb-0">3. Select Journey</h5>
+									<h5 class="card-title mb-0">Select Journey</h5>
 								</div>
 								<div class="card-body">
 
@@ -95,12 +95,19 @@
 										<% } %>
 									</datalist>
 
+									<div class="mt-3" id="waypointdiv">
+										<div class="form-check form-switch">
+											<input class="form-check-input" type="checkbox" name="waypoint" id="waypoint" disabled/>
+											<label class="form-check-label">Make Waypoint</label>
+										</div>
+									</div>
+
 								</div>
 							</div>
 
-							  <div class="card">
+							  <div class="card" id="bodydiv">
 								<div class="card-header">
-								  <h5 class="card-title mb-0">3. Write entry content</h5>
+								  <h5 class="card-title mb-0">Write entry content</h5>
 								</div>
 								<div class="card-body">
 								  <div class="mb-3">
@@ -156,10 +163,10 @@
 							  </div>
 							</div>
 
-							<div class="col-12 col-xl-12">
+							<div class="col-12 col-xl-12" id="photoUploadDiv">
 								<div class="card">
 								  <div class="card-header">
-									<h5 class="card-title mb-0">4. Upload your photo</h5>
+									<h5 class="card-title mb-0">Upload your photo</h5>
 									<label class="form-text text-muted pt-3">
 										Photos will be cropped to fit a 3:2 (landscape) aspect ratio and should be a minimum of 900x600px. For best results, edit your photo before upload. Photo uploads are optional.</label>
 
@@ -237,10 +244,10 @@
 								</div>
 							</div>
 						  
-							<div class="col-12 col-xl-12">
+							<div class="col-12 col-xl-12" id="post-card">
 							  <div class="card">
 								<div class="card-header">
-								  <h5 class="card-title mb-0">5. Confirm privacy and post/save entry</h5>
+								  <h5 class="card-title mb-0">Confirm privacy and post/save entry</h5>
 								</div>
 								<div class="card-body">
 
@@ -263,6 +270,21 @@
 								</div>
 							  </div>
 							</div>
+
+							<div class="col-12 col-xl-12" id="waypoint-post-card" hidden>
+								<div class="card">
+								  <div class="card-header">
+									<h5 class="card-title mb-0">Post Waypoint</h5>
+								  </div>
+								  <div class="card-body">
+    
+									  <div class="submit_error form-text text-danger"></div>
+  								   
+									  <button type="submit" id="submit-waypoint" formaction="/create-waypoint/?_csrf=<%=csrfToken%>" class="btn btn-primary" onClick="showLoader()">Post Waypoint</button>
+  
+								  </div>
+								</div>
+							  </div>
 						  </form>
 						  
 					</div>
@@ -275,6 +297,57 @@
 
 <script>
 
+	var journeyDiv = document.getElementById("journeydiv")
+	var journeyInput = document.getElementById("journeyname")
+	var waypointDiv = document.getElementById("waypointdiv")
+	var waypointToggle = document.getElementById("waypoint")
+	var bodyDiv = document.getElementById("bodydiv")
+	var photoUploadDiv = document.getElementById("photoUploadDiv")
+	var draftButton = document.getElementById("save-draft")
+	var postButton = document.getElementById("submit-entry")
+	var postCard = document.getElementById("post-card")
+	var waypointPostCard = document.getElementById("waypoint-post-card")
+	var waypointPostButton = document.getElementById("submit-waypoint")
+	var postBody = document.getElementById("post-body")
+	var postPlace = document.getElementById("post-place")
+	var postTitle = document.getElementById("post-title")
+
+
+	journeyInput.addEventListener('input', showWaypointSelect)
+
+	function showWaypointSelect() {
+		if (journeyInput.value != "") {
+    		waypointToggle.removeAttribute("disabled", true)
+  		} else {
+    		waypointToggle.setAttribute("disabled", true)
+  		}
+	}
+
+	waypointToggle.addEventListener('change', showHideEntryInputs)
+
+	function showHideEntryInputs() {
+		console.log(waypointToggle.value)
+		if (waypointToggle.checked == true) {
+    		bodyDiv.setAttribute("hidden", true)
+			photoUploadDiv.setAttribute("hidden", true)
+			postCard.setAttribute("hidden", true)
+			waypointPostCard.removeAttribute("hidden", true)
+			postBody.removeAttribute("required", true)
+			postTitle.removeAttribute("required", true)
+			postPlace.removeAttribute("required", true)
+			journeyInput.setAttribute("required", true)
+  		} else {
+    		bodyDiv.removeAttribute("hidden", true)
+			photoUploadDiv.removeAttribute("hidden", true)
+			postCard.removeAttribute("hidden", true)
+			waypointPostCard.setAttribute("hidden", true)
+			postBody.setAttribute("required", true)
+			postTitle.setAttribute("required", true)
+			postPlace.setAttribute("required", true)
+			journeyInput.removeAttribute("required", true)
+  		}
+	}
+	
 
     var form = document.getElementById("create-entry")
 	var overlay = document.getElementById("overlay")
@@ -495,7 +568,7 @@
 			);
 			
 
-		function myFunction() {
+		function logCoordinates() {
 			var copyText = document.getElementById('coordinates').value;
 			document.getElementById('lnglatcoordinates').value = copyText;
 			}
