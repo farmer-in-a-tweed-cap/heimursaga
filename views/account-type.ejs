@@ -389,7 +389,7 @@
 	<script type="text/javascript" src="https://js.stripe.com/v3/"></script>
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
-			const publishableKey = 'pk_test_51K2JRAFXr1UXQNSZbMzM0eTcrirEsCbBDJ8USeCrgPwWVt1zVGev7yGReOQoQACURXpdS2Cn8p7mLpemLqMbVrpL00ZBgmobdf'
+			const publishableKey = `<%- stripePubKey %>`;
 			const stripe = Stripe(publishableKey);
 
 			// selected subscription

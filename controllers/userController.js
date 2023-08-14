@@ -19,6 +19,8 @@ const validator = require("validator")
 const Bookmark = require('../models/Bookmark')
 const Stripe = require('../stripe')
 const billingController =  require('../models/Billing');
+const { createCustomer } = require('./billingController')
+const Billing = require('../models/Billing')
 const billingCollection = require('../db').db().collection("billing")
 
 
@@ -56,9 +58,9 @@ exports.mustBeLoggedIn = function(req, res, next) {
   }
 }
 
-exports.login = function(req, res) {
+exports.login =  function(req, res) {
   let user = new User(req.body)
-  user.login().then(function(result) {
+  user.login().then(async function(result) {
     req.session.user = {
       avatar: user.avatar,
       username: user.data.username,
@@ -66,15 +68,16 @@ exports.login = function(req, res) {
     };
 
     //check from billing collection if trial expired or not
-    billingCollection
-      .findOne({ explorerId: user.data._id })
-      .then((billingInfo) => {
-        if (billingInfo) req.session.user["billingId"] = billingInfo.billingId;
-        req.session.save(function () {
-          req.flash("success", `Welcome, ${user.data.username}!`);
-          res.redirect("my-feed");
-        });
-      });
+    const billingInfo =  await billingCollection.findOne({ explorerId: user.data._id })
+    if (billingInfo) req.session.user["billingId"] = billingInfo.billingId;
+    else {
+      const stripeCustomerId = await Billing.createCustomer(user.data.username);
+      req.session.user["billingId"] = stripeCustomerId;
+    }
+    req.session.save(function () {
+      req.flash("success", `Welcome, ${user.data.username}!`);
+      res.redirect("my-feed");
+    });
   }).catch(function(e) {
     req.flash('errors', e)
     req.session.save(function() {
@@ -107,7 +110,9 @@ exports.upgrade = async function(req, res) {
       endDate: billing?.endDate,
       hasTrial: billing?.hasTrial,
       billingId: req.session.user?.billingId,
-      stripeAccountId: user.stripeAccountId || null
+      username: req.params.username,
+      stripeAccountId: user.stripeAccountId || null,
+      stripePubKey: process.env.STRIPE_PUB_KEY
     });
   });
 }
@@ -118,6 +123,7 @@ exports.accounttype = async function(req, res) {
     res.render('account-type', {
       pageName: "account-type",
       email: user.email,
+      stripePubKey: process.env.STRIPE_PUB_KEY,
     })
     })
 } else {
@@ -161,7 +167,11 @@ exports.register = function(req, res) {
       };
       req.session.save(function () {
         req.flash("success", `Welcome to Heimursaga, ${user.data.username}!`);
-        res.redirect(`/account-type/${user.data.username}`);
+        res.render(`account-type`, {
+          pageName: "account-type",
+          email: user.data.email,
+          stripePubKey: process.env.STRIPE_PUB_KEY,
+        })
       });
     });
   }).catch(function(e) {
@@ -396,6 +406,8 @@ exports.journalScreen = function(req, res) {
         profileAvatar: req.profileUser.avatar,
         isFollowing: req.isFollowing,
         isVisitorsProfile: req.isVisitorsProfile,
+        stripeAccountId: user.stripeAccountId || null,
+        stripePubKey: process.env.STRIPE_PUB_KEY,
         counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
       })
     } else {
@@ -421,6 +433,8 @@ exports.journalScreen = function(req, res) {
       profileAvatar: req.profileUser.avatar,
       isFollowing: req.isFollowing,
       isVisitorsProfile: req.isVisitorsProfile,
+      stripeAccountId: user.stripeAccountId || null,
+      stripePubKey: process.env.STRIPE_PUB_KEY,
       counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
     })}
   }).catch(function() {
@@ -463,6 +477,8 @@ exports.journalScreen = function(req, res) {
         profileAvatar: req.profileUser.avatar,
         isFollowing: req.isFollowing,
         isVisitorsProfile: req.isVisitorsProfile,
+        stripeAccountId: user.stripeAccountId || null,
+        stripePubKey: process.env.STRIPE_PUB_KEY,
         counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
       })
     } else {
@@ -488,6 +504,8 @@ exports.journalScreen = function(req, res) {
       profileAvatar: req.profileUser.avatar,
       isFollowing: req.isFollowing,
       isVisitorsProfile: req.isVisitorsProfile,
+      stripeAccountId: user.stripeAccountId || null,
+      stripePubKey: process.env.STRIPE_PUB_KEY,
       counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
     })}
   }).catch(function() {
