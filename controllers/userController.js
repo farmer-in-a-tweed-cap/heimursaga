@@ -166,12 +166,8 @@ exports.register = function(req, res) {
         billingId: customerInfo.id,
       };
       req.session.save(function () {
-        req.flash("success", `Welcome to Heimursaga, ${user.data.username}!`);
-        res.render(`account-type`, {
-          pageName: "account-type",
-          email: user.data.email,
-          stripePubKey: process.env.STRIPE_PUB_KEY,
-        })
+        //req.flash("success", `Welcome to Heimursaga, ${user.data.username}!`);
+        res.redirect(`account-type/${user.data.username}`)
       });
     });
   }).catch(function(e) {
@@ -338,6 +334,7 @@ exports.selectType = function(req, res) {
       if (status == "success") {
           // user was updated in db
           req.session.save(function() {
+              req.flash("success", `Welcome to Heimursaga, ${user.username}!`)
               res.redirect(`/user-guide`)
           })
       } else {
