@@ -1,13 +1,16 @@
+let Funds = function (
+  stripeCustomerId,
+  stripeAccountId,
+  amount,
+  plateformFeePercent,
+  paymentIntentId
+) {
+  this.stripeCustomerId = stripeCustomerId;
+  this.stripeAccountId = stripeAccountId;
+  this.amount = amount;
+  this.plateformFeePercent = plateformFeePercent;
+  this.paymentIntentId = paymentIntentId;
+  this.errors = [];
+};
 
-let Funds = function (takerId, giverId, amount) {
-    this.takerId = takerId;
-    this.giverId = giverId;
-    this.amount = amount;
-    this.errors = [];
-  };
-  
-  module.exports = Funds
-  
-  
-  
-  
+module.exports = Funds;

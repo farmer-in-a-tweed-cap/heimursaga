@@ -94,12 +94,49 @@
 
 										
 											<% } %>
-
-												<button id="fund-button" style="border: none; background: transparent;" class="text-blue" disabled>
+												<% if(stripeAccountId){ %>
+													<button style="border: none; background: transparent; cursor: pointer;" class="text-blue"
+													
+														data-bs-toggle="modal" 
+														data-bs-target="#fund-confirm-modal">
 													<i id="icon-heimursaga-fund-alt" style="font-size: x-large; color: #adb5bd;" class="icon-heimursaga-fund-alt"></i>
 													<div class="w-100"></div>
 													<i id="follow-check" class="fund-check" style="color: white; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
 												</button>
+												<!-- Modal -->
+												<div class="modal fade" id="fund-confirm-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure you want to send funds to <span
+																		class="text-success">
+																		<%= profileUsername %>
+																	</span class="text-success">?</h1>
+																<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+															</div>
+															<form>
+																<div class="modal-body">
+																	<div class="input-group">
+																		<input id="amount" type="number" class="form-control" onchange="handleInput()"
+																			aria-label="Dollar amount (with dot and two decimal places)" required>
+																		<span class="input-group-text">$</span>
+																	</div>
+																	<div id="error" class="text-sm text-error">
+												
+																	</div>
+																</div>
+																<div class="modal-footer">
+																	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+																	<button id="fund-button" type="button" class="btn btn-primary">
+																		Give Fund
+																	</button>
+																</div>
+															</form>
+												
+														</div>
+													</div>
+												</div>
+												<% } %>
 
 												<button id="message-button" style="border: none; background: transparent;" class="text-blue" disabled>
 													<i id="icon-heimursaga-message" style="font-size: x-large; color: #adb5bd;" class="icon-heimursaga-message"></i>
@@ -564,7 +601,66 @@
 
 
 			</script>
-						
+<script>
+	function handleInput() {
+		let amount = document.getElementById('amount').value;
+		if (amount === '') {
+			const error = document.getElementById('error');
+			error.innerHTML = 'this field is required';
+		}
+		else {
+			const error = document.getElementById('error');
+			error.innerHTML = '';
+		}
+	}
+</script>
+<script type="text/javascript" src="https://js.stripe.com/v3/"></script>
 
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+        const publishableKey = `<%- stripePubKey %>`;
+		const stripe = Stripe(publishableKey);
+		const fundBtn = document.getElementById('fund-button');
+		const stripeAccountId = `<%- stripeAccountId %>`
+		const explorer = `<%- profileUsername %>`;
+
+		const amountField = document.getElementById('amount');
+		if (fundBtn && amountField) {
+			fundBtn.addEventListener('click', () => {
+				let amount = parseInt(amountField.value);
+				
+				if (amount){
+					if(amount > 2000) console.error('amount should be less than 2001')
+					else{
+						fundBtn.classList.add("disabled");
+						fundBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+						fetch(`/funding/${explorer}/${stripeAccountId}/${amount}`, {
+							method: 'GET',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+	
+						})
+							.then(async (result) => {
+								const response = await result.json();
+								return response
+							})
+							.then((response) => {
+								if (response?.url)
+									window.location = response.url
+							}).catch(()=>{
+								fundBtn.classList.remove("disabled");
+								fundBtn.innerHTML = "Give Fund";
+							})
+					}
+					}else {
+					
+					const error = document.getElementById('error');
+					error.innerHTML = 'this field is required';
+				}
+			})
+		}
+	})
+					</script>
 			
 <%- include('includes/footer') %>
