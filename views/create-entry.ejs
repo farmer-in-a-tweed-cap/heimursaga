@@ -66,7 +66,7 @@
 									  type="text"
 									  name="lnglatcoordinates"
 									  id="lnglatcoordinates"
-									  readonly
+									  onkeypress="return false;"
 									/>
 								  </div>
 								</div>
@@ -267,6 +267,7 @@
 								 
 									<button type="submit" id="submit-entry" formaction="/create-entry/?_csrf=<%=csrfToken%>" class="btn btn-primary" onClick="showLoader()" disabled>Post Entry</button>
 
+
 								</div>
 							  </div>
 							</div>
@@ -280,7 +281,7 @@
     
 									  <div class="submit_error form-text text-danger"></div>
   								   
-									  <button type="submit" id="submit-waypoint" formaction="/create-waypoint/?_csrf=<%=csrfToken%>" class="btn btn-primary" onClick="showLoader()">Post Waypoint</button>
+									  <button type="submit" id="submit-waypoint" formaction="/create-waypoint/?_csrf=<%=csrfToken%>" class="btn btn-primary" onClick="showLoader()" disabled>Post Waypoint</button>
   
 								  </div>
 								</div>
@@ -318,8 +319,10 @@
 	function showWaypointSelect() {
 		if (journeyInput.value != "") {
     		waypointToggle.removeAttribute("disabled", true)
+			waypointPostButton.removeAttribute("disabled", true)
   		} else {
     		waypointToggle.setAttribute("disabled", true)
+			waypointPostButton.setAttribute("disabled", true)
   		}
 	}
 

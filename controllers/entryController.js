@@ -2,7 +2,6 @@ const Entry = require('../models/Entry')
 const Highlight = require('../models/Highlight')
 const Flag = require('../models/Flag')
 const Draft = require('../models/Draft')
-const sessionsCollection = require('../db').db().collection("sessions")
 const GeoJSON = require('geojson')
 const { db } = require('../db')
 const sendgrid = require('@sendgrid/mail')
@@ -27,6 +26,7 @@ exports.viewCreateScreen = async function(req, res) {
 }
 
 exports.create = function(req, res) {
+    console.log(req.body)
     let entry = new Entry(req.body, req.files, ObjectId(), req.session.user._id, req.session.user.username)
     if (req.files.length) {
     let photo = new Photo(req.files)

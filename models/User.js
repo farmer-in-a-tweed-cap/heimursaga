@@ -6,8 +6,38 @@ const sanitizeHTML = require('sanitize-html')
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const billingCollection = require('../db').db().collection("billing")
+const sessionsCollection = require('../db').db().collection("sessions")
+const entriesCollection = require('../db').db().collection("entries")
+const followsCollection = require('../db').db().collection("follows")
+const draftsCollection = require('../db').db().collection("drafts")
+const likesCollection = require('../db').db().collection("likes")
+const highlightsCollection = require('../db').db().collection("highlights")
 
-//usersCollection.updateMany({}, {$set: {settings: {emailNotifications: {followers: "true", likes: "true"}, pushNotifications: {followers: "true", likes: "true"}}}})
+
+
+let deleteMany = function(req, res) {
+    try {
+        /*billingCollection.deleteMany({}).then((res) => {
+            console.log(res)
+        })
+        usersCollection.deleteMany({registeredDate:{$gt: new Date(2023, 5, 5)}}).then((res) => {
+            console.log(res)
+        })
+        usersCollection.updateMany({}, {$set: {settings: {emailNotifications: {followers: "true", likes: "true"}, pushNotifications: {followers: "true", likes: "true"}}}}).then((res) => {
+            console.log(res)
+        })*/
+        followsCollection.deleteMany({createdDate:{$gt: new Date(2023, 5, 5)}}).then((res) => {
+            console.log(res)
+        })
+     } catch (e) {
+        console.log(e);
+     }
+    
+}
+
+
+//deleteMany()
+
 
 
 let User = function(data, getAvatar, username) {

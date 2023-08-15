@@ -1,6 +1,7 @@
 const express = require('express')
 const userController = require('./controllers/userController')
 const entryController = require('./controllers/entryController')
+const waypointController = require('./controllers/waypointController')
 const followController = require('./controllers/followController')
 const draftController = require('./controllers/draftController')
 const highlightController = require('./controllers/highlightController')
@@ -64,6 +65,8 @@ router.post('/update-notifications/:username', userController.ifUserExists, user
 // entry related routes
 router.get('/create-entry', userController.mustBeLoggedIn, entryController.viewCreateScreen)
 router.post('/create-entry', userController.mustBeLoggedIn, multerUploads, entryController.create)
+
+router.post('/create-waypoint', userController.mustBeLoggedIn, multerUploads, waypointController.create)
 
 
 router.get('/entry/:id', entryController.viewSingle)

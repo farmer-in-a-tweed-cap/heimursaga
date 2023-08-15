@@ -385,7 +385,6 @@ exports.journalScreen = function(req, res) {
         entries: entries,
         selectedJourney: null,
         journeys: journeys,
-        selectedJourney: null,
         drafts: drafts,
         followers: followers,
         following: following,
@@ -547,6 +546,8 @@ exports.journalScreenPro = function(req, res) {
         entrymarker: JSON.stringify(entryMarker),
         profileUsername: req.profileUser.username,
         profileAvatar: req.profileUser.avatar,
+        stripeAccountId: user.stripeAccountId || null,
+        stripePubKey: process.env.STRIPE_PUB_KEY,
         isFollowing: req.isFollowing,
         isVisitorsProfile: req.isVisitorsProfile,
         counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
@@ -571,6 +572,8 @@ exports.journalScreenPro = function(req, res) {
       entrymarker: JSON.stringify(entryMarker),
       profileUsername: req.profileUser.username,
       profileAvatar: req.profileUser.avatar,
+      stripeAccountId: user.stripeAccountId || null,
+      stripePubKey: process.env.STRIPE_PUB_KEY,
       isFollowing: req.isFollowing,
       isVisitorsProfile: req.isVisitorsProfile,
       counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
@@ -612,6 +615,8 @@ exports.journalScreenPro = function(req, res) {
         entrymarker: JSON.stringify(entryMarker),
         profileUsername: req.profileUser.username,
         profileAvatar: req.profileUser.avatar,
+        stripeAccountId: user.stripeAccountId || null,
+        stripePubKey: process.env.STRIPE_PUB_KEY,
         isFollowing: req.isFollowing,
         isVisitorsProfile: req.isVisitorsProfile,
         counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
@@ -637,6 +642,8 @@ exports.journalScreenPro = function(req, res) {
       entrymarker: JSON.stringify(entryMarker),
       profileUsername: req.profileUser.username,
       profileAvatar: req.profileUser.avatar,
+      stripeAccountId: user.stripeAccountId || null,
+      stripePubKey: process.env.STRIPE_PUB_KEY,
       isFollowing: req.isFollowing,
       isVisitorsProfile: req.isVisitorsProfile,
       counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
