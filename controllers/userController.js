@@ -69,10 +69,14 @@ exports.login =  function(req, res) {
 
     //check from billing collection if trial expired or not
     const billingInfo =  await billingCollection.findOne({ explorerId: user.data._id })
-    if (billingInfo) req.session.user["billingId"] = billingInfo.billingId;
+    if (billingInfo) {
+      req.session.user["billingId"] = billingInfo.billingId;
+      req.session.user["plan"] = billingInfo.plan;
+    }
     else {
       const stripeCustomerId = await Billing.createCustomer(user.data.username);
       req.session.user["billingId"] = stripeCustomerId;
+      req.session.user["plan"] = "none";
     }
     req.session.save(function () {
       req.flash("success", `Welcome, ${user.data.username}!`);
