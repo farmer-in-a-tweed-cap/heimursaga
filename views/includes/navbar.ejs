@@ -153,11 +153,14 @@
         })
             .then(async (result) => {
                 const {billing} = await result.json();
-                const plan = billing.plan;
-                if (plan === 'none') {
-                    upgradeLink.style.display = 'block';
-                } else {
-                    upgradeLink.style.display = 'none';
+                if (!billing) upgradeLink.style.display = 'block';
+                else{
+                    const plan = billing.plan;
+                    if (plan === 'none') {
+                        upgradeLink.style.display = 'block';
+                    } else {
+                        upgradeLink.style.display = 'none';
+                    }
                 }
                 return billing
             })

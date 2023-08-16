@@ -21,7 +21,7 @@ const createCheckoutSession = async (customerID, price) => {
       trial_period_days: process.env.TRIAL_DAYS,
     },
 
-    success_url: `${process.env.DOMAIN}?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${process.env.DOMAIN}/user-guide`,
     cancel_url: `${process.env.DOMAIN}`,
   });
 

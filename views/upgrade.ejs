@@ -13,12 +13,8 @@
     <div class="container-fluid p-0">
 
         <!--<h1 class="h3 mb-3">Plans & Pricing</h1>-->
-        <% if(!billingId){ %>
-            <div>
-                <h3 style="color: red;">You are not linked with stripe right now!</h3>
-            </div>
 
-        <% } else if ( plan && plan !=='none' ) { %>
+        <%  if ( plan && plan !=='none' ) { %>
 
                 <div>
                     <% if (plan==='yearly_exp' ) { %>
