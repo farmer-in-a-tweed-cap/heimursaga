@@ -1,6 +1,5 @@
-const { consoleMsgColors } = require("../util");
 const User = require("./User");
-const Stripe = require('../stripe');
+const Stripe = require("../stripe");
 const { ObjectId } = require("mongodb");
 const billingCollection = require("../db").db().collection("billing");
 
@@ -28,7 +27,25 @@ Billing.createCustomer = async (username) => {
 
     return stripeCustomerId;
   } catch (e) {
-    console.log(consoleMsgColors.FgRed, e);
+    console.log( e);
+  }
+};
+
+Billing.getBillingDetails = async (username) => {
+  try {
+    const user = await User.findByUsername(username);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const billingInfo = await billingCollection.findOne({
+      explorerId: user._id,
+    });
+
+    return billingInfo;
+  } catch (e) {
+    console.error(e);
+    return null;
   }
 };
 

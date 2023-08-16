@@ -197,7 +197,9 @@ exports.home = async function(req, res) {
 
 exports.viewSettings = async function(req, res) {
   if (req.isVisitorsProfile == true) {
-
+    const billing = await billingCollection.findOne({
+      billingId:  req.session.user.billingId,
+    });
     User.findByUsername(req.profileUser.username).then(function(user){
     res.render('settings', {
       pageName: "settings",
@@ -208,7 +210,14 @@ exports.viewSettings = async function(req, res) {
       from: user.from,
       instagram: user.instagram,
       website: user.website,
-      settings: user.settings
+      settings: user.settings,
+      plan: billing?.plan,
+      endDate: billing?.endDate,
+      hasTrial: billing?.hasTrial,
+      billingId: req.session.user?.billingId,
+      username: req.params.username,
+      stripeAccountId: user.stripeAccountId || null,
+      stripePubKey: process.env.STRIPE_PUB_KEY
     })
     })
   } else {
