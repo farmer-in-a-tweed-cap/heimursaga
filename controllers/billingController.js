@@ -4,7 +4,7 @@ const Stripe = require("../stripe");
 const billingCollection = require("../db").db().collection("billing");
 const userCollection = require("../db").db().collection("users");
 const fundsCollection = require("../db").db().collection("funds");
-const { consoleMsgColors } = require("../util");
+const Billing = require("../models/Billing");
 
 const productToPriceMap = {
   monthly_exp: process.env.MONTHLY_EXPLORER,
@@ -12,7 +12,7 @@ const productToPriceMap = {
 };
 const status = {
   COMPLETED: "completed",
-  PENDING: "pending",
+  CHARGE_SUCCESS: "charge-succeed",
 };
 
 //checkout
@@ -45,7 +45,7 @@ exports.subscribe = async function (req, res, next) {
       next();
     } else throw new Error("Billing Id is required for subscription");
   } catch (err) {
-    console.log(consoleMsgColors.FgRed, err.message);
+    console.log(err.message);
   }
 };
 
@@ -69,7 +69,7 @@ exports.ConnectBank = async (req, res) => {
 
     res.json({ url: onBoardingUrl });
   } catch (e) {
-    console.log(consoleMsgColors.FgRed, e.message);
+    console.log(e.message);
   }
 };
 
@@ -133,7 +133,7 @@ exports.funding = async (req, res) => {
     );
     res.send({ url: session.url });
   } catch (e) {
-    console.log(consoleMsgColors.FgRed, e);
+    console.log(e);
     res.send(e);
   }
 };
@@ -268,14 +268,14 @@ exports.webhook = async (req, res) => {
     }
     case "charge.succeeded": {
       const amount = parseInt(data.amount / 100);
-      console.log(data.payment_intent, " charge succeded");
       await fundsCollection.insertOne({
         stripeAccountId: data.destination,
         stripeCustomerId: data.customer,
         amount,
         plateformFeePercent: process.env.PLATEFORM_FEE,
-        status: status.PENDING,
+        status: status.CHARGE_SUCCESS,
         paymentIntentId: data.payment_intent,
+        createDate: new Date().toISOString()
       });
 
       break;
@@ -289,7 +289,6 @@ exports.webhook = async (req, res) => {
           {
             $set: {
               status: status.COMPLETED,
-              dateOfTranfer: new Date(),
             },
           }
         );
@@ -300,4 +299,19 @@ exports.webhook = async (req, res) => {
     default:
   }
   res.sendStatus(200);
+};
+
+//billingDetails
+exports.billingDetails = async (req, res) => {
+  try {
+    if(!req.session?.user?.username) throw new Error("username is required")
+    const billingDetails = await Billing.getBillingDetails(
+      req.session.user.username
+    );
+
+    res.send({ billing: billingDetails });
+  } catch (e) {
+    console.log(e);
+    res.send(e);
+  }
 };

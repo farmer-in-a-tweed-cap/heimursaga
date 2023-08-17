@@ -158,5 +158,6 @@ router.get('/billing/:email/:customer',  billingController.Billing)
 router.get('/connect_bank',  billingController.ConnectBank)
 router.get('/funding/:explorer/:stripeAccountId/:amount',  billingController.funding)
 
+router.get('/billing-details', billingController.billingDetails)
 
 module.exports = router
