@@ -33,7 +33,9 @@
 									<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#billing" role="tab">
 										Billing Detail
         							</a>
+
 									<% if(plan && plan !== 'none' && !stripeAccountId){ %> 
+
 									<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#connect-bank" role="tab">
 										Connect Bank
 									</a>
@@ -256,7 +258,9 @@
 														<span style="color: green; font-weight: bold;"> Monthly Explorer Pro <% plan %> </span>
 														Plan
 													</div>
+
 													<% } else if(plan === 'none' || !plan){ %>
+
 														<div>You have subscribed to
 															<span style="color: green; font-weight: bold;"> Basic </span>
 															Plan. Go to <a href="/upgrade/<%= user.username %>">upgrade</a> page to upgrade your plan!

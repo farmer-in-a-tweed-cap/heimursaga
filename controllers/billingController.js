@@ -266,7 +266,7 @@ exports.webhook = async (req, res) => {
         plateformFeePercent: process.env.PLATEFORM_FEE,
         status: status.CHARGE_SUCCESS,
         paymentIntentId: data.payment_intent,
-        createDate: new Date().toISOString(),
+        createDate: new Date().toISOString()
       });
 
       break;

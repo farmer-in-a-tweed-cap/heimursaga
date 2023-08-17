@@ -153,6 +153,7 @@
         })
             .then(async (result) => {
                 const {billing} = await result.json();
+
                 if (!billing) upgradeLink.style.display = 'block';
                 else{
                     const plan = billing.plan;
