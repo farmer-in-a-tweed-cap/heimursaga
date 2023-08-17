@@ -33,7 +33,9 @@
 									<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#billing" role="tab">
 										Billing Detail
         							</a>
-									<% if(plan !== 'none' && !stripeAccountId){ %> 
+
+									<% if(plan && plan !== 'none' && !stripeAccountId){ %> 
+
 									<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#connect-bank" role="tab">
 										Connect Bank
 									</a>
@@ -256,7 +258,9 @@
 														<span style="color: green; font-weight: bold;"> Monthly Explorer Pro <% plan %> </span>
 														Plan
 													</div>
-													<% } else if(plan === 'none'){ %>
+
+													<% } else if(plan === 'none' || !plan){ %>
+
 														<div>You have subscribed to
 															<span style="color: green; font-weight: bold;"> Basic </span>
 															Plan. Go to <a href="/upgrade/<%= user.username %>">upgrade</a> page to upgrade your plan!
@@ -284,7 +288,7 @@
 								<div class="tab-pane fade" id="connect-bank" role="tabpanel">
 									<div class="card p-4">
 								
-										<% if(plan!=='none' && !stripeAccountId){ %>
+										<% if(plan && plan!=='none' && !stripeAccountId){ %>
 											<p class="text-sm">Connect bank so that users can send you funds.</p>
 											<div class="d-flex flex-row gap-2">
 												<div class="d-flex flex-column">

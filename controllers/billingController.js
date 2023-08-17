@@ -20,15 +20,22 @@ exports.subscribe = async function (req, res, next) {
   try {
     if (req.session.user) {
       const product = req.params.product_type;
-      const customerID = req.session.user.billingId;
-      if (!product || !customerID)
-        throw new Error("subscription type or customerId is mandatory");
+      let customerID = req.session.user.billingId;
+      if (!product)
+        throw new Error("subscription type is required");
 
+      if (!customerID) {
+        customerID = await Billing.createCustomer(
+          req.session.user.username
+        );
+        req.session.user.billingId = customerID;
+      }
+      
       const price = productToPriceMap[product];
 
       try {
         const session = await Stripe.createCheckoutSession(customerID, price);
-
+        req.flash("success", `Welcome, ${req.session.user.username}!`);
         res.send({
           sessionId: session.id,
         });
@@ -81,28 +88,12 @@ exports.funding = async (req, res) => {
     if (!stripeAccountId)
       throw new Error("stripeAccountId is missing in params");
     if (!amount) throw new Error("amount is missing in params");
-    console.log(amount, "value");
 
     //create customer
-    let {
-      username,
-      billingId: stripeCustomerId = null,
-      _id,
-    } = req.session.user;
+    let { username, billingId: stripeCustomerId = null } = req.session.user;
 
     if (!stripeCustomerId) {
-      console.log("creating customer");
-      const { email } = await User.findByUsername(username);
-      const customer = await Stripe.addNewCustomer(email);
-      stripeCustomerId = customer.id;
-
-      await billingCollection.insertOne({
-        explorerId: ObjectId(_id),
-        plan: "none",
-        endDate: null,
-        billingId: stripeCustomerId,
-      });
-
+      stripeCustomerId = await Billing.createCustomer(username);
       req.session.user["billingId"] = stripeCustomerId;
     }
 
@@ -304,7 +295,7 @@ exports.webhook = async (req, res) => {
 //billingDetails
 exports.billingDetails = async (req, res) => {
   try {
-    if(!req.session?.user?.username) throw new Error("username is required")
+    if (!req.session?.user?.username) throw new Error("username is required");
     const billingDetails = await Billing.getBillingDetails(
       req.session.user.username
     );
