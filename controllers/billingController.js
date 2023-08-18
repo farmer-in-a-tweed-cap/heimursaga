@@ -21,16 +21,13 @@ exports.subscribe = async function (req, res, next) {
     if (req.session.user) {
       const product = req.params.product_type;
       let customerID = req.session.user.billingId;
-      if (!product)
-        throw new Error("subscription type is required");
+      if (!product) throw new Error("subscription type is required");
 
       if (!customerID) {
-        customerID = await Billing.createCustomer(
-          req.session.user.username
-        );
+        customerID = await Billing.createCustomer(req.session.user.username);
         req.session.user.billingId = customerID;
       }
-      
+
       const price = productToPriceMap[product];
 
       try {
@@ -266,7 +263,7 @@ exports.webhook = async (req, res) => {
         plateformFeePercent: process.env.PLATEFORM_FEE,
         status: status.CHARGE_SUCCESS,
         paymentIntentId: data.payment_intent,
-        createDate: new Date().toISOString()
+        createDate: new Date().toISOString(),
       });
 
       break;
@@ -295,12 +292,15 @@ exports.webhook = async (req, res) => {
 //billingDetails
 exports.billingDetails = async (req, res) => {
   try {
-    if (!req.session?.user?.username) throw new Error("username is required");
-    const billingDetails = await Billing.getBillingDetails(
-      req.session.user.username
-    );
+    if (req.session?.user?.username) {
+      const billingDetails = await Billing.getBillingDetails(
+        req.session.user.username
+      );
 
-    res.send({ billing: billingDetails });
+      res.send({ billing: billingDetails });
+    } else {
+      res.send({ billing: null });
+    }
   } catch (e) {
     console.log(e);
     res.send(e);
