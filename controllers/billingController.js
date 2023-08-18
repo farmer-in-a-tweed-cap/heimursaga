@@ -1,4 +1,3 @@
-const { ObjectId } = require("mongodb");
 const User = require("../models/User");
 const Stripe = require("../stripe");
 const billingCollection = require("../db").db().collection("billing");
@@ -48,16 +47,22 @@ exports.subscribe = async function (req, res, next) {
 
       next();
     } else throw new Error("Billing Id is required for subscription");
-  } catch (err) {
-    console.log(err.message);
+  } catch (e) {
+    console.log(e.message);
+    res.status(500).send({ error: e });
   }
 };
 
 //mange subscription
 exports.Billing = async (req, res) => {
-  const { customer } = req.params;
-  const session = await Stripe.createBillingSession(customer);
-  res.json({ url: session.url });
+  try {
+    const { customer } = req.params;
+    const session = await Stripe.createBillingSession(customer);
+    res.json({ url: session.url });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({ error: e });
+  }
 };
 
 //connect bank
@@ -74,6 +79,7 @@ exports.ConnectBank = async (req, res) => {
     res.json({ url: onBoardingUrl });
   } catch (e) {
     console.log(e.message);
+    res.status(500).send({ error: e });
   }
 };
 
@@ -122,7 +128,7 @@ exports.funding = async (req, res) => {
     res.send({ url: session.url });
   } catch (e) {
     console.log(e);
-    res.send(e);
+    res.status(500).send({ error: e });
   }
 };
 
@@ -296,13 +302,14 @@ exports.billingDetails = async (req, res) => {
       const billingDetails = await Billing.getBillingDetails(
         req.session.user.username
       );
-
+      if (!!billingDetails?.billingId)
+        req.session.user.billingId = billingDetails.billingId;
       res.send({ billing: billingDetails });
     } else {
       res.send({ billing: null });
     }
   } catch (e) {
     console.log(e);
-    res.send(e);
+    res.status(500).send({ error: e });
   }
 };
