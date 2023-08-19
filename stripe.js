@@ -21,7 +21,7 @@ const createCheckoutSession = async (customerID, price) => {
       trial_period_days: process.env.TRIAL_DAYS,
     },
 
-    success_url: `${process.env.DOMAIN}user-guide`,
+    success_url: `${process.env.DOMAIN}/user-guide`,
     cancel_url: `${process.env.DOMAIN}`,
   });
 
@@ -116,6 +116,144 @@ const createPaymentSession = async (
   return session;
 };
 
+const createToken = async (customerId, stripeAccountId) => {
+  // console.log("token");
+  const token = await Stripe.tokens.create(
+    {
+      customer: customerId,
+    },
+    {
+      stripeAccount: stripeAccountId,
+    }
+  );
+  // console.log(token, ":tpek ");
+  return token;
+};
+
+const attachPaymentMethod = async (stripeCustomerId, stripeAccountId) => {
+  const testCardToken = "tok_visa";
+  // console.log("dede");
+  const paymentMethod = await Stripe.paymentMethods.create({
+    type: "card",
+    card: {
+      token: testCardToken,
+    },
+  });
+  // // console.log(paymentMethod, "pM");
+  // const attach = await Stripe.paymentMethods.attach(paymentMethod.id, {
+  //   customer: stripeCustomerId,
+  // });
+  // const customer = await Stripe.customers.retrieve(attach.customer); // Replace with actual customer ID
+
+  // // console.log(attach, customer, "cust,attachcus");
+  // const updateCustomer = await Stripe.customers.update(stripeCustomerId, {
+  //   invoice_settings: {
+  //     default_payment_method: "pm_1NjmF9FXr1UXQNSZBEGaWGFe",
+  //   },
+  // });
+  // console.log(paymentMethod);
+  const PM = await Stripe.paymentMethods.create(
+    {
+      customer: stripeCustomerId,
+      payment_method: paymentMethod.id,
+    },
+    {
+      stripeAccount: stripeAccountId,
+    }
+  );
+  // console.log(PM, "updatedCust");
+  // await createToken(stripeCustomerId, stripeAccountId);
+  return PM;
+};
+
+const createSponserSubscription = async (
+  price,
+  stripeCustomerId,
+  stripeAccountId
+) => {
+  await Stripe.customers.update(stripeCustomerId, {
+    source: "tok_mastercard",
+  });
+  const token = await Stripe.tokens.create(
+    {
+      customer: stripeCustomerId,
+    },
+    {
+      stripeAccount: stripeAccountId,
+    }
+  );
+  // console.log(token, "token");
+
+  const customerWithToken = await Stripe.customers.create(
+    {
+      source: token.id,
+    },
+    {
+      stripeAccount: stripeAccountId,
+    }
+  );
+  // console.log(customerWithToken, "wtone");
+  //todo retrivee these products from DB
+  const yearlyProduct = await Stripe.products.create(
+    {
+      name: "MONTHLY_SPONSER",
+    },
+    { stripeAccount: stripeAccountId }
+  );
+  const monthlyProduct = await Stripe.products.create(
+    {
+      name: "MONTHLY_SPONSER",
+    },
+    { stripeAccount: stripeAccountId }
+  );
+
+  // Create a yearly price for the connected account's product
+  const yearlyPrice = await Stripe.prices.create(
+    {
+      unit_amount: 7000, // Amount in cents ($70.00)
+      currency: "usd",
+      recurring: {
+        interval: "year",
+        interval_count: 1,
+      },
+      product: yearlyProduct.id,
+    },
+    { stripeAccount: stripeAccountId }
+  );
+
+  // Create a monthly price for the connected account's product
+  const monthlyPrice = await Stripe.prices.create(
+    {
+      unit_amount: 600, // Amount in cents ($6.00)
+      currency: "usd",
+      recurring: {
+        interval: "month",
+        interval_count: 1,
+      },
+      product: monthlyProduct.id,
+    },
+    { stripeAccount: stripeAccountId }
+  );
+  //no customer if stripecustomerId
+  const subscription = await Stripe.subscriptions.create(
+    {
+      customer: customerWithToken.id,
+      items: [
+        {
+          price: monthlyPrice.id,
+        },
+      ],
+      expand: ["latest_invoice.payment_intent"],
+      application_fee_percent: process.env.PLATEFORM_FEE,
+    },
+    {
+      stripeAccount: stripeAccountId,
+    }
+  );
+  // console.log(subscription);
+  return subscription;
+};
+
 module.exports = {
   getCustomerByID,
   addNewCustomer,
@@ -124,4 +262,7 @@ module.exports = {
   createWebhook,
   connectBank,
   createPaymentSession,
+  createSponserSubscription,
+  createToken,
+  attachPaymentMethod,
 };

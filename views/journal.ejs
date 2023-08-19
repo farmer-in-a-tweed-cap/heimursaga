@@ -98,8 +98,8 @@
 													<button style="border: none; background: transparent; cursor: pointer;" id="sponsor-button" class="text-blue"
 													
 														data-bs-toggle="modal" 
-														data-bs-target="#fund-confirm-modal">
-													<i id="icon-heimursaga-fund-alt" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-fund-alt"></i>
+														data-bs-target="#fund-sponser-modal">
+													<i id="icon-heimursaga-fund-alt" style="font-size: x-large; color: #adb5bd;" class="icon-heimursaga-fund-alt"></i>
 													<div class="w-100"></div>
 													<i id="sponsor-check" class="sponsor-check" style="color: white; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
 												</button>
@@ -107,36 +107,87 @@
 
 
 												<!-- Modal -->
-
-												<div class="modal fade" id="fund-confirm-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+												<div class="modal fade" id="fund-sponser-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 													<div class="modal-dialog modal-dialog-centered">
 														<div class="modal-content">
-															<div class="modal-header">
-																<h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure you want to send funds to <span
-																		class="text-success">
-																		<%= profileUsername %>
-																	</span class="text-success">?</h1>
-																<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-															</div>
-															<form>
+
+															<div id="select-option-modal" style="display: block;">
+																<div class="modal-header">
+																	<h1 class="modal-title fs-5" id="exampleModalLabel">Select below option.</h1>
+																	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+																</div>
 																<div class="modal-body">
-																	<div class="input-group">
-																		<input id="amount" type="number" class="form-control" onchange="handleInput()"
-																			aria-label="Dollar amount (with dot and two decimal places)" required>
-																		<span class="input-group-text">$</span>
+																	<div class="container">
+																		<div>
+																			<button id="one-time" class="btn btn-primary">One Time Fund</button>
+																			<button id="sponser-option" class="btn btn-primary">Sponser</button>
+																		</div>
 																	</div>
-																	<div id="error" class="text-sm text-error" style="color: rgb(235, 81, 81);">
-												 
+															
+																</div>
+															</div>
+
+															<div id="send-fund-modal" style="display: none;">
+																	<div class="modal-header">
+																		<h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure you want to send funds to <span
+																				class="text-success">
+																				<%= profileUsername %>
+																			</span class="text-success">?</h1>
+																		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 																	</div>
-																</div>
-																<div class="modal-footer">
-																	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-																	<button id="fund-button" type="button" class="btn btn-primary">
-																		Give Fund
-																	</button>
-																</div>
-															</form>
-												
+																	<form>
+																		<div class="modal-body">
+																			<div class="input-group">
+																				<input id="amount" type="number" class="form-control" onchange="handleInput()"
+																					aria-label="Dollar amount (with dot and two decimal places)" required>
+																				<span class="input-group-text">$</span>
+																			</div>
+																			<div id="error" class="text-sm text-error" style="color: rgb(235, 81, 81);">
+																	
+																			</div>
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+																			<button id="fund-button" type="button" class="btn btn-primary">
+																				Give Fund
+																			</button>
+																		</div>
+																	</form>
+															</div>
+
+															<div id="sponser-modal" style="display: none;">
+																	<div class="modal-header">
+																		<h1 class="modal-title fs-5" id="exampleModalLabel">Sponser <span class="text-success">
+																				<%= profileUsername %>
+																			</span class="text-success"> Explorer</h1>
+																		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+																	</div>
+																	<div class="modal-body">
+																		<div class="d-flex flex-row gap-2  justify-content-center">
+																			<button id="monthlyBtn" class="btn btn-lg btn-outline-primary btn-sm active">monthly</button>
+																			<button id="yearlyBtn" class="btn btn-lg btn-outline-primary btn-sm">annualy</button>
+																		</div>
+																		<div class="m-2">
+																			<div id="monthly-detail">
+																				<h6 class="text-primary ">monthly subscription</h6>
+																				<span class="display-4">$12</span>
+																				<span>/mo</span>
+																			</div>
+																			<div id="yearly-detail" style="display: none;">
+																				<h6 class="text-primary">annual subscription</h6>
+																				<span class="display-4">$115</span>
+																				<span>/yr</span>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="modal-footer">
+																		<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+																		<button id="sponser" type="button" class="btn btn-primary">
+																			Select
+																		</button>
+																	</div>
+															</div>
+
 														</div>
 													</div>
 												</div>
@@ -635,12 +686,92 @@
 		}
 	}
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const monthlyBtn = document.getElementById("monthlyBtn");
+        const yearlyBtn = document.getElementById("yearlyBtn");
+        const monthlyContent = document.getElementById("monthly-detail");
+        const yearlyContent = document.getElementById("yearly-detail");
+        if (yearlyContent)
+            yearlyContent.style.display = "none";
+
+        if (monthlyBtn)
+            monthlyBtn.addEventListener("click", function () {
+                monthlyContent.style.display = "block";
+                yearlyContent.style.display = "none";
+                monthlyBtn.classList.add("active");
+                yearlyBtn.classList.remove("active");
+            });
+
+        if (yearlyBtn)
+            yearlyBtn.addEventListener("click", function () {
+                monthlyContent.style.display = "none";
+                yearlyContent.style.display = "block";
+                monthlyBtn.classList.remove("active");
+                yearlyBtn.classList.add("active");
+            });
+    });
+
+</script>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		var fundSponserModal = document.getElementById('fund-sponser-modal');
+
+		fundSponserModal.addEventListener('hidden.bs.modal', function (event) {
+			console.log("Modal closed!");
+			sponserModal.style.display = 'none';
+			oneTimeModal.style.display = 'none'
+			selectOptionModal.style.display = 'block';
+		});
+		const sponserOption = document.getElementById('sponser-option');
+		const oneTimeOption = document.getElementById('one-time');
+
+		const sponserModal = document.getElementById('sponser-modal');
+		const oneTimeModal = document.getElementById('send-fund-modal');
+		const selectOptionModal = document.getElementById('select-option-modal')
+
+
+		if (sponserOption) {
+			sponserOption.addEventListener('click', () => {
+				sponserModal.style.display = 'block';
+				selectOptionModal.style.display = 'none';
+			})
+		}
+		if (oneTimeOption) {
+			oneTimeOption.addEventListener('click', () => {
+				sponserModal.style.display = 'none';
+				selectOptionModal.style.display = 'none';
+				oneTimeModal.style.display = 'block'
+			})
+		}
+	})
+</script>
+
 <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
 
 <script>
 	document.addEventListener('DOMContentLoaded', function () {
         const publishableKey = `<%- stripePubKey %>`;
 		const stripe = Stripe(publishableKey);
+		const sponserBtn = document.getElementById('sponser');
+
+		// selected subscription
+		const monthlyBtn = document.getElementById("monthlyBtn");
+		const yearlyBtn = document.getElementById("yearlyBtn");
+		let monthlySubsActive = true;
+		if (yearlyBtn)
+			yearlyBtn.addEventListener('click', () => {
+				monthlySubsActive = false;
+			})
+
+		if (monthlyBtn)
+			monthlyBtn.addEventListener('click', () => {
+				monthlySubsActive = true
+			})
+
+
 		const fundBtn = document.getElementById('fund-button');
 		const stripeAccountId = `<%- stripeAccountId %>`
 		const explorer = `<%- profileUsername %>`;
@@ -682,6 +813,47 @@
 					
 					const error = document.getElementById('error');
 					error.innerHTML = 'this field is required';
+				}
+			})
+		}
+	
+		if(sponserBtn){
+			sponserBtn.addEventListener('click',()=>{
+				console.log('xxxd',monthlySubsActive);
+				if(monthlySubsActive){
+					fetch(`/sponser/${explorer}/${stripeAccountId}/monthly_exp`, {
+							method: 'GET',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+	
+						})
+							.then(async (result) => {
+								const response = await result.json();
+								console.log(response);
+								return response
+							})
+							.then((response) => {
+								if (response?.url)
+									window.location = response.url
+							})
+				}else{
+					fetch(`/sponser/${explorer}/${stripeAccountId}/yearly_exp`, {
+							method: 'GET',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+	
+						})
+							.then(async (result) => {
+								const response = await result.json();
+								console.log(response);
+								return response
+							})
+							.then((response) => {
+								if (response?.url)
+									window.location = response.url
+							})
 				}
 			})
 		}

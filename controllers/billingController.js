@@ -132,6 +132,34 @@ exports.funding = async (req, res) => {
   }
 };
 
+//sponser
+exports.sponser = async (req, res) => {
+  try {
+    let { stripeAccountId, product_type } = req.params;
+    //validation
+    if (!stripeAccountId)
+      throw new Error("stripeAccountId is missing in params");
+    if (!product_type) throw new Error("product_type is missing in params");
+
+    let { username, billingId: stripeCustomerId = null } = req.session.user;
+    //create customer
+    if (!stripeCustomerId) {
+      stripeCustomerId = await Billing.createCustomer(username);
+      req.session.user["billingId"] = stripeCustomerId;
+    }
+    const price = productToPriceMap[product_type];
+    const subscription = await Stripe.createSponserSubscription(
+      price,
+      stripeCustomerId,
+      stripeAccountId
+    );
+    res.send({ subscription });
+  } catch (e) {
+    console.log(e);
+    res.send(e);
+  }
+};
+
 //webhook
 exports.webhook = async (req, res) => {
   let event;
@@ -148,34 +176,38 @@ exports.webhook = async (req, res) => {
   console.log(event.type, " = stripe event");
   switch (event.type) {
     case "customer.subscription.created": {
-      const billing = await billingCollection.find({
-        billingId: data.customer,
-      });
+      const billing = await billingCollection
+        .find({
+          billingId: data.customer,
+        })
+        .toArray();
 
-      if (data.plan.id === productToPriceMap.monthly_exp) {
-        console.log("You are talking about monthly explorer plan ");
-        billing.plan = "monthly_exp";
-      }
-
-      if (data.plan.id === productToPriceMap.yearly_exp) {
-        console.log("You are talking about annual explorer plan");
-        billing.plan = "yearly_exp";
-      }
-
-      billing.hasTrial = true;
-      billing.endDate = new Date(data.current_period_end * 1000);
-
-      //update billing record
-      await billingCollection.updateOne(
-        { billingId: data.customer },
-        {
-          $set: {
-            plan: billing.plan,
-            hasTrial: billing.hasTrial,
-            endDate: billing.endDate,
-          },
+      if (billing.length) {
+        if (data.plan.id === productToPriceMap.monthly_exp) {
+          console.log("You are talking about monthly explorer plan ");
+          billing.plan = "monthly_exp";
         }
-      );
+
+        if (data.plan.id === productToPriceMap.yearly_exp) {
+          console.log("You are talking about annual explorer plan");
+          billing.plan = "yearly_exp";
+        }
+
+        billing.hasTrial = true;
+        billing.endDate = new Date(data.current_period_end * 1000);
+
+        //update billing record
+        await billingCollection.updateOne(
+          { billingId: data.customer },
+          {
+            $set: {
+              plan: billing.plan,
+              hasTrial: billing.hasTrial,
+              endDate: billing.endDate,
+            },
+          }
+        );
+      }
 
       break;
     }
@@ -262,15 +294,18 @@ exports.webhook = async (req, res) => {
     }
     case "charge.succeeded": {
       const amount = parseInt(data.amount / 100);
-      await fundsCollection.insertOne({
-        stripeAccountId: data.destination,
-        stripeCustomerId: data.customer,
-        amount,
-        plateformFeePercent: process.env.PLATEFORM_FEE,
-        status: status.CHARGE_SUCCESS,
-        paymentIntentId: data.payment_intent,
-        createDate: new Date().toISOString(),
-      });
+      //null if subsccribe to connect account
+      if (data.destination) {
+        await fundsCollection.insertOne({
+          stripeAccountId: data.destination,
+          stripeCustomerId: data.customer,
+          amount,
+          plateformFeePercent: process.env.PLATEFORM_FEE,
+          status: status.CHARGE_SUCCESS,
+          paymentIntentId: data.payment_intent,
+          createDate: new Date().toISOString(),
+        });
+      }
 
       break;
     }
@@ -298,16 +333,15 @@ exports.webhook = async (req, res) => {
 //billingDetails
 exports.billingDetails = async (req, res) => {
   try {
-    if (req.session?.user?.username) {
-      const billingDetails = await Billing.getBillingDetails(
-        req.session.user.username
-      );
-      if (!!billingDetails?.billingId)
-        req.session.user.billingId = billingDetails.billingId;
-      res.send({ billing: billingDetails });
-    } else {
+    if (!req.session?.user?.username) {
       res.send({ billing: null });
+      return;
     }
+    const billingDetails = await Billing.getBillingDetails(
+      req.session.user.username
+    );
+
+    res.send({ billing: billingDetails });
   } catch (e) {
     console.log(e);
     res.status(500).send({ error: e });
