@@ -27,7 +27,7 @@ Billing.createCustomer = async (username) => {
 
     return stripeCustomerId;
   } catch (e) {
-    console.log( e);
+    console.log(e);
   }
 };
 

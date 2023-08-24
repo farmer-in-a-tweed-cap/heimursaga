@@ -121,8 +121,8 @@
 																			aria-label="Dollar amount (with dot and two decimal places)" required>
 																		<span class="input-group-text">$</span>
 																	</div>
-																	<div id="error" class="text-sm text-error">
-												
+																	<div id="error" class="text-sm text-error" style="color: rgb(235, 81, 81);">
+												 
 																	</div>
 																</div>
 																<div class="modal-footer">
@@ -630,7 +630,11 @@
 				let amount = parseInt(amountField.value);
 				
 				if (amount){
-					if(amount > 2000) console.error('amount should be less than 2001')
+					if(amount > 2000) {
+						console.error('amount should be less than 2001')
+						const error = document.getElementById('error');
+						error.innerHTML = 'amount should be less than 2001';
+					}
 					else{
 						fundBtn.classList.add("disabled");
 						fundBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
