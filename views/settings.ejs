@@ -276,7 +276,9 @@
 																	</div>
 								
 																<div class="manageBilling mb-2">
-																	<button id="manage_billing" class="btn btn-primary">Manage Subscription</button>
+																	<button id="manage_billing" class="btn btn-primary">
+																		Manage Subscription
+																	</button>
 																</div>
 																<% }  %>
 														</div>
@@ -342,7 +344,10 @@
 													<div id="error-box" style="color: red;"></div>
 												</div>
 												<div class="connect-bank">
-													<button id="connect-bank" class="btn btn-primary">Connect Bank</button>
+													<button id="connect-bank" class="btn btn-primary">
+														<span id="button-spinner" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true" hidden></span>
+														Connect Bank
+													</button>
 												</div>
 											</div>
 											<% } %>
@@ -438,6 +443,9 @@
         let username = `<%- username %>`
         let country = selectedCountry;
 
+		let buttonSpinner = document.getElementById("button-spinner")
+
+
         //monthly + annually
         if (explorerSubs) {
             explorerSubs.addEventListener('click', function () {
@@ -501,6 +509,7 @@
         if (connectBank) {
             connectBank.addEventListener('click', function () {
                 if (selectedCountry) {
+					buttonSpinner.removeAttribute("hidden", true)
                     const requestOptions = {
                         method: 'GET',
                         headers: {

@@ -107,10 +107,10 @@
 
 							  <div class="card" id="bodydiv">
 								<div class="card-header">
-								  <h5 class="card-title mb-0">Write entry content</h5>
+								  <h5 class="card-title mb-0" id="entry-content-title">Write entry content</h5>
 								</div>
 								<div class="card-body">
-								  <div class="mb-3">
+								  <div class="mb-3" id="what-input">
 									<label class="form-label">What</label>
 									<label class="form-text text-muted">
 									  - craft the perfect title and make it unique!</label
@@ -124,7 +124,7 @@
 									  maxlength="100"
 									/>
 								  </div>
-								  <div class="mb-3">
+								  <div class="mb-3" id="where-input">
 									<label class="form-label">Where</label>
 									<label class="form-text text-muted">
 									  - the place where it happened - the official name or your own
@@ -139,15 +139,15 @@
 									  maxlength="100"
 									/>
 								  </div>
-								  <div class="mb-3">
+								  <div class="mb-3" id="when-input">
 									<label class="form-label">When</label>
 									<label class="form-text text-muted">
-									  - date of occurence - may be different from the date you post</label
+									  - date/time of occurence - may be different from the date you post</label
 									>
 									  
 									<input required name="datesingle" class="form-control" type="text" />
 								  </div>
-								  <div class="mb-3">
+								  <div class="mb-3" id="body-input">
 									<label class="form-label">Tell your story</label>
 									<label class="form-text text-muted">
 									  - in 100-1,000 words - if there's more write a series! </label>
@@ -312,6 +312,11 @@
 	var postBody = document.getElementById("post-body")
 	var postPlace = document.getElementById("post-place")
 	var postTitle = document.getElementById("post-title")
+	var bodyInput = document.getElementById("body-input")
+	var whatInput = document.getElementById("what-input")
+	var whereInput = document.getElementById("where-input")
+	var whenInput = document.getElementById("when-input")
+	var entryContentTitle = document.getElementById("entry-content-title")
 
 
 	journeyInput.addEventListener('input', showWaypointSelect)
@@ -331,7 +336,9 @@
 	function showHideEntryInputs() {
 		console.log(waypointToggle.value)
 		if (waypointToggle.checked == true) {
-    		bodyDiv.setAttribute("hidden", true)
+			entryContentTitle.innerText = "Write Waypoint Content"
+    		bodyInput.setAttribute("hidden", true)
+			whereInput.setAttribute("hidden", true)
 			photoUploadDiv.setAttribute("hidden", true)
 			postCard.setAttribute("hidden", true)
 			waypointPostCard.removeAttribute("hidden", true)
@@ -340,7 +347,9 @@
 			postPlace.removeAttribute("required", true)
 			journeyInput.setAttribute("required", true)
   		} else {
-    		bodyDiv.removeAttribute("hidden", true)
+			entryContentTitle.innerText = "Write Entry Content"
+			bodyInput.removeAttribute("hidden", true)
+			whereInput.removeAttribute("hidden", true)
 			photoUploadDiv.removeAttribute("hidden", true)
 			postCard.removeAttribute("hidden", true)
 			waypointPostCard.setAttribute("hidden", true)
@@ -601,9 +610,12 @@
 			})
 			// Daterangepicker
 
-			$("input[name=\"datesingle\"]").daterangepicker({
+			$('input[name="datesingle"]').daterangepicker({
 				singleDatePicker: true,
-				showDropdowns: true
+				timePicker: true,
+				locale: {
+				format: 'M/DD/YYYY hh:mm A'
+				}
 			});
 		});
 

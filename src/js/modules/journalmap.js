@@ -187,7 +187,7 @@ export default class JournalMap {
   }
 
   loadMarkers(entries) {
-      var markers = GeoJSON.parse(entries.data, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
+      var markers = GeoJSON.parse(entries.data, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id', 'waypoint']})
       var sourceID = Math.random().toString(36).slice(2)
       this.journalmap.addSource(`entrymarkers${sourceID}`, {
         type: 'geojson',
@@ -316,13 +316,14 @@ export default class JournalMap {
           }
           });
 
-          new mapboxgl.Popup({
+            new mapboxgl.Popup({
               closeButton: false,
               focusAfterOpen: true
             })
             .setLngLat(coordinates)
             .setDOMContent(divElement)
             .addTo(this)
+
       })
 
 
@@ -345,7 +346,7 @@ export default class JournalMap {
   }
 
   loadMarkersWithoutCluster(entries) {
-    var markers = GeoJSON.parse(entries.data, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
+    var markers = GeoJSON.parse(entries.data, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id', 'markertype']})
     var sourceID = Math.random().toString(36).slice(2)
     this.journalmap.addSource(`entrymarkers${sourceID}`, {
       type: 'geojson',
@@ -362,7 +363,15 @@ export default class JournalMap {
         minzoom: 0,
         filter: ['!', ['has', 'point_count']],
         paint: { 
-        'circle-color': '#ac6d46',
+        'circle-color': [
+          'match',
+          ['get', 'markertype'],
+          'entry',
+          '#ac6d46',
+          'waypoint',
+          '#b5bcc4',
+          /* other */ '#ccc'
+          ],
         'circle-radius': 6,
         'circle-stroke-width': 2,
         'circle-stroke-color': '#fff'
@@ -377,6 +386,7 @@ export default class JournalMap {
     this.journalmap.on('click', `unclustered-point${sourceID}`, function (e) {
       var coordinates = e.features[0].geometry.coordinates.slice();
       var popup = e.features[0].properties.popup;
+      var markertype = e.features[0].properties.markertype;
       var id = e.features[0].properties._id;
 
           
@@ -399,6 +409,10 @@ export default class JournalMap {
       expandBtn.innerHTML = `<a data-bs-toggle="modal" href="#sizedModalMd-${id}">Expand</a>`;
       divElement.innerHTML = innerHtmlContent;
       divElement.appendChild(expandBtn);
+
+      const divElementWaypoint = document.createElement('div');
+      divElementWaypoint.innerHTML = innerHtmlContent;
+
       expandBtn.addEventListener('click', (e) => {
         if (document.exitFullscreen) {
           document.exitFullscreen();
@@ -409,13 +423,24 @@ export default class JournalMap {
       }
       });
 
-      new mapboxgl.Popup({
+      if (markertype == "waypoint") {
+        new mapboxgl.Popup({
+          closeButton: false,
+          focusAfterOpen: true
+        })
+        .setLngLat(coordinates)
+        .setDOMContent(divElementWaypoint)
+        .addTo(this)
+      } else {
+        new mapboxgl.Popup({
           closeButton: false,
           focusAfterOpen: true
         })
         .setLngLat(coordinates)
         .setDOMContent(divElement)
         .addTo(this)
+      }
+
     });
   
     this.journalmap.on('mouseenter', `unclustered-point${sourceID}`, function () {

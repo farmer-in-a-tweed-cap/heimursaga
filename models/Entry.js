@@ -7,6 +7,7 @@ const User = require('./User')
 const sanitizeHTML = require('sanitize-html')
 const { Photo } = require('./Photo')
 const mapboxgl = require('mapbox-gl');
+const Waypoint = require('./Waypoint')
 
 
 //entriesCollection.createIndex({title: "text", body: "text", place: "text", authorUsername: "text"})
@@ -51,7 +52,7 @@ Entry.prototype.cleanUp = function() {
       _id: ObjectId(this.id),
       title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
       place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
-      date: sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}}),
+      date: new Date(sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})),
       body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
       GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
       popup: popup,
@@ -67,7 +68,7 @@ Entry.prototype.cleanUp = function() {
       _id: ObjectId(this.id),
       title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
       place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
-      date: sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}}),
+      date: new Date(sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})),
       body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
       journey: sanitizeHTML(this.data.journeyname.trim(), {allowedTags: [], allowedAttributes: {}}),
       GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
@@ -193,6 +194,7 @@ Entry.reusableEntryQuery = function(uniqueOperations, visitorId, finalOperations
         date: 1,
         GeoJSONcoordinates: 1,
         coordinates: "$GeoJSONcoordinates.coordinates",
+        markertype: "entry",
         journey: 1,
         body: 1,
         popup: 1,
@@ -428,14 +430,23 @@ Entry.getJournalFeedbyJourneyandDate = async function(bounds, id, journey) {
   var LatNorth = parseFloat(LngLatArray[3])
   let userId = new ObjectId(id)
 
-  // look for posts where the author is in the above array of followed users
-  return Entry.reusableEntryQuery([
+  let entries = await Entry.reusableEntryQuery([
     {$match: {author: userId}},
     {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
     {$match: {privacy: "public"}},
     {$match: {journey: journey}},
     {$sort: {date: 1}}
   ])
+
+  let waypoints = await Waypoint.reusableWaypointQuery([
+    {$match: {author: userId}},
+    {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
+    {$sort: {date: 1}},
+    {$match: {journey: journey}},
+  ])
+
+  return entries.concat(waypoints)
+
 }
 
 Entry.getMyJournalFeed = async function(bounds, id) {
@@ -477,12 +488,22 @@ Entry.getMyJournalFeedbyJourneyandDate = async function(bounds, id, journey) {
   var LatNorth = parseFloat(LngLatArray[3])
   let userId = new ObjectId(id)
 
-  return Entry.reusableEntryQuery([
+  let entries = await Entry.reusableEntryQuery([
     {$match: {author: userId}},
     {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
     {$sort: {date: 1}},
     {$match: {journey: journey}},
   ])
+
+  let waypoints = await Waypoint.reusableWaypointQuery([
+    {$match: {author: userId}},
+    {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
+    {$sort: {date: 1}},
+    {$match: {journey: journey}},
+  ])
+
+  return entries.concat(waypoints)
+
 }
 
 Entry.returnAll = function() {
