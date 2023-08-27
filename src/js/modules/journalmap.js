@@ -174,8 +174,8 @@ export default class JournalMap {
   sendRequest(bounds) {
     if (this.journey != "All Journeys") {
       axios.get(`/journal-entry-list/${this.profileusername}/${bounds}/${this.journey}`).then(response => {
+        setTimeout(() => this.loadMarkersWithoutCluster(response), 1000)
         this.loadJourneyRoute(response)
-        this.loadMarkersWithoutCluster(response)
       })
     } else {
       axios.get(`/journal-entry-list/${this.profileusername}/${bounds}`).then(response => {
@@ -185,6 +185,8 @@ export default class JournalMap {
     }
 
   }
+
+
 
   loadMarkers(entries) {
       var markers = GeoJSON.parse(entries.data, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id', 'waypoint']})
@@ -256,7 +258,7 @@ export default class JournalMap {
         paint: { 
         'circle-color': '#ac6d46',
         'circle-radius': 5,
-        'circle-stroke-width': 2,
+        'circle-stroke-width': 1,
         'circle-stroke-color': '#fff'
         }
       })
@@ -346,8 +348,9 @@ export default class JournalMap {
   }
 
   loadMarkersWithoutCluster(entries) {
-    var markers = GeoJSON.parse(entries.data, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id', 'markertype']})
+    var markers = GeoJSON.parse(entries.data, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id', 'markertype', 'owner']})
     var sourceID = Math.random().toString(36).slice(2)
+    
     this.journalmap.addSource(`entrymarkers${sourceID}`, {
       type: 'geojson',
       data: markers,
@@ -369,15 +372,23 @@ export default class JournalMap {
           'entry',
           '#ac6d46',
           'waypoint',
-          '#b5bcc4',
+          '#fff',
           /* other */ '#ccc'
           ],
         'circle-radius': 6,
-        'circle-stroke-width': 2,
-        'circle-stroke-color': '#fff'
+        'circle-stroke-width': 1,
+        'circle-stroke-color': [
+          'match',
+          ['get', 'markertype'],
+          'entry',
+          '#fff',
+          'waypoint',
+          '#ac6d46',
+          /* other */ '#ccc'
+          ],
         }, 
         layout: {
-          'circle-sort-key': 5,
+          'circle-sort-key': 500,
         }
       })
 
@@ -387,7 +398,9 @@ export default class JournalMap {
       var coordinates = e.features[0].geometry.coordinates.slice();
       var popup = e.features[0].properties.popup;
       var markertype = e.features[0].properties.markertype;
+      var owner = e.features[0].properties.owner;
       var id = e.features[0].properties._id;
+      var journey = document.querySelector('#journeyOptions').value
 
           
       this.easeTo({
@@ -410,8 +423,15 @@ export default class JournalMap {
       divElement.innerHTML = innerHtmlContent;
       divElement.appendChild(expandBtn);
 
+
+
+      const makeEntryBtn = document.createElement('div');
+      makeEntryBtn.innerHTML = `<a onclick="return confirm('Are you sure you want to delete this waypoint? This action is irreversible.')" href="/waypoint/${id}/${journey}/delete">Delete</a>`;
       const divElementWaypoint = document.createElement('div');
+      const divElementWaypoint2 = document.createElement('div');
       divElementWaypoint.innerHTML = innerHtmlContent;
+      divElementWaypoint2.innerHTML = innerHtmlContent;
+      divElementWaypoint2.appendChild(makeEntryBtn);
 
       expandBtn.addEventListener('click', (e) => {
         if (document.exitFullscreen) {
@@ -423,7 +443,15 @@ export default class JournalMap {
       }
       });
 
-      if (markertype == "waypoint") {
+      if (owner == "yes") {
+        new mapboxgl.Popup({
+          closeButton: false,
+          focusAfterOpen: true
+        })
+        .setLngLat(coordinates)
+        .setDOMContent(divElementWaypoint2)
+        .addTo(this)
+      } else if(owner == "no") {
         new mapboxgl.Popup({
           closeButton: false,
           focusAfterOpen: true
@@ -518,7 +546,7 @@ export default class JournalMap {
             'layout': {
               'symbol-placement': 'line',
               'symbol-spacing': 50,
-              'symbol-sort-key': 1,
+              'symbol-sort-key': 100,
               'symbol-z-order': 'source',
               'icon-image': 'arrow',
               'icon-size': 0.25,

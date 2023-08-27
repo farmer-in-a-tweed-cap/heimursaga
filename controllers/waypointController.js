@@ -16,3 +16,13 @@ exports.create = function(req, res) {
         req.session.save(() => res.redirect("/create-entry"))
     })
 }
+
+exports.delete =  function(req, res) {
+         Waypoint.delete(req.params.id, req.visitorId).then( () => {
+                req.flash("success", "Waypoint successfully deleted.")
+                req.session.save(() => res.redirect(`/journal/${req.session.user.username}/${req.params.journey}`))
+    }).catch(() => {
+        req.flash("errors", "You do not have permission to perform that action.")
+        req.session.save(() => res.redirect("/"))
+    })
+}

@@ -495,7 +495,7 @@ Entry.getMyJournalFeedbyJourneyandDate = async function(bounds, id, journey) {
     {$match: {journey: journey}},
   ])
 
-  let waypoints = await Waypoint.reusableWaypointQuery([
+  let waypoints = await Waypoint.reusableWaypointQueryOwner([
     {$match: {author: userId}},
     {$match: {$and: [{"GeoJSONcoordinates.coordinates.0": {$gt: LngWest, $lt: LngEast}}, {"GeoJSONcoordinates.coordinates.1": {$gt: LatSouth, $lt: LatNorth}}]}},
     {$sort: {date: 1}},

@@ -67,6 +67,8 @@ router.get('/create-entry', userController.mustBeLoggedIn, entryController.viewC
 router.post('/create-entry', userController.mustBeLoggedIn, multerUploads, entryController.create)
 
 router.post('/create-waypoint', userController.mustBeLoggedIn, multerUploads, waypointController.create)
+router.get('/waypoint/:id/:journey/delete', userController.mustBeLoggedIn, waypointController.delete)
+
 
 
 router.get('/entry/:id', entryController.viewSingle)
