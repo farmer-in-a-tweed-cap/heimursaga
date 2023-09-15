@@ -2,13 +2,15 @@
 </nav>
 
 <div class="main">
-    <%- include('beta-banner') %>
+
+    <%- include('beta-banner.ejs') %>
 
     <nav class="navbar navbar-expand navbar-light navbar-bg">
-            <a class="sidebar-toggle">
+            <a class="sidebar-toggle" data-toggle="collapse">
                 <i class="hamburger align-self-center d-none d-lg-block" style="display: flex;"></i>
-                <img class="avatar border-primary d-lg-none" src="../img/brands/badge menu heimursaga1.png" width="75" height="75" alt="Heimursaga Badge">
+                <img class="avatar border-primary d-lg-none" src="../img/brands/badge menu heimursaga.png" width="75" height="75" alt="Heimursaga Badge Menu">
             </a>
+
 
 
         <div class="d-none d-lg-block">
@@ -23,10 +25,11 @@
                     transform: translateX(-50%);
                     padding-right: 20px !important;
                 }
+
         </style>
         
             <div class="navbar-collapse mx-auto abs-center-x">
-                <ul class="navbar-nav navbar-align d-none d-sm-inline">
+                <ul class="navbar-nav navbar-align d-none d-lg-inline">
     
                     <div>
                         <a href="/">
@@ -162,6 +165,7 @@
         </div>
         
     </nav>
+    
     
 <script>
 

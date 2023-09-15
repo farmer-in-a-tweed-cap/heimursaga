@@ -6,9 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const sidebarElement = document.getElementsByClassName("sidebar")[0];
   const sidebarToggleElement = document.getElementsByClassName("sidebar-toggle")[0];
 
-  if (localStorage.getItem("displaySidebar") == "false") {
+  /*if (localStorage.getItem("displaySidebar") == "false") {
     sidebarElement.classList.toggle("collapsed")
-  }
+  }*/
 
   const simpleBarElement = document.getElementsByClassName("js-simplebar")[0];
   

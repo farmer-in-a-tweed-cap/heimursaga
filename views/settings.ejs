@@ -11,7 +11,7 @@
 			<main class="content">
 				<div class="container-fluid p-0">
 						
-						<div class="row">
+					<div class="row">
 
 						<div class="col-md-3 col-xl-2">
 
@@ -365,8 +365,7 @@
 				</div>
 			</main>
 
-<%- include('includes/footer') %>
-
+			
 <script>
 		const password = document.querySelector("#PasswordNew");
 		const confirmpassword = document.querySelector("#confirm_password");
@@ -403,6 +402,7 @@
 </script>
 
 <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const publishableKey = `<%- stripePubKey %>`;
@@ -531,3 +531,5 @@
     });
 
 </script>
+
+<%- include('includes/footer') %>
