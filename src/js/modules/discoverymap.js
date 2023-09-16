@@ -342,7 +342,7 @@ export default class DiscoveryMap {
       this.entryfeed.innerHTML = `${entries.data.map(entry => {
         return `<div class="list-group list-group-flush"><a data-bs-toggle="modal" href="#sizedModalMd-${entry._id}" class="list-group-item list-group-item-action">
         <strong>${entry.title}</strong><br/>
-        <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle">${entry.place} | ${entry.date}</small><br/>
+        <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle">${entry.place} | ${new Date(entry.date).toLocaleString('default', { month: 'short' })} ${new Date(entry.date).getDate()}, ${new Date(entry.date).getFullYear()} </small><br/>
         <small>by <strong>${entry.author.username}</strong></small>
         </a>
             <div class="modal fade" id="sizedModalMd-${entry._id}" tabindex="-1" role="dialog" aria-hidden="true">
