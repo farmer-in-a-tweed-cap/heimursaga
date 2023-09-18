@@ -511,7 +511,7 @@
 												<% drafts.forEach(function(draft) { %>
 													<a href="/draft/<%= draft._id %>/edit" class="list-group-item list-group-item-action">
 														<strong><%= draft.title %></strong><br/>
-														<i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle"><%= draft.place %> | <%= draft.date %></small>
+														<i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle"><%= draft.place %> | <%= new Date(draft.date).toLocaleString('default', { month: 'short' }) %> <%= new Date(draft.date).getDate() %>, <%= new Date(draft.date).getFullYear() %></small>
 													  </a>
 												 <% }) %>
 												</div>
@@ -561,7 +561,7 @@
 													<% bookmarked.forEach(function(bookmarkedEntry) { %>
 														<a href="/entry/<%= bookmarkedEntry.id %>" class="list-group-item list-group-item-action">
 														  <strong><%= bookmarkedEntry.title %></strong><br/>
-														  <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle"><%= bookmarkedEntry.place %> | <%= bookmarkedEntry.date %></small>
+														  <i class="align-middle me-0 fas fa-fw fa-map-marker-alt text-primary"></i> <small class="align-middle"><%= bookmarkedEntry.place %> | <%= new Date(bookmarkedEntry.date).toLocaleString('default', { month: 'short' }) %> <%= new Date(bookmarkedEntry.date).getDate() %>, <%= new Date(bookmarkedEntry.date).getFullYear() %></small>
 														</a>
 													 <% }) %>
 												</div>
