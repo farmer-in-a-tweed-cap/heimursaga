@@ -95,15 +95,17 @@
 										
 											<% } %>
 												<% if(stripeAccountId){ %>
-													<button style="border: none; background: transparent; cursor: pointer;" class="text-blue"
+													<button style="border: none; background: transparent; cursor: pointer;" id="sponsor-button" class="text-blue"
 													
 														data-bs-toggle="modal" 
 														data-bs-target="#fund-confirm-modal">
 													<i id="icon-heimursaga-fund-alt" style="font-size: x-large; color: #adb5bd;" class="icon-heimursaga-fund-alt"></i>
 													<div class="w-100"></div>
-													<i id="follow-check" class="fund-check" style="color: white; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
+													<i id="sponsor-check" class="sponsor-check" style="color: white; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
 												</button>
+
 												<!-- Modal -->
+
 												<div class="modal fade" id="fund-confirm-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 													<div class="modal-dialog modal-dialog-centered">
 														<div class="modal-content">
