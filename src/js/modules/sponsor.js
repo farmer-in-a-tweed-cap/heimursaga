@@ -9,6 +9,7 @@ export default class Sponsor {
         this.sponsorModalHeader = document.querySelector("#modal-header")
         this.sponsorModalBody = document.querySelector("#modal-body")
         this.sponsorModalFooter = document.querySelector("#modal-footer")
+        this.username = document.querySelector("#profile-username").innerText
         this.waitTimer
         this.events()
     }
@@ -30,7 +31,7 @@ export default class Sponsor {
     }
 
     initialHTML() {
-        this.sponsorModalHeader.innerHTML = `<h3 class="text-primary text-center w-100">Sponsorship Options</h3>`
+        this.sponsorModalHeader.innerHTML = `<h3 class="text-primary text-center w-100">SPONSORSHIP OPTIONS</h3>`
         this.sponsorModalBody.innerHTML = `<div class="row mb-3">
         <div class="col">
             <div class="text-center">
