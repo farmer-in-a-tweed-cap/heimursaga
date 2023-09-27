@@ -39,8 +39,13 @@ if (document.querySelector("#bookmark-button")) {new Bookmark()};
 import Follow from './modules/follow'
 if (document.querySelector("#follow-button")) {new Follow()};
 
+import Sponsor from './modules/sponsor'
+if (document.querySelector("#modal-button")) {new Sponsor()};
+
 import Flag from './modules/flag'
 if (document.querySelector("#flag-button")) {new Flag()};
+
+
 
 
 
