@@ -43,7 +43,7 @@ export default class JournalMap {
 
     // console.log('loading resources')
     this.loadControls()
-    this.journalmap.addSource('10m-bathymetry-81bsvj', {
+    /*this.journalmap.addSource('10m-bathymetry-81bsvj', {
       type: 'vector',
       url: 'mapbox://mapbox.9tm8dx88'
       });
@@ -71,7 +71,7 @@ export default class JournalMap {
       }
       },
       'land-structure-polygon'
-      );
+      );*/
       
     this.loadEntries()
     //)

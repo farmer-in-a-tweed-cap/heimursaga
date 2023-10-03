@@ -49,7 +49,7 @@ export default class FeedMap {
   loadResources() {
     //console.log('loading resources')
     this.loadControls()
-    this.feedmap.addSource('10m-bathymetry-81bsvj', {
+    /*this.feedmap.addSource('10m-bathymetry-81bsvj', {
       type: 'vector',
       url: 'mapbox://mapbox.9tm8dx88'
       });
@@ -77,7 +77,7 @@ export default class FeedMap {
       }
       },
       'land-structure-polygon'
-      );
+      );*/
 
     //this.feedmap.once('load', () => this.loadedFeed())
     //this.feedmap.on('load', () => 
