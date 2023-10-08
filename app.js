@@ -75,7 +75,7 @@ app.use(function(err, req, res, next){
             req.flash('errors', "Cross-site request forgery detected.")
             req.session.save(() => res.redirect('/'))
         } else {
-            console.log("unknown csrf error")
+            console.log("unknown csrf error", err)
             res.render("404")
         }
     }

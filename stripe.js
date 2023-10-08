@@ -41,10 +41,10 @@ const getCustomerByID = async (id) => {
   return customer;
 };
 
-const addNewCustomer = async (email) => {
+const addNewCustomer = async (email, username = "New customer") => {
   const customer = await Stripe.customers.create({
     email,
-    description: "New Customer",
+    description: username,
   });
 
   return customer;
@@ -171,32 +171,76 @@ const createSponserSubscription = async (
   stripeCustomerId,
   stripeAccountId
 ) => {
-  await Stripe.customers.update(stripeCustomerId, {
-    source: "tok_mastercard",
-  });
-  const token = await Stripe.tokens.create(
-    {
-      customer: stripeCustomerId,
-    },
-    {
-      stripeAccount: stripeAccountId,
-    }
-  );
-  // console.log(token, "token");
+  // await Stripe.customers.update(stripeCustomerId, {
+  //   source: "tok_mastercard",
+  // });
+  // const token = await Stripe.tokens.create(
+  //   {
+  //     customer: stripeCustomerId,
+  //   },
+  //   {
+  //     stripeAccount: stripeAccountId,
+  //   }
+  // );
 
-  const customerWithToken = await Stripe.customers.create(
+  // const customerWithToken = await Stripe.customers.create(
+  //   {
+  //     source: token.id,
+  //   },
+  //   {
+  //     stripeAccount: stripeAccountId,
+  //   }
+  // );
+
+  //no customer if stripecustomerId
+  // const subscription = await Stripe.subscriptions.create(
+  //   {
+  //     customer: customerWithToken.id,
+  //     items: [
+  //       {
+  //         price,
+  //       },
+  //     ],
+  //     expand: ["latest_invoice.payment_intent"],
+  //     application_fee_percent: process.env.PLATEFORM_FEE,
+  //   },
+  //   {
+  //     stripeAccount: stripeAccountId,
+  //   }
+  // );
+  // return subscription;
+  const session = await Stripe.checkout.sessions.create(
     {
-      source: token.id,
+      // customer:'cus_OmZWqvVTdI2sa5',
+      payment_method_types: ["card"],
+      mode: "subscription",
+      line_items: [
+        {
+          price: price,
+          quantity: 1,
+        },
+      ],
+      success_url: `${process.env.DOMAIN}`,
+      cancel_url: `${process.env.DOMAIN}`,
+      application_fee_percent: process.env.PLATFORM_FEE,
     },
     {
       stripeAccount: stripeAccountId,
     }
   );
-  // console.log(customerWithToken, "wtone");
-  //todo retrivee these products from DB
+
+  return session.url;
+};
+
+const connectAccDel = async (connAccId) => {
+  const deleted = await Stripe.accounts.del(connAccId);
+  return deleted;
+};
+
+const stripeAccountProductCreate = async (stripeAccountId) => {
   const yearlyProduct = await Stripe.products.create(
     {
-      name: "MONTHLY_SPONSER",
+      name: "YEARLY_SPONSER",
     },
     { stripeAccount: stripeAccountId }
   );
@@ -207,10 +251,9 @@ const createSponserSubscription = async (
     { stripeAccount: stripeAccountId }
   );
 
-  // Create a yearly price for the connected account's product
   const yearlyPrice = await Stripe.prices.create(
     {
-      unit_amount: 7000, // Amount in cents ($70.00)
+      unit_amount: 6000,
       currency: "usd",
       recurring: {
         interval: "year",
@@ -221,10 +264,9 @@ const createSponserSubscription = async (
     { stripeAccount: stripeAccountId }
   );
 
-  // Create a monthly price for the connected account's product
   const monthlyPrice = await Stripe.prices.create(
     {
-      unit_amount: 600, // Amount in cents ($6.00)
+      unit_amount: 700,
       currency: "usd",
       recurring: {
         interval: "month",
@@ -234,24 +276,7 @@ const createSponserSubscription = async (
     },
     { stripeAccount: stripeAccountId }
   );
-  //no customer if stripecustomerId
-  const subscription = await Stripe.subscriptions.create(
-    {
-      customer: customerWithToken.id,
-      items: [
-        {
-          price: monthlyPrice.id,
-        },
-      ],
-      expand: ["latest_invoice.payment_intent"],
-      application_fee_percent: process.env.PLATEFORM_FEE,
-    },
-    {
-      stripeAccount: stripeAccountId,
-    }
-  );
-  // console.log(subscription);
-  return subscription;
+  return { monthlyProductId: monthlyPrice.id, yearlyProductId: yearlyPrice.id };
 };
 
 module.exports = {
@@ -265,4 +290,6 @@ module.exports = {
   createSponserSubscription,
   createToken,
   attachPaymentMethod,
+  stripeAccountProductCreate,
+  connectAccDel,
 };

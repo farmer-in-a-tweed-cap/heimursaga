@@ -162,6 +162,6 @@ router.get('/funding/:explorer/:stripeAccountId/:amount',  billingController.fun
 
 router.get('/billing-details', billingController.billingDetails)
 
-router.get('/sponser/:explorer/:stripeAccountId/:product_type', billingController.sponser)
+router.get('/sponser/:explorer/:stripeAccountId/:priceId', billingController.sponser)
 
 module.exports = router

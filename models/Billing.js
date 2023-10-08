@@ -15,7 +15,7 @@ let Billing = function (explorerId, plan, hasTrial, endDate, billingId) {
 Billing.createCustomer = async (username) => {
   try {
     const { _id, email } = await User.findByUsername(username);
-    const customer = await Stripe.addNewCustomer(email);
+    const customer = await Stripe.addNewCustomer(email, username);
     stripeCustomerId = customer.id;
 
     await billingCollection.insertOne({

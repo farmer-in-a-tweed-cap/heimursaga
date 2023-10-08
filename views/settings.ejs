@@ -36,7 +36,7 @@
 
 									<% if(plan && plan !== 'none' && !stripeAccountId){ %> 
 
-									<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#connect-bank" role="tab">
+									<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#connect-bank-tab" role="tab">
 										Sponsorship
 									</a>
 									<% } %>
@@ -301,7 +301,7 @@
 									</div>
 								</div>
 								
-								<div class="tab-pane fade" id="connect-bank" role="tabpanel">
+								<div class="tab-pane fade" id="connect-bank-tab" role="tabpanel">
 									<div class="card">
 
 										<div class="card-header">
@@ -318,7 +318,6 @@
 															<option value="AU">Australia</option>
 															<option value="AT">Austria</option>
 															<option value="BE">Belgium</option>
-															<option value="BR">Brazil</option>
 															<option value="BG">Bulgaria</option>
 															<option value="CA">Canada</option>
 															<option value="CY">Cyprus</option>
@@ -566,6 +565,7 @@
         // connect bank
         if (connectBank) {
             connectBank.addEventListener('click', function () {
+				console.log('hit')
                 if (selectedCountry) {
 					buttonSpinner.removeAttribute("hidden", true)
                     const requestOptions = {

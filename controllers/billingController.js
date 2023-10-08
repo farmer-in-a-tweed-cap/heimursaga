@@ -3,7 +3,9 @@ const Stripe = require("../stripe");
 const billingCollection = require("../db").db().collection("billing");
 const userCollection = require("../db").db().collection("users");
 const fundsCollection = require("../db").db().collection("funds");
+
 const Billing = require("../models/Billing");
+const ConnectAccountCustomer = require("../models/ConnectAccountCustomers");
 
 const productToPriceMap = {
   monthly_exp: process.env.MONTHLY_EXPLORER,
@@ -18,7 +20,7 @@ const status = {
 exports.subscribe = async function (req, res, next) {
   try {
     if (req.session.user) {
-      const product = req.params.product_type;
+      const product = req.params.priceId;
       let customerID = req.session.user.billingId;
       if (!product) throw new Error("subscription type is required");
 
@@ -135,11 +137,12 @@ exports.funding = async (req, res) => {
 //sponser
 exports.sponser = async (req, res) => {
   try {
-    let { stripeAccountId, product_type } = req.params;
+    let { stripeAccountId, priceId } = req.params;
+    console.log(stripeAccountId);
     //validation
     if (!stripeAccountId)
       throw new Error("stripeAccountId is missing in params");
-    if (!product_type) throw new Error("product_type is missing in params");
+    if (!priceId) throw new Error("PriceId is missing in params");
 
     let { username, billingId: stripeCustomerId = null } = req.session.user;
     //create customer
@@ -147,13 +150,13 @@ exports.sponser = async (req, res) => {
       stripeCustomerId = await Billing.createCustomer(username);
       req.session.user["billingId"] = stripeCustomerId;
     }
-    const price = productToPriceMap[product_type];
-    const subscription = await Stripe.createSponserSubscription(
+    const price = priceId;
+    const url = await Stripe.createSponserSubscription(
       price,
       stripeCustomerId,
       stripeAccountId
     );
-    res.send({ subscription });
+    res.send({ url });
   } catch (e) {
     console.log(e);
     res.send(e);
@@ -182,6 +185,7 @@ exports.webhook = async (req, res) => {
         })
         .toArray();
 
+      //false if subs to connect account
       if (billing.length) {
         if (data.plan.id === productToPriceMap.monthly_exp) {
           console.log("You are talking about monthly explorer plan ");
@@ -213,10 +217,27 @@ exports.webhook = async (req, res) => {
     }
     case "customer.subscription.updated": {
       // started trial
-      const billing = await billingCollection.find({
-        billingId: data.customer,
-      });
 
+      const billing = await billingCollection
+        .find({
+          billingId: data.customer,
+        })
+        .toArray();
+
+      console.log(data, "subcreaed updated");
+      const existingCustomer = await ConnectAccountCustomer.findByCustomerId(
+        data.customerId
+        );
+        if (!existingCustomer) {
+        const newCustomer = new ConnectAccountCustomer({
+          customerId: data.customerId,
+          cusExpId: data.cusExpId,
+          stripeAccountId: data.stripeAccountId,
+        });
+        newCustomer.createNew();
+      }
+
+      // if (billing.length) {
       if (data.plan.id === productToPriceMap.monthly_exp) {
         console.log("You are talking about monthly explorer plan ");
         billing.plan = "monthly_exp";
@@ -248,6 +269,7 @@ exports.webhook = async (req, res) => {
           },
         }
       );
+      // }
 
       break;
     }
@@ -284,10 +306,22 @@ exports.webhook = async (req, res) => {
         data.individual.verification.status === "verified" &&
         data.tos_acceptance.date
       ) {
+        console.log("inside xxd");
+        const { monthlyProductId, yearlyProductId } =
+          await Stripe.stripeAccountProductCreate(data.individual.account);
+
+        console.log("products created");
+        console.log(data.email);
         await userCollection.updateOne(
           { email: data.email },
-          { $set: { stripeAccountId: data.individual.account } }
+          {
+            $set: {
+              stripeAccountId: data.individual.account,
+              products: { monthlyProductId, yearlyProductId },
+            },
+          }
         );
+        console.log("upated12");
       }
 
       break;
@@ -310,6 +344,7 @@ exports.webhook = async (req, res) => {
       break;
     }
     case "checkout.session.completed": {
+      //null when subs to connect account
       if (data.payment_intent) {
         await fundsCollection.updateOne(
           {
