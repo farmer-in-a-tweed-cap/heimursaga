@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-
+import axios from "axios";
 export default class Sponsor {
   constructor() {
     this.sponsorButton = document.querySelector("#modal-button");
@@ -10,14 +10,14 @@ export default class Sponsor {
     this.sponsorModalBody = document.querySelector("#modal-body");
     this.sponsorModalFooter = document.querySelector("#modal-footer");
     this.username = document.querySelector("#profile-username").innerText;
-    //
+
     this.publishableKey = document.querySelector("#stripePubKey").value;
     this.stripeAccountId = document.querySelector("#stripeAccountId").value;
     this.monthlyProductId = document.querySelector("#monthlyProductId").value;
     this.yearlyProductId = document.querySelector("#yearlyProductId").value;
-    console.log(this.monthlyProductId, this.yearlyProductId);
     this.explorer = "nelliebly";
     this.waitTimer;
+    this.cardElement;
     this.sponserUser = this.sponserUser.bind(this); // Using .bind()
     this.events();
   }
@@ -33,8 +33,6 @@ export default class Sponsor {
     this.sponsorModal.show();
     this.initialHTML();
   }
-
-  sendRequest() {}
 
   initialHTML() {
     this.sponsorModalHeader.innerHTML = `<h3 class="text-primary text-center w-100">SPONSORSHIP OPTIONS</h3>`;
@@ -84,14 +82,24 @@ export default class Sponsor {
             </div>																	
         </div>
     </div>`;
-
     document
       .querySelector("#singlepayment-select-btn")
       .addEventListener("click", () => this.singlePaymentHTML());
     document
       .querySelector("#subscription-select-btn")
-      .addEventListener("click", () => this.subscribeHTML());
+      .addEventListener("click", () => this.fetchSubscriptionDetails());
   }
+
+  fetchSubscriptionDetails = async () => {
+    const { data } = await axios.get(
+      `/sponsor/${this.explorer}/${this.stripeAccountId}`
+    );
+    if (data?.plan) {
+      this.alreadyHaveSubscription(data.plan);
+    } else {
+      this.subscribeHTML();
+    }
+  };
 
   singlePaymentHTML() {
     this.sponsorModalHeader.innerHTML = DOMPurify.sanitize(
@@ -122,15 +130,20 @@ export default class Sponsor {
                 aria-label="Dollar amount (with dot and two decimal places)" required>
                 <span class="input-group-text">$</span>
             </div>
+            <div class="error"></div>
         </div>
 
         <div class="mb-3 mx-5">
-            <input class="form-control mb-3" placeholder="credit card field here"></input>
+          <form id="payment-form">
+            <div id="card-element" class="p-2 border rounded">
+              <!-- elements from stripe will be inserted here. -->
+            </div>
+          </form>
             <button class="btn btn-secondary" id="back-btn">Back</button>
             <button class="btn btn-primary" id="one-time-payment">Submit</button>
         </div>
     </div>`);
-
+    this.mountStripeElements();
     document
       .querySelector("#back-btn")
       .addEventListener("click", () => this.initialHTML());
@@ -138,6 +151,39 @@ export default class Sponsor {
       .querySelector("#one-time-payment")
       .addEventListener("click", () => this.giveOneTimeFund());
   }
+
+  alreadyHaveSubscription = (plan) => {
+    this.sponsorModalHeader.innerHTML = DOMPurify.sanitize(
+      `<h3 class="text-primary text-center w-100">Subscription Detail</h3>`
+    );
+    this.sponsorModalBody.innerHTML = DOMPurify.sanitize(`
+    <div class="mb-4">
+        <ul class="text-small list-unstyled mx-3">
+            <li class="mb-2">
+                Access to sponsor-only entries
+            </li>
+            <li class="mb-2">
+                Latest entries in your email inbox
+            </li>
+            <li class="mb-2">
+                Contribute to ongoing exploration and discovery!
+            </li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <div class="my-3 mx-5">
+      <div>You have subscribed to
+        <span style="color: green; font-weight: bold;"> ${plan} </span>
+          Plan. 
+      </div>
+        <button class="btn btn-secondary" id="back-btn">Back</button>
+    </div>`);
+    document
+      .querySelector("#back-btn")
+      .addEventListener("click", () => this.initialHTML());
+  };
 
   subscribeHTML() {
     this.sponsorModalHeader.innerHTML = DOMPurify.sanitize(
@@ -168,10 +214,21 @@ export default class Sponsor {
     </div>
 
     <div class="my-3 mx-5">
-        <input class="form-control mb-3" placeholder="credit card field here"></input>
+      <form id="payment-form">
+        <div id="card-element" class="p-2 border rounded">
+          <!-- elements from stripe will be inserted here. -->
+        </div>
+      </form>
+  
         <button class="btn btn-secondary" id="back-btn">Back</button>
-        <button class="btn btn-primary" id="sponser-explorer">Submi12t</button>
+        <button class="btn btn-primary" id="sponser-explorer">
+          <span id="loading-spinner" class="spinner-border spinner-border-sm" role="status" style="display: none;"></span>
+          Click Me
+        </button>
+
     </div>`);
+
+    this.mountStripeElements();
     document
       .querySelector("#back-btn")
       .addEventListener("click", () => this.initialHTML());
@@ -180,10 +237,18 @@ export default class Sponsor {
       .addEventListener("click", () => this.sponserUser());
   }
 
-  sponserUser = () => {
+  mountStripeElements = () => {
     const publishableKey = this.publishableKey;
-    const stripe = Stripe(publishableKey);
-    const sponserBtn = document.getElementById("sponser");
+    this.stripe = Stripe(publishableKey);
+    var elements = this.stripe.elements();
+
+    this.cardElement = elements.create("card");
+    this.cardElement.mount("#card-element");
+  };
+
+  sponserUser = async () => {
+    const { token, error } = await this.stripe.createToken(this.cardElement);
+    this.cardToken = token.id;
 
     // selected subscription
     let monthlySubsActive = true;
@@ -191,21 +256,28 @@ export default class Sponsor {
     var monthlyRadio = document.getElementById("monthly-outlined");
     var yearlyRadio = document.getElementById("yearly-outlined");
 
+    const modal = document.getElementById("sponsor-modal");
+    var modalBackdrop = document.querySelector(".modal-backdrop");
+
+    const button = document.getElementById("sponser-explorer");
+    const spinner = document.getElementById("loading-spinner");
+
+    button.disabled = true;
+    spinner.style.display = "inline-block";
+    button.textContent = "Loading...";
+
     if (monthlyRadio.checked) monthlySubsActive = true;
     else if (yearlyRadio.checked) monthlySubsActive = false;
     else optionSelected = false;
 
-    const fundBtn = document.getElementById("fund-button");
     const stripeAccountId = this.stripeAccountId;
     const explorer = this.explorer;
 
-    console.log(this.monthlyProductId, "sss");
-    const amountField = document.getElementById("amount");
 
     if (!optionSelected) return;
     if (monthlySubsActive) {
       fetch(
-        `/sponser/${explorer}/${stripeAccountId}/${this.monthlyProductId}`,
+        `/sponser/${explorer}/${stripeAccountId}/${this.monthlyProductId}/${this.cardToken}`,
         {
           method: "GET",
           headers: {
@@ -215,65 +287,110 @@ export default class Sponsor {
       )
         .then(async (result) => {
           const response = await result.json();
-          console.log(response);
+          button.disabled = false;
+          spinner.style.display = "none";
+          button.textContent = "Submit";
+          if (response.success) {
+            modal.classList.remove("show");
+            if (modalBackdrop) {
+              modalBackdrop.parentNode.removeChild(modalBackdrop);
+            }
+          }
           return response;
         })
-        .then((response) => {
-          if (response?.url) window.location = response.url;
+        .catch((err) => {
+          button.disabled = false;
+          spinner.style.display = "none";
+          button.textContent = "Submit";
+          console.log("error:", err);
         });
     } else {
-      fetch(`/sponser/${explorer}/${stripeAccountId}/${this.yearlyProductId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      fetch(
+        `/sponser/${explorer}/${stripeAccountId}/${this.yearlyProductId}/${this.cardToken}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
         .then(async (result) => {
+          button.disabled = false;
+          spinner.style.display = "none";
+          button.textContent = "Submit";
           const response = await result.json();
           console.log(response);
+          if (response.success) {
+            modal.classList.remove("show");
+            if (modalBackdrop) {
+              modalBackdrop.parentNode.removeChild(modalBackdrop);
+            }
+          }
           return response;
         })
-        .then((response) => {
-          if (response?.url) window.location = response.url;
+        .catch((err) => {
+          button.disabled = false;
+          spinner.style.display = "none";
+          button.textContent = "Submit";
+          console.log("error:", err);
         });
     }
   };
-  giveOneTimeFund = () => {
-    // if (fundBtn && amountField) {
-    // 	fundBtn.addEventListener('click', () => {
-    // 		let amount = parseInt(amountField.value);
-    // 		if (amount){
-    // 			if(amount > 2000) {
-    // 				console.error('amount should be less than 2001')
-    // 				const error = document.getElementById('error');
-    // 				error.innerHTML = 'amount should be less than 2001';
-    // 			}
-    // 			else{
-    // 				fundBtn.classList.add("disabled");
-    // 				fundBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
-    // 				fetch(`/funding/${explorer}/${stripeAccountId}/${amount}`, {
-    // 					method: 'GET',
-    // 					headers: {
-    // 						'Content-Type': 'application/json'
-    // 					},
-    // 				})
-    // 					.then(async (result) => {
-    // 						const response = await result.json();
-    // 						return response
-    // 					})
-    // 					.then((response) => {
-    // 						if (response?.url)
-    // 							window.location = response.url
-    // 					}).catch(()=>{
-    // 						fundBtn.classList.remove("disabled");
-    // 						fundBtn.innerHTML = "Give Fund";
-    // 					})
-    // 			}
-    // 			}else {
-    // 			const error = document.getElementById('error');
-    // 			error.innerHTML = 'this field is required';
-    // 		}
-    // 	})
-    // }
+
+  giveOneTimeFund = async () => {
+    const amountField = document.getElementById("amount");
+    const cardField = document.getElementById("card-element");
+
+    const fundSumitBtn = document.getElementById("one-time-payment");
+    const { token, error } = await this.stripe.createToken(this.cardElement);
+    if (error) {
+      cardField.style.border = "1px solid red";
+      return;
+    }
+    console.log(error);
+    this.cardToken = token.id;
+
+    if (fundSumitBtn && amountField) {
+      amountField.style.border = "1px solid gray";
+      let amount = parseFloat(amountField.value);
+
+      if (amount) {
+        if (amount.length) {
+          amountField.style.border = "1px solid red";
+        } else if (amount > 2000) {
+          console.error("amount should be less than 2001");
+          amountField.style.border = "1px solid red";
+        } else {
+          fundSumitBtn.classList.add("disabled");
+          fundSumitBtn.innerHTML =
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+          fetch(
+            `/funding/${this.stripeAccountId}/${amount}/${this.cardToken}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+            .then(async (result) => {
+              const response = await result.json();
+              fundSumitBtn.classList.remove("disabled");
+              fundSumitBtn.innerHTML = "Submit";
+              amountField.value = "";
+              return response;
+            })
+            .catch((err) => {
+              console.log(err.message);
+              fundSumitBtn.classList.remove("disabled");
+              fundSumitBtn.innerHTML = "Submit";
+            });
+        }
+      } else {
+        amountField.style.border = "1px solid red";
+        const error = document.getElementById("error");
+        error.innerHTML = "this field is required";
+      }
+    }
   };
 }

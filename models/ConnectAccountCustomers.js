@@ -10,15 +10,15 @@ function ConnectAccountCustomer(customerId, cusExpId, stripeAccountId) {
 }
 
 // Create a new ConnectAccountCustomer document
-ConnectAccountCustomer.createNew = async function () {
+ConnectAccountCustomer.prototype.createNew = async function () {
   try {
+    console.log(this.customerId, this.cusExpId, this.stripeAccountId);
     const result = await connectAccCustomersCollection.insertOne({
       customerId: this.customerId,
       cusExpId: this.cusExpId,
       stripeAccountId: this.stripeAccountId,
     });
-
-    console.log(result, "res");
+    return result;
   } catch (error) {
     console.log(error);
   }
@@ -34,6 +34,22 @@ ConnectAccountCustomer.findByCustomerId = async function (customerId) {
   } catch (error) {
     console.log(error);
     return null;
+  }
+};
+
+ConnectAccountCustomer.findByExpIdAndAccId = async (
+  cusExpId,
+  stripeAccountId
+) => {
+  try {
+    const customer = await connectAccCustomersCollection.findOne({
+      cusExpId,
+      stripeAccountId,
+    });
+    return customer;
+  } catch (error) {
+    console.log(error);
+    return error;
   }
 };
 

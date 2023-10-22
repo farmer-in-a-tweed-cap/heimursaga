@@ -49,4 +49,17 @@ Billing.getBillingDetails = async (username) => {
   }
 };
 
+Billing.findByCustomerId = async (customerId) => {
+  try {
+    const billingInfo = await billingCollection.findOne({
+      billingId: customerId,
+    });
+
+    return billingInfo;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
 module.exports = Billing;

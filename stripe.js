@@ -1,4 +1,6 @@
 const stripe = require("stripe");
+const ConnectAccountCustomer = require("./models/ConnectAccountCustomers");
+const Billing = require("./models/Billing");
 const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2020-08-27",
   maxNetworkRetries: 2,
@@ -92,144 +94,86 @@ const connectBank = async (user) => {
 };
 
 const createPaymentSession = async (
-  line_items,
-  stripeCustomerId,
+  unit_amount,
+  token,
   stripeAccountId,
   percentPlateformFees
 ) => {
-  const session = await Stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items,
-    mode: "payment",
+  const charges = await Stripe.charges.create({
+    amount: unit_amount,
     currency: "usd",
-    customer: stripeCustomerId,
-    payment_intent_data: {
-      transfer_data: {
-        destination: stripeAccountId,
-      },
-      on_behalf_of: stripeAccountId,
-      application_fee_amount: percentPlateformFees,
+    source: token,
+    transfer_data: {
+      destination: stripeAccountId,
     },
-    success_url: `${process.env.DOMAIN}`,
-    cancel_url: `${process.env.DOMAIN}`,
+    on_behalf_of: stripeAccountId,
+    application_fee_amount: percentPlateformFees,
   });
-  return session;
-};
 
-const createToken = async (customerId, stripeAccountId) => {
-  // console.log("token");
-  const token = await Stripe.tokens.create(
-    {
-      customer: customerId,
-    },
-    {
-      stripeAccount: stripeAccountId,
-    }
-  );
-  // console.log(token, ":tpek ");
-  return token;
-};
-
-const attachPaymentMethod = async (stripeCustomerId, stripeAccountId) => {
-  const testCardToken = "tok_visa";
-  // console.log("dede");
-  const paymentMethod = await Stripe.paymentMethods.create({
-    type: "card",
-    card: {
-      token: testCardToken,
-    },
-  });
-  // // console.log(paymentMethod, "pM");
-  // const attach = await Stripe.paymentMethods.attach(paymentMethod.id, {
-  //   customer: stripeCustomerId,
-  // });
-  // const customer = await Stripe.customers.retrieve(attach.customer); // Replace with actual customer ID
-
-  // // console.log(attach, customer, "cust,attachcus");
-  // const updateCustomer = await Stripe.customers.update(stripeCustomerId, {
-  //   invoice_settings: {
-  //     default_payment_method: "pm_1NjmF9FXr1UXQNSZBEGaWGFe",
-  //   },
-  // });
-  // console.log(paymentMethod);
-  const PM = await Stripe.paymentMethods.create(
-    {
-      customer: stripeCustomerId,
-      payment_method: paymentMethod.id,
-    },
-    {
-      stripeAccount: stripeAccountId,
-    }
-  );
-  // console.log(PM, "updatedCust");
-  // await createToken(stripeCustomerId, stripeAccountId);
-  return PM;
+  return charges;
 };
 
 const createSponserSubscription = async (
+  token,
   price,
   stripeCustomerId,
   stripeAccountId
 ) => {
-  // await Stripe.customers.update(stripeCustomerId, {
-  //   source: "tok_mastercard",
-  // });
-  // const token = await Stripe.tokens.create(
-  //   {
-  //     customer: stripeCustomerId,
-  //   },
-  //   {
-  //     stripeAccount: stripeAccountId,
-  //   }
-  // );
+  const billingDetails = await Billing.findByCustomerId(stripeCustomerId);
+  const stripeAccCustomerDetails =
+    await ConnectAccountCustomer.findByExpIdAndAccId(
+      billingDetails.explorerId,
+      stripeAccountId
+    );
+  let cusStripeAccId = stripeAccCustomerDetails?.customerId || null;
+  if (!stripeAccCustomerDetails) {
+    await Stripe.customers.update(stripeCustomerId, {
+      source: token,
+    });
 
-  // const customerWithToken = await Stripe.customers.create(
-  //   {
-  //     source: token.id,
-  //   },
-  //   {
-  //     stripeAccount: stripeAccountId,
-  //   }
-  // );
+    const accToken = await Stripe.tokens.create(
+      {
+        customer: stripeCustomerId,
+      },
+      {
+        stripeAccount: stripeAccountId,
+      }
+    );
 
-  //no customer if stripecustomerId
-  // const subscription = await Stripe.subscriptions.create(
-  //   {
-  //     customer: customerWithToken.id,
-  //     items: [
-  //       {
-  //         price,
-  //       },
-  //     ],
-  //     expand: ["latest_invoice.payment_intent"],
-  //     application_fee_percent: process.env.PLATEFORM_FEE,
-  //   },
-  //   {
-  //     stripeAccount: stripeAccountId,
-  //   }
-  // );
-  // return subscription;
-  const session = await Stripe.checkout.sessions.create(
+    const customerWithToken = await Stripe.customers.create(
+      {
+        source: accToken.id,
+      },
+      {
+        stripeAccount: stripeAccountId,
+      }
+    );
+
+    const ConnectAccountCustomerObj = new ConnectAccountCustomer(
+      customerWithToken.id,
+      billingDetails.explorerId,
+      stripeAccountId
+    );
+    await ConnectAccountCustomerObj.createNew();
+    cusStripeAccId = customerWithToken.id;
+  }
+
+  const subscription = await Stripe.subscriptions.create(
     {
-      // customer:'cus_OmZWqvVTdI2sa5',
-      payment_method_types: ["card"],
-      mode: "subscription",
-      line_items: [
+      customer: cusStripeAccId,
+      items: [
         {
-          price: price,
-          quantity: 1,
+          price,
         },
       ],
-      success_url: `${process.env.DOMAIN}`,
-      cancel_url: `${process.env.DOMAIN}`,
-      application_fee_percent: process.env.PLATFORM_FEE,
+      expand: ["latest_invoice.payment_intent"],
+      application_fee_percent: process.env.PLATEFORM_FEE,
     },
     {
       stripeAccount: stripeAccountId,
     }
   );
-
-  return session.url;
+  return subscription;
 };
 
 const connectAccDel = async (connAccId) => {
@@ -288,8 +232,6 @@ module.exports = {
   connectBank,
   createPaymentSession,
   createSponserSubscription,
-  createToken,
-  attachPaymentMethod,
   stripeAccountProductCreate,
   connectAccDel,
 };

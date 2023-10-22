@@ -2,10 +2,11 @@ const User = require("../models/User");
 const Stripe = require("../stripe");
 const billingCollection = require("../db").db().collection("billing");
 const userCollection = require("../db").db().collection("users");
-const fundsCollection = require("../db").db().collection("funds");
 
 const Billing = require("../models/Billing");
 const ConnectAccountCustomer = require("../models/ConnectAccountCustomers");
+const Sponsor = require("../models/Sponsors");
+const Funds = require("../models/Funds");
 
 const productToPriceMap = {
   monthly_exp: process.env.MONTHLY_EXPLORER,
@@ -88,46 +89,27 @@ exports.ConnectBank = async (req, res) => {
 //funding
 exports.funding = async (req, res) => {
   try {
-    let { stripeAccountId, amount, explorer } = req.params;
+    let { stripeAccountId, amount, token } = req.params;
     //validation
     if (!stripeAccountId)
       throw new Error("stripeAccountId is missing in params");
     if (!amount) throw new Error("amount is missing in params");
-
-    //create customer
-    let { username, billingId: stripeCustomerId = null } = req.session.user;
-
-    if (!stripeCustomerId) {
-      stripeCustomerId = await Billing.createCustomer(username);
-      req.session.user["billingId"] = stripeCustomerId;
-    }
+    let { _id } = req.session.user;
 
     const unit_amount = Math.ceil(amount * 100);
-    const line_items = [
-      {
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: `user: ${explorer}`,
-            description: `Sending funds to ${explorer}`,
-          },
-          unit_amount: unit_amount,
-        },
-        quantity: 1,
-      },
-    ];
 
     const percentPlateformFees = Math.ceil(
       (process.env.PLATEFORM_FEE / 100) * amount * 100
     );
 
-    const session = await Stripe.createPaymentSession(
-      line_items,
-      stripeCustomerId,
+    const charges = await Stripe.createPaymentSession(
+      unit_amount,
+      token,
       stripeAccountId,
       percentPlateformFees
     );
-    res.send({ url: session.url });
+    await Funds.create(charges, _id);
+    res.send(charges);
   } catch (e) {
     console.log(e);
     res.status(500).send({ error: e });
@@ -137,26 +119,30 @@ exports.funding = async (req, res) => {
 //sponser
 exports.sponser = async (req, res) => {
   try {
-    let { stripeAccountId, priceId } = req.params;
-    console.log(stripeAccountId);
+    let { stripeAccountId, priceId, cardToken } = req.params;
     //validation
     if (!stripeAccountId)
       throw new Error("stripeAccountId is missing in params");
     if (!priceId) throw new Error("PriceId is missing in params");
+    if (!cardToken) throw new Error("CardToken is missing in params");
 
     let { username, billingId: stripeCustomerId = null } = req.session.user;
     //create customer
     if (!stripeCustomerId) {
+      console.log("customer created!");
       stripeCustomerId = await Billing.createCustomer(username);
       req.session.user["billingId"] = stripeCustomerId;
     }
+
     const price = priceId;
-    const url = await Stripe.createSponserSubscription(
+    const subscription = await Stripe.createSponserSubscription(
+      cardToken,
       price,
       stripeCustomerId,
       stripeAccountId
     );
-    res.send({ url });
+
+    res.json({ success: true, subscription: subscription });
   } catch (e) {
     console.log(e);
     res.send(e);
@@ -179,6 +165,15 @@ exports.webhook = async (req, res) => {
   console.log(event.type, " = stripe event");
   switch (event.type) {
     case "customer.subscription.created": {
+      const response = await ConnectAccountCustomer.findByCustomerId(
+        data.customer
+      );
+      const custExpId = response?.cusExpId || null;
+      const stripAccId = response?.stripeAccountId || null;
+      if (custExpId && stripAccId) {
+        await Sponsor.create(response._id, data.plan.id, false, null);
+      }
+
       const billing = await billingCollection
         .find({
           billingId: data.customer,
@@ -224,11 +219,10 @@ exports.webhook = async (req, res) => {
         })
         .toArray();
 
-      console.log(data, "subcreaed updated");
       const existingCustomer = await ConnectAccountCustomer.findByCustomerId(
         data.customerId
-        );
-        if (!existingCustomer) {
+      );
+      if (!existingCustomer) {
         const newCustomer = new ConnectAccountCustomer({
           customerId: data.customerId,
           cusExpId: data.cusExpId,
@@ -306,53 +300,15 @@ exports.webhook = async (req, res) => {
         data.individual.verification.status === "verified" &&
         data.tos_acceptance.date
       ) {
-        console.log("inside xxd");
         const { monthlyProductId, yearlyProductId } =
           await Stripe.stripeAccountProductCreate(data.individual.account);
 
-        console.log("products created");
-        console.log(data.email);
         await userCollection.updateOne(
           { email: data.email },
           {
             $set: {
               stripeAccountId: data.individual.account,
               products: { monthlyProductId, yearlyProductId },
-            },
-          }
-        );
-        console.log("upated12");
-      }
-
-      break;
-    }
-    case "charge.succeeded": {
-      const amount = parseInt(data.amount / 100);
-      //null if subsccribe to connect account
-      if (data.destination) {
-        await fundsCollection.insertOne({
-          stripeAccountId: data.destination,
-          stripeCustomerId: data.customer,
-          amount,
-          plateformFeePercent: process.env.PLATEFORM_FEE,
-          status: status.CHARGE_SUCCESS,
-          paymentIntentId: data.payment_intent,
-          createDate: new Date().toISOString(),
-        });
-      }
-
-      break;
-    }
-    case "checkout.session.completed": {
-      //null when subs to connect account
-      if (data.payment_intent) {
-        await fundsCollection.updateOne(
-          {
-            paymentIntentId: data.payment_intent,
-          },
-          {
-            $set: {
-              status: status.COMPLETED,
             },
           }
         );

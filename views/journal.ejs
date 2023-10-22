@@ -10,7 +10,6 @@
 		<%= bio %>
 			<% } %>
 				">
-
 				</head>
 
 				<%- include('includes/sidebar') %>
@@ -271,7 +270,6 @@
 																																				<div
 																																					class="input-group">
 																																					<input
-																																						id="amount"
 																																						type="number"
 																																						class="form-control"
 																																						onchange="handleInput()"
@@ -935,7 +933,7 @@
 																																		Latitude:
 																																		<%=
 																																			entry.GeoJSONcoordinates.coordinates[1]%>
-																																			</small>
+																																</small>
 																															</div>
 
 
@@ -1230,6 +1228,7 @@
 								</div>
 
 						</main>
+						<script type="text/javascript" src="https://js.stripe.com/v3/"></script>
 
 						<script>
 
@@ -1250,193 +1249,6 @@
 								})
 							}
 
-
-						</script>
-						<script>
-							function handleInput() {
-								let amount = document.getElementById('amount').value;
-								if (amount === '') {
-									const error = document.getElementById('error');
-									error.innerHTML = 'this field is required';
-								}
-								else {
-									const error = document.getElementById('error');
-									error.innerHTML = '';
-								}
-							}
-						</script>
-
-						<script>
-							document.addEventListener("DOMContentLoaded", function () {
-								const monthlyBtn = document.getElementById("monthlyBtn");
-								const yearlyBtn = document.getElementById("yearlyBtn");
-								const monthlyContent = document.getElementById("monthly-detail");
-								const yearlyContent = document.getElementById("yearly-detail");
-								if (yearlyContent)
-									yearlyContent.style.display = "none";
-
-								if (monthlyBtn)
-									monthlyBtn.addEventListener("click", function () {
-										monthlyContent.style.display = "block";
-										yearlyContent.style.display = "none";
-										monthlyBtn.classList.add("active");
-										yearlyBtn.classList.remove("active");
-									});
-
-								if (yearlyBtn)
-									yearlyBtn.addEventListener("click", function () {
-										monthlyContent.style.display = "none";
-										yearlyContent.style.display = "block";
-										monthlyBtn.classList.remove("active");
-										yearlyBtn.classList.add("active");
-									});
-							});
-
-						</script>
-
-						<script>
-							document.addEventListener('DOMContentLoaded', function () {
-								var fundSponserModal = document.getElementById('fund-sponser-modal');
-
-								fundSponserModal.addEventListener('hidden.bs.modal', function (event) {
-									console.log("Modal closed!");
-									sponserModal.style.display = 'none';
-									oneTimeModal.style.display = 'none'
-									selectOptionModal.style.display = 'block';
-								});
-								const sponserOption = document.getElementById('sponser-option');
-								const oneTimeOption = document.getElementById('one-time');
-
-								const sponserModal = document.getElementById('sponser-modal');
-								const oneTimeModal = document.getElementById('send-fund-modal');
-								const selectOptionModal = document.getElementById('select-option-modal')
-
-
-								if (sponserOption) {
-									sponserOption.addEventListener('click', () => {
-										sponserModal.style.display = 'block';
-										selectOptionModal.style.display = 'none';
-									})
-								}
-								if (oneTimeOption) {
-									oneTimeOption.addEventListener('click', () => {
-										sponserModal.style.display = 'none';
-										selectOptionModal.style.display = 'none';
-										oneTimeModal.style.display = 'block'
-									})
-								}
-							})
-						</script>
-
-						<script type="text/javascript" src="https://js.stripe.com/v3/"></script>
-
-						<script>
-							document.addEventListener('DOMContentLoaded', function () {
-								const publishableKey = `<%- stripePubKey %>`;
-								const stripe = Stripe(publishableKey);
-								const sponserBtn = document.getElementById('sponser');
-
-								// selected subscription
-								const monthlyBtn = document.getElementById("monthlyBtn");
-								const yearlyBtn = document.getElementById("yearlyBtn");
-								let monthlySubsActive = true;
-								if (yearlyBtn)
-									yearlyBtn.addEventListener('click', () => {
-										monthlySubsActive = false;
-									})
-
-								if (monthlyBtn)
-									monthlyBtn.addEventListener('click', () => {
-										monthlySubsActive = true
-									})
-
-
-								const fundBtn = document.getElementById('fund-button');
-								const stripeAccountId = `<%- stripeAccountId %>`
-								const explorer = `<%- profileUsername %>`;
-
-								const amountField = document.getElementById('amount');
-								if (fundBtn && amountField) {
-									fundBtn.addEventListener('click', () => {
-										let amount = parseInt(amountField.value);
-
-										if (amount) {
-											if (amount > 2000) {
-												console.error('amount should be less than 2001')
-												const error = document.getElementById('error');
-												error.innerHTML = 'amount should be less than 2001';
-											}
-											else {
-												fundBtn.classList.add("disabled");
-												fundBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
-												fetch(`/funding/${explorer}/${stripeAccountId}/${amount}`, {
-													method: 'GET',
-													headers: {
-														'Content-Type': 'application/json'
-													},
-
-												})
-													.then(async (result) => {
-														const response = await result.json();
-														return response
-													})
-													.then((response) => {
-														if (response?.url)
-															window.location = response.url
-													}).catch(() => {
-														fundBtn.classList.remove("disabled");
-														fundBtn.innerHTML = "Give Fund";
-													})
-											}
-										} else {
-
-											const error = document.getElementById('error');
-											error.innerHTML = 'this field is required';
-										}
-									})
-								}
-
-								if (sponserBtn) {
-									sponserBtn.addEventListener('click', () => {
-										console.log('xxxd', monthlySubsActive);
-										if (monthlySubsActive) {
-											fetch(`/sponser/${explorer}/${stripeAccountId}/monthly_exp`, {
-												method: 'GET',
-												headers: {
-													'Content-Type': 'application/json'
-												},
-
-											})
-												.then(async (result) => {
-													const response = await result.json();
-													console.log(response);
-													return response
-												})
-												.then((response) => {
-													if (response?.url)
-														window.location = response.url
-												})
-										} else {
-											fetch(`/sponser/${explorer}/${stripeAccountId}/yearly_exp`, {
-												method: 'GET',
-												headers: {
-													'Content-Type': 'application/json'
-												},
-
-											})
-												.then(async (result) => {
-													const response = await result.json();
-													console.log(response);
-													return response
-												})
-												.then((response) => {
-													if (response?.url)
-														window.location = response.url
-												})
-										}
-									})
-								}
-							})
 
 						</script>
 

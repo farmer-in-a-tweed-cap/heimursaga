@@ -13,6 +13,7 @@ const User = require('./models/User')
 const router = express.Router()
 const billingController = require('./controllers/billingController')
 const { multerUploads } = require('./models/Photo')
+const connectAccCustomerController = require('./controllers/connectAccCustomerController')
 
 
 
@@ -158,10 +159,12 @@ router.post('/select-type/:username', userController.mustBeLoggedIn, userControl
 router.get('/subscribe/:product_type',  billingController.subscribe)
 router.get('/billing/:email/:customer',  billingController.Billing)
 router.get('/connect_bank',  billingController.ConnectBank)
-router.get('/funding/:explorer/:stripeAccountId/:amount',  billingController.funding)
+router.get('/funding/:stripeAccountId/:amount/:token',  billingController.funding)
 
 router.get('/billing-details', billingController.billingDetails)
 
-router.get('/sponser/:explorer/:stripeAccountId/:priceId', billingController.sponser)
+router.get('/sponser/:explorer/:stripeAccountId/:priceId/:cardToken', billingController.sponser)
+
+router.get('/sponsor/:explorerId/:stripeAccountId', connectAccCustomerController.getSubscritionDetails)
 
 module.exports = router
