@@ -21,6 +21,7 @@ const Stripe = require('../stripe')
 const billingController =  require('../models/Billing');
 const { createCustomer } = require('./billingController')
 const Billing = require('../models/Billing')
+const Sponsor = require('../models/Sponsors')
 const billingCollection = require('../db').db().collection("billing")
 
 
@@ -189,7 +190,13 @@ exports.viewSettings = async function(req, res) {
     const billing = await billingCollection.findOne({
       billingId:  req.session.user.billingId,
     });
-    User.findByUsername(req.profileUser.username).then(function(user){
+    console.log(req.session.user._id)
+    const sponsored = await Sponsor.findAllSponsoredByUserId(req.session.user._id);
+    console.log(sponsored,'ehehhe')
+  
+    User.findByUsername(req.profileUser.username).then(async function(user){
+    const sponsors = await Sponsor.findAllSponsorsByAccId(user.stripeAccountId);
+    console.log(sponsors)
     res.render('settings', {
       pageName: "settings",
       email: user.email,
@@ -381,7 +388,6 @@ exports.journalScreen = function(req, res) {
     let drafts = await Draft.findByAuthorId(req.profileUser._id)
     let user = await User.findByUsername(req.profileUser.username)
     let journeys = await Entry.findJourneysByUsername(req.profileUser.username)
-    
     if (req.isVisitorsProfile == true){
       res.render('journal', {
         pageName: "my-journal",

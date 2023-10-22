@@ -1,6 +1,6 @@
-const connectAccCustomersCollection = require("../db")
-  .db()
-  .collection("connectAccountCustomers");
+const { ObjectId } = require("mongodb");
+
+const connectAccCustomersCollection = require("../db").db().collection("connectAccountCustomers");
 
 // Define the ConnectAccountCustomer constructor
 function ConnectAccountCustomer(customerId, cusExpId, stripeAccountId) {
@@ -25,11 +25,9 @@ ConnectAccountCustomer.prototype.createNew = async function () {
 };
 
 // Add a function to find a document by customerId
-ConnectAccountCustomer.findByCustomerId = async function (customerId) {
+ConnectAccountCustomer.find = async function (where) {
   try {
-    const customer = await connectAccCustomersCollection.findOne({
-      customerId,
-    });
+    const customer = await connectAccCustomersCollection.findOne(where);
     return customer;
   } catch (error) {
     console.log(error);
@@ -37,19 +35,16 @@ ConnectAccountCustomer.findByCustomerId = async function (customerId) {
   }
 };
 
-ConnectAccountCustomer.findByExpIdAndAccId = async (
-  cusExpId,
-  stripeAccountId
-) => {
+ConnectAccountCustomer.findByExpIdAndAccId = async (expId, stripeAccountId) => {
   try {
     const customer = await connectAccCustomersCollection.findOne({
-      cusExpId,
+      cusExpId: expId,
       stripeAccountId,
     });
     return customer;
-  } catch (error) {
-    console.log(error);
-    return error;
+  } catch (err) {
+    console.log(err);
+    return null;
   }
 };
 

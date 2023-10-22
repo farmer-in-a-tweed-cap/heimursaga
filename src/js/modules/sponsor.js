@@ -223,7 +223,7 @@ export default class Sponsor {
         <button class="btn btn-secondary" id="back-btn">Back</button>
         <button class="btn btn-primary" id="sponser-explorer">
           <span id="loading-spinner" class="spinner-border spinner-border-sm" role="status" style="display: none;"></span>
-          Click Me
+          Submit
         </button>
 
     </div>`);

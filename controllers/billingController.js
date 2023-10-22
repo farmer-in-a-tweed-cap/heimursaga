@@ -12,16 +12,17 @@ const productToPriceMap = {
   monthly_exp: process.env.MONTHLY_EXPLORER,
   yearly_exp: process.env.ANNUAL_EXPLORER,
 };
-const status = {
-  COMPLETED: "completed",
-  CHARGE_SUCCESS: "charge-succeed",
+
+const subsStatus = {
+  transfer_disabled: "transfer_disabled",
+  transfer_enabled: "transfer_enabled",
 };
 
 //checkout
 exports.subscribe = async function (req, res, next) {
   try {
     if (req.session.user) {
-      const product = req.params.priceId;
+      const product = req.params.product_type;
       let customerID = req.session.user.billingId;
       if (!product) throw new Error("subscription type is required");
 
@@ -165,9 +166,9 @@ exports.webhook = async (req, res) => {
   console.log(event.type, " = stripe event");
   switch (event.type) {
     case "customer.subscription.created": {
-      const response = await ConnectAccountCustomer.findByCustomerId(
-        data.customer
-      );
+      const response = await ConnectAccountCustomer.find({
+        customerId: data.customer,
+      });
       const custExpId = response?.cusExpId || null;
       const stripAccId = response?.stripeAccountId || null;
       if (custExpId && stripAccId) {
@@ -206,6 +207,13 @@ exports.webhook = async (req, res) => {
             },
           }
         );
+
+        //update user subscription status
+        const resp = await User.findAndUpdateByBillingID(
+          data.customer,
+          subsStatus.transfer_enabled
+        );
+        console.log(resp);
       }
 
       break;
@@ -219,9 +227,9 @@ exports.webhook = async (req, res) => {
         })
         .toArray();
 
-      const existingCustomer = await ConnectAccountCustomer.findByCustomerId(
-        data.customerId
-      );
+      const existingCustomer = await ConnectAccountCustomer.find({
+        customerId: data.customerId,
+      });
       if (!existingCustomer) {
         const newCustomer = new ConnectAccountCustomer({
           customerId: data.customerId,

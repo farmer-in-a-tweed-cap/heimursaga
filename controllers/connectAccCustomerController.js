@@ -33,32 +33,35 @@ exports.getSubscritionDetails = async function (req, res) {
     const { stripeAccountId } = req.params;
 
     let { username, billingId } = req.session.user;
-    let customerDetails12 = await usersCollection.findOne({ username });
-    console.log(customerDetails12);
+    let userDetail = await usersCollection.findOne({ username });
+    console.log(userDetail);
     console.log(req.session.user);
     console.log(req.params);
     if (billingId) {
       let customerDetails = await connectAccCustomersCollection.findOne({
-        cusExpId: customerDetails12._id,
+        cusExpId: userDetail._id,
         stripeAccountId,
       });
-      console.log(customerDetails);
-      let sponsorDetails = await sponsorsCollection.findOne({
-        custConnectAccId: customerDetails._id,
-      });
-      console.log(sponsorDetails);
-      const stripeAccountHolderDetails = await usersCollection.findOne({
-        stripeAccountId,
-      });
-      console.log(stripeAccountHolderDetails);
       let plan = null;
-      if (sponsorDetails?.plan) {
-        plan = "yearly";
-        if (
-          sponsorDetails.plan ===
-          stripeAccountHolderDetails.products.monthlyProductId
-        ) {
-          plan = "monthly";
+
+      if (customerDetails) {
+        console.log(customerDetails);
+        let sponsorDetails = await sponsorsCollection.findOne({
+          custConnectAccId: customerDetails._id,
+        });
+        console.log(sponsorDetails);
+        const stripeAccountHolderDetails = await usersCollection.findOne({
+          stripeAccountId,
+        });
+        console.log(stripeAccountHolderDetails);
+        if (sponsorDetails?.plan) {
+          plan = "yearly";
+          if (
+            sponsorDetails.plan ===
+            stripeAccountHolderDetails.products.monthlyProductId
+          ) {
+            plan = "monthly";
+          }
         }
       }
       res.send({

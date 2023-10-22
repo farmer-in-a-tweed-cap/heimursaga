@@ -244,7 +244,8 @@ User.findByUsername = function(username) {
                     type: userDoc.data.type,
                     settings: userDoc.data.settings,
                     stripeAccountId: userDoc.data.stripeAccountId,
-                    products: userDoc.data.products || null
+                    products: userDoc.data.products || null,
+                    status: userDoc.data.status || null
                 }
                 resolve(userDoc)
             } else {
@@ -358,12 +359,15 @@ User.prototype.resetPassword = function() {
 }
 
 //updating stripeId to null on subscription cancellation 
-User.findAndUpdateByBillingID = async function(billingId){
+User.findAndUpdateByBillingID = async function(billingId, status){
     try{
         const billingInfo = await billingCollection.findOne({ billingId });
+        console.log(billingInfo,'info')
+        let userUpdated = {};
         if(billingInfo){
-            await usersCollection.updateOne({_id: billingInfo.explorerId}, { $set:{ status: 'transfer_disabled'}})
+             userUpdated = await usersCollection.updateOne({_id: billingInfo.explorerId}, { $set:{ status}})
         }
+        return userUpdated;
     }
     catch(error){
         console.log(error);
