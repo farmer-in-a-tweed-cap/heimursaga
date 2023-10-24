@@ -15,64 +15,35 @@
 					<div class="row">
 						<!--<a class="small font-weight-bold mb-3 ml-3 col-md-8 offset-md-2" href="/draft/<%= draft._id %>">&laquo; Back to draft permalink</a>-->
 
-						<div class="col-md-8 offset-md-2">
-							<div class="card">
-
-								<div class="card-header">
-									<%- include('includes/flash') %>
-									<h5 class="card-title mb-0">1. Navigate to marker location</h5>
-								</div>
-								<div class="card-body">
-
-									<div class="entrymap" id="entrymap" style="height: 300px"></div>
-								</div>
-							</div>
-						</div>
-
 						<form id="edit-draft" method="POST" enctype="multipart/form-data">
-							<div class="col-md-8 offset-md-2">
-							  <div class="card">
-								<div class="card-header">
-								  <h5 class="card-title mb-0">2. Log marker coordinates</h5>
+
+
+							<div class="card col-md-8 offset-md-2">
+								<div class="card">
+									<%- include('includes/flash') %>
+									<div class="card-header">
+										<h5 class="card-title mb-0">Place marker at location</h5>
+										<small>double click in the map to set/move the marker and log coordinates</small>
+									</div>
+									<div class="card-body">
+										<div id="entrymap" style="height: 300px"></div>
+									</div>
+	
+									<div class="card-body mb-3">
+										<label class="form-label">Lng/Lat Coordinates</label>
+										<input
+										  required
+										  class="form-control readonly"
+										  type="text"
+										  name="lnglatcoordinates"
+										  id="lnglatcoordinates"
+										  maxlength="0"
+										  value="<%= JSON.stringify(draft.GeoJSONcoordinates.coordinates[0]) %>, <%= JSON.stringify(draft.GeoJSONcoordinates.coordinates[1]) %>"
+										  onkeypress="return false;"
+										/>
+									</div>
+	
 								</div>
-								<div class="card-body">
-								  
-						  
-								  <div class="mb-3">
-									<output
-									  class="form-control"
-									  type="text"
-									  name="coordinates"
-									  id="coordinates"
-									  hidden
-									></output>
-								  </div>
-						  
-								  <button
-									type="button"
-									class="btn btn-outline-secondary mb-3"
-									onclick="myFunction()"
-								  >
-									Log Coordinates
-								  </button>
-						  
-								  <div class="mb-3">
-									<label class="form-label">Lng/Lat Coordinates</label>
-									<label class="form-text text-muted">
-									  - when your marker is in place, click "Log Coordinates" to capture
-									  the coordinates</label
-									>
-									<input
-									  class="form-control"
-									  type="text"
-									  name="lnglatcoordinates"
-									  id="lnglatcoordinates"
-									  value="<%= JSON.stringify(draft.GeoJSONcoordinates.coordinates[0]) %>, <%= JSON.stringify(draft.GeoJSONcoordinates.coordinates[1]) %>"
-									  readonly
-									/>
-								  </div>
-								</div>
-							  </div>
 							</div>
 
 																					<!--INCLUDE EXPLORER PRO GATE HERE-->
@@ -472,145 +443,6 @@
 
 					});
 
-
-
-	function convertToPlain(html){
-						var tempDivElement = document.createElement("entrymarkers");
-						tempDivElement.innerHTML = html;
-						return tempDivElement.textContent || tempDivElement.innerText || "";
-    }
-
-    var htmlString= "<entrymarkers><%=entrymarker%></entrymarkers>";
-
-    var marker = convertToPlain(htmlString)
-
-	var singlemarker = JSON.parse(marker)
-
-
-	mapboxgl.accessToken = 'pk.eyJ1IjoiY25oMTE4NyIsImEiOiJja28wZTZpNGowY3RoMnBvaTgxZ2M5c3ljIn0.t3_T3EN00e5w7D0et4hf-w';
-		const entrymap = new mapboxgl.Map({
-			container: 'entrymap', // container ID,
-	  		style: 'mapbox://styles/cnh1187/clikkzykm00wb01qf28pz4adt',
-			center: singlemarker.properties.coordinates,
-			zoom: 6,// starting zoom
-			attributionControl: false,
-			});
-
-			entrymap.on('load', () => {
-				entrymap.addSource('10m-bathymetry-81bsvj', {
-				type: 'vector',
-				url: 'mapbox://mapbox.9tm8dx88'
-				});
-				
-				entrymap.addLayer(
-				{
-				'id': '10m-bathymetry-81bsvj',
-				'type': 'fill',
-				'source': '10m-bathymetry-81bsvj',
-				'source-layer': '10m-bathymetry-81bsvj',
-				'layout': {},
-				'paint': {
-				'fill-outline-color': 'hsla(337, 82%, 62%, 0)',
-				// cubic bezier is a four point curve for smooth and precise styling
-				// adjust the points to change the rate and intensity of interpolation
-				'fill-color': [
-				'interpolate',
-				['cubic-bezier', 0, 0.5, 1, 0.5],
-				['get', 'DEPTH'],
-				200,
-      '#4676ac',
-      9000,
-      '#385E89'
-				]
-				}
-				},
-				'land-structure-polygon'
-				);
-				});
-
-
-
-			var coordinatesGeocoder = function (query) {
-				// Match anything which looks like
-				// decimal degrees coordinate pair.
-				var matches = query.match(
-				/^[ ]*(?:Lat: )?(-?\d+\.?\d*)[, ]+(?:Lng: )?(-?\d+\.?\d*)[ ]*$/i
-				);
-				if (!matches) {
-				return null;
-				}
-				
-				function coordinateFeature(lng, lat) {
-				return {
-				center: [lng, lat],
-				geometry: {
-				type: 'Point',
-				coordinates: [lng, lat]
-				},
-				place_name: 'Lat: ' + lat + ' Lng: ' + lng,
-				place_type: ['coordinate'],
-				properties: {},
-				type: 'Feature'
-				};
-				}
-				
-				var coord1 = Number(matches[1]);
-				var coord2 = Number(matches[2]);
-				var geocodes = [];
-				
-				if (coord1 < -90 || coord1 > 90) {
-				// must be lng, lat
-				geocodes.push(coordinateFeature(coord1, coord2));
-				}
-				
-				if (coord2 < -90 || coord2 > 90) {
-				// must be lat, lng
-				geocodes.push(coordinateFeature(coord2, coord1));
-				}
-				
-				if (geocodes.length === 0) {
-				// else could be either lng, lat or lat, lng
-				geocodes.push(coordinateFeature(coord1, coord2));
-				geocodes.push(coordinateFeature(coord2, coord1));
-				}
-				
-				return geocodes;
-				};
-
-			entrymap.addControl(
-				new MapboxGeocoder({
-				accessToken: mapboxgl.accessToken,
-				localGeocoder: coordinatesGeocoder,
-				marker: false,
-				mapboxgl: mapboxgl,
-				})
-			);
-			
-			entrymap.addControl(new mapboxgl.GeolocateControl({
-				positionOptions: {
-				enableHighAccuracy: true
-				},
-				trackUserLocation: true
-				})
-			);
-
-			var marker = new mapboxgl.Marker({
-				color: '#ac6d46',
-				draggable: false,
-				})
-				.setLngLat([-119.5591, 37.715])
-				.addTo(entrymap);
-
-
-			entrymap.on('move', function (e) {
-				//console.log(`Current Map Center: ${entrymap.getCenter()}`);
-				marker.setLngLat(entrymap.getCenter());
-				var lngLat = marker.getLngLat();
-				var entryCoordinates = marker.getLngLat();
-				//console.log(document.getElementById('coordinates').value);
-				coordinates.innerHTML = [lngLat.lng,lngLat.lat];
-				coordinates.style.display = 'block';
-			});
 
 
 		document.querySelector("#post-body")

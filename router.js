@@ -62,6 +62,9 @@ router.post('/update-user/:username', userController.ifUserExists, userControlle
 router.post('/update-password/:username', userController.ifUserExists, userController.sharedProfileData, userController.updatePassword)
 router.post('/update-notifications/:username', userController.ifUserExists, userController.sharedProfileData, userController.updateNotifications)
 
+router.post('/notifications/:username', userController.mustBeLoggedIn, userController.ifUserExists, userController.sharedProfileData, userController.notifications)
+router.post('/notifications/:username/:markasread', userController.mustBeLoggedIn, userController.ifUserExists, userController.sharedProfileData, userController.markNotificationsAsRead)
+
 
 // entry related routes
 router.get('/create-entry', userController.mustBeLoggedIn, entryController.viewCreateScreen)

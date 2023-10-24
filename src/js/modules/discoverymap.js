@@ -42,7 +42,7 @@ export default class DiscoveryMap {
   loadResources() {
     //console.log('loading resources')
     this.loadControls()
-    this.discoverymap.addSource('10m-bathymetry-81bsvj', {
+    /*this.discoverymap.addSource('10m-bathymetry-81bsvj', {
       type: 'vector',
       url: 'mapbox://mapbox.9tm8dx88'
       });
@@ -70,7 +70,7 @@ export default class DiscoveryMap {
       }
       },
       'land-structure-polygon'
-      );
+      );*/
 
     this.discoverymap.once('zoomstart', () => this.hideOverlay())
     this.discoverymap.on('moveend', () => this.loadEntries())

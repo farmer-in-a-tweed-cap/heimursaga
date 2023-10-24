@@ -20,6 +20,8 @@ if (document.querySelector("#feedmap")) {new FeedMap()};
 import JournalMap from "./modules/journalmap";
 if (document.querySelector("#journalmap")) {new JournalMap()};
 
+import EntryMap from "./modules/entrymap";
+if (document.querySelector("#entrymap")) {new EntryMap()};
 
 import Notification from "./modules/notification";
 if (document.querySelector("#user-notifications")) {new Notification()};

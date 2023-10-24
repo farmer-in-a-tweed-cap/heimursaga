@@ -6,11 +6,12 @@
     <%- include('beta-banner.ejs') %>
 
     <nav class="navbar navbar-expand navbar-light navbar-bg">
-            <a class="sidebar-toggle" data-toggle="collapse">
-                <i class="hamburger align-self-center d-none d-lg-block" style="display: flex;"></i>
-                <img class="avatar border-primary d-lg-none" src="../img/brands/badge menu heimursaga.png" width="75" height="75" alt="Heimursaga Badge Menu">
-            </a>
+        <a class="sidebar-toggle">
+            <i class="hamburger align-self-center"></i>
+            <!--<i class="hamburger align-self-center d-none d-lg-block" style="display: flex;"></i>
+            <img class="avatar border-primary d-lg-none" src="../img/brands/badge menu heimursaga.png" width="75" height="75" alt="Heimursaga Badge Menu">-->
 
+        </a>
 
 
         <div class="d-none d-lg-block">
@@ -119,22 +120,30 @@
                         </div>
                 </li>
 
-                <!--<li class="nav-item dropdown">
-                    <a class="nav-icon dropdown-toggle notification-icon" href="#" id="notification-icon alertsDropdown" data-bs-toggle="dropdown">
+                <li class="nav-item dropdown">
+                    
+                    <a class="nav-icon dropdown-toggle notification-icon" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
                         <div class="position-relative">
                             <i class="align-middle" data-feather="bell"></i>
+                            <span class="indicator" hidden></span>
                         </div>
                     </a>
+
+                    <style>
+                        .dropdown-menu {         
+                        max-height: 400px;
+                        overflow-y: auto;
+                        }
+                    </style>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0 shadow" aria-labelledby="alertsDropdown">
-                        <div class="user-notifications shadow" id="user-notifications"></div>
-                        <script src="/socket.io/socket.io.js"></script>
+                        <div id="user-notifications"></div>
                     </div>
-                </li>-->
+                </li>
 
                 <li class="nav-item dropdown">
 
                     <a class="nav-link dropdown-toggle d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                        <img src="<%= user.avatar %>" class="avatar rounded-circle" alt="<%= user.username %>" /> <span class="text-dark d-none d-sm-inline ms-1"><%= user.username %></span>
+                        <img src="<%= user.avatar %>" class="avatar rounded-circle" alt="<%= user.username %>" /> <span class="text-dark d-none d-sm-inline ms-1" id="navbar-username"><%= user.username %></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
                         <a class="dropdown-item" href="/journal/<%= user.username %>"><!--<i class="align-middle me-2" data-feather="book-open"></i>-->My Journal</a>
