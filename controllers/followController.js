@@ -5,15 +5,19 @@ const sendgrid = require('@sendgrid/mail')
 sendgrid.setApiKey(process.env.SENDGRIDAPIKEY)
 const axios = require('axios')
 const csrf = require('csurf')
+const Notification = require('../models/Notification')
 
 
-/*exports.addFollow = async function(req, res) {
+exports.addFollow = async function(req, res) {
     let follow = new Follow(req.params.username, req.visitorId)
     let followedUser = await User.findByUsername(req.params.username)
     let user = await User.findByUsername(req.session.user.username)
+    let notification = new Notification("follow", "", req.session.user.username, req.params.username)
     follow.create().then(() => {
+        notification.create()
         req.flash("success", `Successfully followed ${req.params.username}`)
         req.session.save(() => res.redirect(`/journal/${req.params.username}`))
+
         if (followedUser.settings.emailNotifications.followers == "true") {
         sendgrid.send({
             to: `${followedUser.email}`,
@@ -28,58 +32,8 @@ const csrf = require('csurf')
         })
         req.session.save(() => res.redirect('/'))
     })
-}*/
-
-exports.addFollow = async function(req, res) {
-    let follow = new Follow(req.params.username, req.visitorId)
-    let followedUser = await User.findByUsername(req.params.username)
-    let user = await User.findByUsername(req.session.user.username)
-    console.log(followedUser.email)
-
-    follow.create().then(() => {
-        req.session.save(async () => {
-            if (followedUser.settings.emailNotifications.followers == "true") {
-                sendgrid.send({
-                    to: `${followedUser.email}`,
-                    from: 'admin@heimursaga.com',
-                    subject: `You have a new follower!`,
-                    text: `Hello, ${user.username} has followed you on Heimursaga. Visit their Journal (https://heimursaga.com/journal/${user.username}) to see their travels!`,
-                    html: `Hello, <strong>${user.username}</strong> has followed you on Heimursaga. <br><br>Visit their <a href="https://heimursaga.com/journal/${user.username}">Journal</a> to see their travels!`
-                })
-            }  if (followedUser.settings.pushNotifications.followers == "true") {
-
-                axios({
-                    method: 'post',
-                    url: "https://progressier.com/push/send",
-                    data: {
-                        "recipients": {"email": `${followedUser.email}`},
-                        "campaigns": ["user activity notifications"],
-                        "title": "Heimursaga Admin",
-                        "body": `Hello, ${user.username} has followed you on Heimursaga!`,
-                        "url": `https://heimursaga.com/journal/${user.username}`,
-                        "badge": "https://firebasestorage.googleapis.com/v0/b/pwaa-8d87e.appspot.com/o/x5BC5jXNQTEvdfTutjGr%2FIeujfSdnTBeJxKb.png?alt=media&token=8046c514-5d5e-4a2f-a8f8-33c45f5112b6",
-                        "icon": "https://firebasestorage.googleapis.com/v0/b/pwaa-8d87e.appspot.com/o/x5BC5jXNQTEvdfTutjGr%2FspmHBGpeHpIeQhq.png?alt=media&token=3198025c-e988-485e-83cc-3dfd0bba7025",
-                    },
-                    headers: {
-                        "authorization": process.env.PROGRESSIER_KEY,
-                        "content-type": "application/json",
-                        "x-csrf-token": req.csrfToken()
-                    }
-                  })
-                  .then((response) => {
-                    console.log(response);
-                  }, (error) => {
-                    console.log(error);
-                  })
-
-            }
-        })
-    }).catch((errors) => {
-        errors.forEach(error => {
-            return error
-        })
-    })
 }
+
 
 exports.removeFollow = function(req, res) {
     let follow = new Follow(req.params.username, req.visitorId)

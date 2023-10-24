@@ -6,6 +6,8 @@ const io = require('socket.io')
 const sendgrid = require('@sendgrid/mail')
 const axios = require('axios')
 const csrf = require('csurf')
+const Notification = require('../models/Notification')
+const { ObjectId } = require('mongodb')
 
 sendgrid.setApiKey(process.env.SENDGRIDAPIKEY)
 
@@ -15,11 +17,10 @@ exports.addHighlight = async function(req, res) {
     let entry = await Entry.findSingleById(req.params.id)
     highlight.create().then(() => {
         req.session.save(async () => {
-
-
-            
+            let notification = new Notification("highlight", [entry.title, new ObjectId(req.params.id)], req.session.user.username, entry.author.username)
             let entryOwner = await User.findByUsername(entry.author.username)
             let highlightOwner = await User.findByUsername(req.session.user.username)
+            notification.create()
             if (entryOwner.settings.emailNotifications.likes == "true") {
                 sendgrid.send({
                     to: `${entryOwner.email}`,
@@ -63,7 +64,7 @@ exports.addHighlight = async function(req, res) {
     })
 }
 
-exports.removeHighlight = function(req, res) {
+exports.removeHighlight = async function(req, res) {
     let highlight = new Highlight(req.params.id, req.visitorId)
     highlight.delete().then(() => {
         req.session.save()

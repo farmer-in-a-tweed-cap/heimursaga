@@ -117,5 +117,10 @@ async function getUrls () {
 
 const server = require('http').createServer(app)
 
+/*const io = require('socket.io')(server)
+
+io.on('connection', function(socket) {
+  socket.broadcast.emit('testNotificationFromServer', {message: "hello"})
+})*/
 
 module.exports = server

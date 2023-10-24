@@ -22,6 +22,7 @@ const billingController =  require('../models/Billing');
 const { createCustomer } = require('./billingController')
 const Billing = require('../models/Billing')
 const billingCollection = require('../db').db().collection("billing")
+const Notification = require('../models/Notification')
 
 
 exports.sharedProfileData = async function(req, res, next) {
@@ -40,9 +41,12 @@ exports.sharedProfileData = async function(req, res, next) {
   let followingCountPromise = Follow.countFollowingById(req.profileUser._id)
   let [entryCount, followerCount, followingCount] = await Promise.all([entryCountPromise, followerCountPromise, followingCountPromise])
 
+  //let notifications = await Notification.getNotificationsByUser(req.session.user.username)
+
   req.entryCount = entryCount
   req.followerCount = followerCount
   req.followingCount = followingCount
+  //req.notifications = notifications
 
   next()
 }
@@ -808,5 +812,22 @@ exports.resetPassword = function(req, res) {
         req.flash('errors', e)
         res.redirect('/login')
       })
+    })
+  }
+
+  exports.notifications = async function(req, res) {
+    await Notification.getNotificationsByUser(req.params.username).then((notifications) => {
+      res.send(notifications)
+    }
+    ).catch(() => {
+      res.json([])
+    })
+  }
+
+  exports.markNotificationsAsRead = async function(req, res) {
+    await Notification.markNotificationsAsRead(req.params.username).then(() => {
+      res.json({message: "Success"})
+    }).catch(() => {
+      res.json([])
     })
   }
