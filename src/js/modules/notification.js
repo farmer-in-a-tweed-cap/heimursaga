@@ -10,16 +10,13 @@ export default class Notification {
         this._csrf = document.querySelector('[name="_csrf"]').value
         this.notificationIndicator = document.querySelector("#indicator")
         this.retrieveNotifications()
-        //this.showNotifications()
         //this.injectHTML()
         this.notificationList = document.querySelector('.notification-list')
         this.events()
-        //this.openConnection()
     }
 
     // Events
     events() {
-        console.log(document.querySelector("#alertsDropdown").offsetHeight)
         this.openIcon.addEventListener("click", () => this.setTimeout(), {once: true})
 
     }
@@ -40,7 +37,6 @@ export default class Notification {
         for (let i = 0; i < notifications.length; i++) {
         if (notifications[i].isRead === false) unreadNotificationCount++;
         }
-        console.log(unreadNotificationCount)
 
         if (unreadNotificationCount > 0) {
             document.querySelector('.indicator').removeAttribute('hidden')
@@ -87,9 +83,7 @@ export default class Notification {
     }
 
     markNotificationsAsRead() {
-        console.log(document.querySelector("#alertsDropdown").offsetHeight)
         if (document.querySelector("#alertsDropdown").offsetHeight > 5) {
-            console.log("marking as read")
             axios.post(`/notifications/${this.username}/markasread`, {_csrf: this._csrf, username: this.username}).then(() => {
                 console.log("marked as read")
             })

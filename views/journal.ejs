@@ -95,15 +95,27 @@
 										
 											<% } %>
 												<% if(stripeAccountId){ %>
-													<button style="border: none; background: transparent; cursor: pointer;" id="sponsor-button" class="text-blue"
-													
-														data-bs-toggle="modal" 
-														data-bs-target="#fund-confirm-modal">
+													<button style="border: none; background: transparent; cursor: pointer;" id="modal-button" class="text-blue">
 													<i id="icon-heimursaga-fund-alt" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-fund-alt"></i>
 													<div class="w-100"></div>
 													<i id="sponsor-check" class="sponsor-check" style="color: white; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
 												</button>
 
+
+												<div class="modal fade" id="sponsor-modal" tabindex="-1">
+													<div class="modal-dialog modal-dialog-centered">
+														<div class="modal-content">
+		
+															<div class="modal-header" id="modal-header">
+															</div>
+		
+															<div class="modal-body" id="modal-body">
+		
+															</div>
+		
+														</div>
+													</div>
+												</div>
 
 
 												<!-- Modal -->
@@ -161,23 +173,6 @@
 											<div style="margin-bottom: -50px;"></div>
 
 										<% } %>
-
-										<button class="btn btn-primary mt-3" id="modal-button">sponsor modal</button>
-
-										<div class="modal fade" id="sponsor-modal" tabindex="-1">
-											<div class="modal-dialog modal-dialog-centered">
-												<div class="modal-content">
-
-													<div class="modal-header" id="modal-header">
-													</div>
-
-													<div class="modal-body" id="modal-body">
-
-													</div>
-
-												</div>
-											</div>
-										</div>
 	
 
 									</div>
@@ -280,7 +275,7 @@
 
 							
 							  
-								<div class="col-12 col-lg-6 d-flex">
+								<div class="col-12 col-lg-6 d-flex mb-4">
 									<div class="flex-fill" style="height: 80vh;">
 
 

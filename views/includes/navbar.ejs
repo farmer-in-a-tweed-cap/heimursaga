@@ -55,6 +55,13 @@
 
                 <% if (user) { %>
 
+                    <style>
+                        .nav-item{
+                            margin-right: 0px !important;
+                            margin-left: -3px !important;
+                        }
+                    </style>
+
 
                 <li class="nav-item d-lg-none">
                     <div class="">
@@ -85,7 +92,7 @@
                 </li>
 
                 <li class="nav-item d-lg-none">
-                    <div class="me-2">
+                    <div class="">
                         <a class="nav-icon" href="/journal/<%= user.username %>">
                             <div class="position-relative">
                                 <i <% if (pageName === 'my-journal') { %>
@@ -95,6 +102,29 @@
                                     <% } %> ></i>                            
                             </div>
                         </a>                    
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown d-lg-none">
+                    <div class="me-2">
+                        <div class="position-relative">
+                            <a class="nav-icon dropdown-toggle notification-icon" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
+                                <div class="position-relative">
+                                    <i class="align-middle" data-feather="bell"></i>
+                                    <span class="indicator" hidden></span>
+                                </div>
+                            </a>
+        
+                            <style>
+                                .dropdown-menu {         
+                                max-height: 400px;
+                                overflow-y: auto;
+                                }
+                            </style>
+                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0 shadow" aria-labelledby="alertsDropdown">
+                                <div id="user-notifications"></div>
+                            </div>
+                        </div>
                     </div>
                 </li>
 
@@ -120,7 +150,7 @@
                         </div>
                 </li>
 
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown d-none d-lg-block">
                     
                     <a class="nav-icon dropdown-toggle notification-icon" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
                         <div class="position-relative">
