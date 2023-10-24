@@ -564,6 +564,8 @@ exports.journalScreenPro = function(req, res) {
         profileAvatar: req.profileUser.avatar,
         stripeAccountId: user.stripeAccountId || null,
         stripePubKey: process.env.STRIPE_PUB_KEY,
+        products: user.products || null,
+        status: user.status || null,
         isFollowing: req.isFollowing,
         isVisitorsProfile: req.isVisitorsProfile,
         counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
@@ -590,6 +592,8 @@ exports.journalScreenPro = function(req, res) {
       profileAvatar: req.profileUser.avatar,
       stripeAccountId: user.stripeAccountId || null,
       stripePubKey: process.env.STRIPE_PUB_KEY,
+      products: user.products || null,
+      status: user.status || null,
       isFollowing: req.isFollowing,
       isVisitorsProfile: req.isVisitorsProfile,
       counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
@@ -633,6 +637,8 @@ exports.journalScreenPro = function(req, res) {
         profileAvatar: req.profileUser.avatar,
         stripeAccountId: user.stripeAccountId || null,
         stripePubKey: process.env.STRIPE_PUB_KEY,
+        products: user.products || null,
+        status: user.status || null,
         isFollowing: req.isFollowing,
         isVisitorsProfile: req.isVisitorsProfile,
         counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
@@ -660,6 +666,8 @@ exports.journalScreenPro = function(req, res) {
       profileAvatar: req.profileUser.avatar,
       stripeAccountId: user.stripeAccountId || null,
       stripePubKey: process.env.STRIPE_PUB_KEY,
+      products: user.products || null,
+      status: user.status || null,
       isFollowing: req.isFollowing,
       isVisitorsProfile: req.isVisitorsProfile,
       counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
