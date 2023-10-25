@@ -42,8 +42,7 @@ export default class EntryMap {
 
         events() {
             this.entrymap.on('load', () => this.loadResources())
-            this.entrymap.on('dblclick', (e) => this.setMarker(e))
-			this.entrymap.on('doubletap', (e) => this.setMarker(e))
+            this.entrymap.on('click', (e) => this.setMarker(e))
           }
 
         setMarker(e) {
