@@ -15,20 +15,20 @@ const highlightsCollection = require('../db').db().collection("highlights")
 
 
 
-let deleteMany = function(req, res) {
+let bulkOps = function(req, res) {
     try {
-        /*billingCollection.deleteMany({}).then((res) => {
-            console.log(res)
-        })
-        usersCollection.deleteMany({registeredDate:{$gt: new Date(2023, 5, 5)}}).then((res) => {
-            console.log(res)
-        })
+        //billingCollection.deleteMany({}).then((res) => {
+        //    console.log(res)
+        //})
+        //usersCollection.deleteMany({registeredDate:{$gt: new Date(2023, 5, 5)}}).then((res) => {
+        //    console.log(res)
+        //})
         usersCollection.updateMany({}, {$set: {settings: {emailNotifications: {followers: "true", likes: "true"}, pushNotifications: {followers: "true", likes: "true"}}}}).then((res) => {
             console.log(res)
-        })*/
-        followsCollection.deleteMany({createdDate:{$gt: new Date(2023, 5, 5)}}).then((res) => {
-            console.log(res)
         })
+        //followsCollection.deleteMany({createdDate:{$gt: new Date(2023, 5, 5)}}).then((res) => {
+        //    console.log(res)
+        //})
      } catch (e) {
         console.log(e);
      }
@@ -36,7 +36,7 @@ let deleteMany = function(req, res) {
 }
 
 
-//deleteMany()
+//bulkOps()
 
 
 
@@ -53,6 +53,7 @@ User.prototype.cleanUp = function() {
     if (typeof(this.data.email) != "string") {this.data.email = ""}
     if (typeof(this.data.password) != "string") {this.data.password = ""}
 
+
     // get rid of any bogus properties
     this.data = {
         username: this.data.username.trim().toLowerCase(),
@@ -65,7 +66,7 @@ User.prototype.cleanUp = function() {
         instagram: this.data.instagram,
         website: this.data.website,
         type: this.data.type,
-        settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}, pushNotifications: {followers: this.data.followerspushnotifications, likes: this.data.likespushnotifications}},
+        //settings: sanitizeHTML({emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}, pushNotifications: {followers: this.data.followerspushnotifications, likes: this.data.likespushnotifications}}, {allowedTags: [], allowedAttributes: {}}),
         resetPasswordToken: {type: String, required: false},
         resetPasswordExpires: {type: Date, required: false},
         registeredDate: new Date(),
@@ -209,8 +210,14 @@ User.prototype.updatePassword = function() {
 
 User.prototype.updateNotifications = function() {
     return new Promise(async (resolve, reject) => {
-        await usersCollection.findOneAndUpdate({username: this.data.username}, {$set: {settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}, pushNotifications: {followers: this.data.followerspushnotifications, likes: this.data.likespushnotifications}}}})
+        if (this.data.likesemailnotifications == "true" || this.data.likesemailnotifications == null && this.data.followersemailnotifications == "true" || this.data.followersemailnotifications == null) {
+            await usersCollection.findOneAndUpdate({username: this.data.username}, {$set: {settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}, pushNotifications: {followers: this.data.followerspushnotifications, likes: this.data.likespushnotifications}}}})
             resolve("success")
+        } else {
+            reject(console.log("error"))
+        }
+
+
     })
 }
 
