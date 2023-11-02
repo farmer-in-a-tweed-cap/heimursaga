@@ -1,6 +1,5 @@
 import axios from 'axios'
 import RelativeTime from '@yaireo/relative-time'
-import { once } from 'stream'
 
 export default class Notification {
     constructor() {
@@ -17,7 +16,6 @@ export default class Notification {
 
     // Events
     events() {
-        console.log("notification icon present")
         this.openIcon.addEventListener("click", () => this.setTimeout(), {once: true})
 
     }
