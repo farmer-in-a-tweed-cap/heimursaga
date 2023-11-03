@@ -1,4 +1,6 @@
 const stripe = require("stripe");
+const ConnectAccountCustomer = require("./models/ConnectAccountCustomers");
+const Billing = require("./models/Billing");
 const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2020-08-27",
   maxNetworkRetries: 2,
@@ -21,7 +23,7 @@ const createCheckoutSession = async (customerID, price) => {
       trial_period_days: process.env.TRIAL_DAYS,
     },
 
-    success_url: `${process.env.DOMAIN}user-guide`,
+    success_url: `${process.env.DOMAIN}/user-guide`,
     cancel_url: `${process.env.DOMAIN}`,
   });
 
@@ -41,10 +43,10 @@ const getCustomerByID = async (id) => {
   return customer;
 };
 
-const addNewCustomer = async (email) => {
+const addNewCustomer = async (email, username = "New customer") => {
   const customer = await Stripe.customers.create({
     email,
-    description: "New Customer",
+    description: username,
   });
 
   return customer;
@@ -92,28 +94,133 @@ const connectBank = async (user) => {
 };
 
 const createPaymentSession = async (
-  line_items,
-  stripeCustomerId,
+  unit_amount,
+  token,
   stripeAccountId,
   percentPlateformFees
 ) => {
-  const session = await Stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items,
-    mode: "payment",
+  const charges = await Stripe.charges.create({
+    amount: unit_amount,
     currency: "usd",
-    customer: stripeCustomerId,
-    payment_intent_data: {
-      transfer_data: {
-        destination: stripeAccountId,
-      },
-      on_behalf_of: stripeAccountId,
-      application_fee_amount: percentPlateformFees,
+    source: token,
+    transfer_data: {
+      destination: stripeAccountId,
     },
-    success_url: `${process.env.DOMAIN}`,
-    cancel_url: `${process.env.DOMAIN}`,
+    on_behalf_of: stripeAccountId,
+    application_fee_amount: percentPlateformFees,
   });
-  return session;
+
+  return charges;
+};
+
+const createSponserSubscription = async (
+  token,
+  price,
+  stripeCustomerId,
+  stripeAccountId
+) => {
+  const billingDetails = await Billing.findByCustomerId(stripeCustomerId);
+  const stripeAccCustomerDetails =
+    await ConnectAccountCustomer.findByExpIdAndAccId(
+      billingDetails.explorerId,
+      stripeAccountId
+    );
+  let cusStripeAccId = stripeAccCustomerDetails?.customerId || null;
+  if (!stripeAccCustomerDetails) {
+    await Stripe.customers.update(stripeCustomerId, {
+      source: token,
+    });
+
+    const accToken = await Stripe.tokens.create(
+      {
+        customer: stripeCustomerId,
+      },
+      {
+        stripeAccount: stripeAccountId,
+      }
+    );
+
+    const customerWithToken = await Stripe.customers.create(
+      {
+        source: accToken.id,
+      },
+      {
+        stripeAccount: stripeAccountId,
+      }
+    );
+
+    const ConnectAccountCustomerObj = new ConnectAccountCustomer(
+      customerWithToken.id,
+      billingDetails.explorerId,
+      stripeAccountId
+    );
+    await ConnectAccountCustomerObj.createNew();
+    cusStripeAccId = customerWithToken.id;
+  }
+
+  const subscription = await Stripe.subscriptions.create(
+    {
+      customer: cusStripeAccId,
+      items: [
+        {
+          price,
+        },
+      ],
+      expand: ["latest_invoice.payment_intent"],
+      application_fee_percent: process.env.PLATEFORM_FEE,
+    },
+    {
+      stripeAccount: stripeAccountId,
+    }
+  );
+  return subscription;
+};
+
+const connectAccDel = async (connAccId) => {
+  const deleted = await Stripe.accounts.del(connAccId);
+  return deleted;
+};
+
+const stripeAccountProductCreate = async (stripeAccountId) => {
+  const yearlyProduct = await Stripe.products.create(
+    {
+      name: "YEARLY_SPONSER",
+    },
+    { stripeAccount: stripeAccountId }
+  );
+  const monthlyProduct = await Stripe.products.create(
+    {
+      name: "MONTHLY_SPONSER",
+    },
+    { stripeAccount: stripeAccountId }
+  );
+
+  const yearlyPrice = await Stripe.prices.create(
+    {
+      unit_amount: 6000,
+      currency: "usd",
+      recurring: {
+        interval: "year",
+        interval_count: 1,
+      },
+      product: yearlyProduct.id,
+    },
+    { stripeAccount: stripeAccountId }
+  );
+
+  const monthlyPrice = await Stripe.prices.create(
+    {
+      unit_amount: 700,
+      currency: "usd",
+      recurring: {
+        interval: "month",
+        interval_count: 1,
+      },
+      product: monthlyProduct.id,
+    },
+    { stripeAccount: stripeAccountId }
+  );
+  return { monthlyProductId: monthlyPrice.id, yearlyProductId: yearlyPrice.id };
 };
 
 module.exports = {
@@ -124,4 +231,7 @@ module.exports = {
   createWebhook,
   connectBank,
   createPaymentSession,
+  createSponserSubscription,
+  stripeAccountProductCreate,
+  connectAccDel,
 };

@@ -21,6 +21,7 @@ const Stripe = require('../stripe')
 const billingController =  require('../models/Billing');
 const { createCustomer } = require('./billingController')
 const Billing = require('../models/Billing')
+const Sponsor = require('../models/Sponsors')
 const billingCollection = require('../db').db().collection("billing")
 const Notification = require('../models/Notification')
 
@@ -193,7 +194,13 @@ exports.viewSettings = async function(req, res) {
     const billing = await billingCollection.findOne({
       billingId:  req.session.user.billingId,
     });
-    User.findByUsername(req.profileUser.username).then(function(user){
+    console.log(req.session.user._id)
+    const sponsored = await Sponsor.findAllSponsoredByUserId(req.session.user._id);
+    console.log(sponsored,'ehehhe')
+  
+    User.findByUsername(req.profileUser.username).then(async function(user){
+    const sponsors = await Sponsor.findAllSponsorsByAccId(user.stripeAccountId);
+    console.log(sponsors)
     res.render('settings', {
       pageName: "settings",
       email: user.email,
@@ -210,7 +217,8 @@ exports.viewSettings = async function(req, res) {
       billingId: req.session.user?.billingId,
       username: req.params.username,
       stripeAccountId: user.stripeAccountId || null,
-      stripePubKey: process.env.STRIPE_PUB_KEY
+      stripePubKey: process.env.STRIPE_PUB_KEY,
+      status: user.status || null,
     })
     })
   } else {
@@ -384,7 +392,6 @@ exports.journalScreen = function(req, res) {
     let drafts = await Draft.findByAuthorId(req.profileUser._id)
     let user = await User.findByUsername(req.profileUser.username)
     let journeys = await Entry.findJourneysByUsername(req.profileUser.username)
-
     if (req.isVisitorsProfile == true){
       res.render('journal', {
         pageName: "my-journal",
@@ -410,6 +417,8 @@ exports.journalScreen = function(req, res) {
         isVisitorsProfile: req.isVisitorsProfile,
         stripeAccountId: user.stripeAccountId || null,
         stripePubKey: process.env.STRIPE_PUB_KEY,
+        status: user.status || null,
+        products: user.products || null,
         counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
       })
     } else {
@@ -437,6 +446,8 @@ exports.journalScreen = function(req, res) {
       isVisitorsProfile: req.isVisitorsProfile,
       stripeAccountId: user.stripeAccountId || null,
       stripePubKey: process.env.STRIPE_PUB_KEY,
+      status: user.status || null,
+      products: user.products || null,
       counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
     })}
   }).catch(function() {
@@ -455,7 +466,6 @@ exports.journalScreen = function(req, res) {
     let user = await User.findByUsername(req.profileUser.username)
     let journeys = await Entry.findJourneysByUsername(req.profileUser.username)
 
-
     if (req.isVisitorsProfile == true){
       res.render('journal', {
         pageName: "my-journal",
@@ -481,6 +491,8 @@ exports.journalScreen = function(req, res) {
         isVisitorsProfile: req.isVisitorsProfile,
         stripeAccountId: user.stripeAccountId || null,
         stripePubKey: process.env.STRIPE_PUB_KEY,
+        status: user.status || null,
+        products: user.products || null,
         counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
       })
     } else {
@@ -508,6 +520,8 @@ exports.journalScreen = function(req, res) {
       isVisitorsProfile: req.isVisitorsProfile,
       stripeAccountId: user.stripeAccountId || null,
       stripePubKey: process.env.STRIPE_PUB_KEY,
+      status: user.status || null,
+      products: user.products || null,
       counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
     })}
   }).catch(function() {
@@ -554,6 +568,8 @@ exports.journalScreenPro = function(req, res) {
         profileAvatar: req.profileUser.avatar,
         stripeAccountId: user.stripeAccountId || null,
         stripePubKey: process.env.STRIPE_PUB_KEY,
+        products: user.products || null,
+        status: user.status || null,
         isFollowing: req.isFollowing,
         isVisitorsProfile: req.isVisitorsProfile,
         counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
@@ -580,6 +596,8 @@ exports.journalScreenPro = function(req, res) {
       profileAvatar: req.profileUser.avatar,
       stripeAccountId: user.stripeAccountId || null,
       stripePubKey: process.env.STRIPE_PUB_KEY,
+      products: user.products || null,
+      status: user.status || null,
       isFollowing: req.isFollowing,
       isVisitorsProfile: req.isVisitorsProfile,
       counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
@@ -623,6 +641,8 @@ exports.journalScreenPro = function(req, res) {
         profileAvatar: req.profileUser.avatar,
         stripeAccountId: user.stripeAccountId || null,
         stripePubKey: process.env.STRIPE_PUB_KEY,
+        products: user.products || null,
+        status: user.status || null,
         isFollowing: req.isFollowing,
         isVisitorsProfile: req.isVisitorsProfile,
         counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}
@@ -650,6 +670,8 @@ exports.journalScreenPro = function(req, res) {
       profileAvatar: req.profileUser.avatar,
       stripeAccountId: user.stripeAccountId || null,
       stripePubKey: process.env.STRIPE_PUB_KEY,
+      products: user.products || null,
+      status: user.status || null,
       isFollowing: req.isFollowing,
       isVisitorsProfile: req.isVisitorsProfile,
       counts: {entryCount: req.entryCount, followerCount: req.followerCount, followingCount: req.followingCount}

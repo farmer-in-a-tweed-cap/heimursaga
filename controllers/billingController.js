@@ -2,16 +2,20 @@ const User = require("../models/User");
 const Stripe = require("../stripe");
 const billingCollection = require("../db").db().collection("billing");
 const userCollection = require("../db").db().collection("users");
-const fundsCollection = require("../db").db().collection("funds");
+
 const Billing = require("../models/Billing");
+const ConnectAccountCustomer = require("../models/ConnectAccountCustomers");
+const Sponsor = require("../models/Sponsors");
+const Funds = require("../models/Funds");
 
 const productToPriceMap = {
   monthly_exp: process.env.MONTHLY_EXPLORER,
   yearly_exp: process.env.ANNUAL_EXPLORER,
 };
-const status = {
-  COMPLETED: "completed",
-  CHARGE_SUCCESS: "charge-succeed",
+
+const subsStatus = {
+  transfer_disabled: "transfer_disabled",
+  transfer_enabled: "transfer_enabled",
 };
 
 //checkout
@@ -86,49 +90,63 @@ exports.ConnectBank = async (req, res) => {
 //funding
 exports.funding = async (req, res) => {
   try {
-    let { stripeAccountId, amount, explorer } = req.params;
+    let { stripeAccountId, amount, token } = req.params;
     //validation
     if (!stripeAccountId)
       throw new Error("stripeAccountId is missing in params");
     if (!amount) throw new Error("amount is missing in params");
-
-    //create customer
-    let { username, billingId: stripeCustomerId = null } = req.session.user;
-
-    if (!stripeCustomerId) {
-      stripeCustomerId = await Billing.createCustomer(username);
-      req.session.user["billingId"] = stripeCustomerId;
-    }
+    let { _id } = req.session.user;
 
     const unit_amount = Math.ceil(amount * 100);
-    const line_items = [
-      {
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: `user: ${explorer}`,
-            description: `Sending funds to ${explorer}`,
-          },
-          unit_amount: unit_amount,
-        },
-        quantity: 1,
-      },
-    ];
 
     const percentPlateformFees = Math.ceil(
       (process.env.PLATEFORM_FEE / 100) * amount * 100
     );
 
-    const session = await Stripe.createPaymentSession(
-      line_items,
-      stripeCustomerId,
+    const charges = await Stripe.createPaymentSession(
+      unit_amount,
+      token,
       stripeAccountId,
       percentPlateformFees
     );
-    res.send({ url: session.url });
+    await Funds.create(charges, _id);
+    res.send(charges);
   } catch (e) {
     console.log(e);
     res.status(500).send({ error: e });
+  }
+};
+
+//sponser
+exports.sponser = async (req, res) => {
+  try {
+    let { stripeAccountId, priceId, cardToken } = req.params;
+    //validation
+    if (!stripeAccountId)
+      throw new Error("stripeAccountId is missing in params");
+    if (!priceId) throw new Error("PriceId is missing in params");
+    if (!cardToken) throw new Error("CardToken is missing in params");
+
+    let { username, billingId: stripeCustomerId = null } = req.session.user;
+    //create customer
+    if (!stripeCustomerId) {
+      console.log("customer created!");
+      stripeCustomerId = await Billing.createCustomer(username);
+      req.session.user["billingId"] = stripeCustomerId;
+    }
+
+    const price = priceId;
+    const subscription = await Stripe.createSponserSubscription(
+      cardToken,
+      price,
+      stripeCustomerId,
+      stripeAccountId
+    );
+
+    res.json({ success: true, subscription: subscription });
+  } catch (e) {
+    console.log(e);
+    res.send(e);
   }
 };
 
@@ -148,43 +166,80 @@ exports.webhook = async (req, res) => {
   console.log(event.type, " = stripe event");
   switch (event.type) {
     case "customer.subscription.created": {
-      const billing = await billingCollection.find({
-        billingId: data.customer,
+      const response = await ConnectAccountCustomer.find({
+        customerId: data.customer,
       });
-
-      if (data.plan.id === productToPriceMap.monthly_exp) {
-        console.log("You are talking about monthly explorer plan ");
-        billing.plan = "monthly_exp";
+      const custExpId = response?.cusExpId || null;
+      const stripAccId = response?.stripeAccountId || null;
+      if (custExpId && stripAccId) {
+        await Sponsor.create(response._id, data.plan.id, false, null);
       }
 
-      if (data.plan.id === productToPriceMap.yearly_exp) {
-        console.log("You are talking about annual explorer plan");
-        billing.plan = "yearly_exp";
-      }
+      const billing = await billingCollection
+        .find({
+          billingId: data.customer,
+        })
+        .toArray();
 
-      billing.hasTrial = true;
-      billing.endDate = new Date(data.current_period_end * 1000);
-
-      //update billing record
-      await billingCollection.updateOne(
-        { billingId: data.customer },
-        {
-          $set: {
-            plan: billing.plan,
-            hasTrial: billing.hasTrial,
-            endDate: billing.endDate,
-          },
+      //false if subs to connect account
+      if (billing.length) {
+        if (data.plan.id === productToPriceMap.monthly_exp) {
+          console.log("You are talking about monthly explorer plan ");
+          billing.plan = "monthly_exp";
         }
-      );
+
+        if (data.plan.id === productToPriceMap.yearly_exp) {
+          console.log("You are talking about annual explorer plan");
+          billing.plan = "yearly_exp";
+        }
+
+        billing.hasTrial = true;
+        billing.endDate = new Date(data.current_period_end * 1000);
+
+        //update billing record
+        await billingCollection.updateOne(
+          { billingId: data.customer },
+          {
+            $set: {
+              plan: billing.plan,
+              hasTrial: billing.hasTrial,
+              endDate: billing.endDate,
+            },
+          }
+        );
+
+        //update user subscription status
+        const resp = await User.findAndUpdateByBillingID(
+          data.customer,
+          subsStatus.transfer_enabled
+        );
+        console.log(resp);
+      }
 
       break;
     }
     case "customer.subscription.updated": {
       // started trial
-      const billing = await billingCollection.find({
-        billingId: data.customer,
-      });
 
+      const billing = await billingCollection
+        .find({
+          billingId: data.customer,
+        })
+        .toArray();
+
+      const existingCustomer = await ConnectAccountCustomer.find({
+        customerId: data.customerId,
+      });
+      if (!existingCustomer) {
+        const newCustomer = new ConnectAccountCustomer({
+          customerId: data.customerId,
+          cusExpId: data.cusExpId,
+          stripeAccountId: data.stripeAccountId,
+        });
+        newCustomer.createNew();
+      }
+
+      // if (billing.length) {
       if (data.plan.id === productToPriceMap.monthly_exp) {
         console.log("You are talking about monthly explorer plan ");
         billing.plan = "monthly_exp";
@@ -216,6 +271,7 @@ exports.webhook = async (req, res) => {
           },
         }
       );
+      // }
 
       break;
     }
@@ -252,37 +308,15 @@ exports.webhook = async (req, res) => {
         data.individual.verification.status === "verified" &&
         data.tos_acceptance.date
       ) {
+        const { monthlyProductId, yearlyProductId } =
+          await Stripe.stripeAccountProductCreate(data.individual.account);
+
         await userCollection.updateOne(
           { email: data.email },
-          { $set: { stripeAccountId: data.individual.account } }
-        );
-      }
-
-      break;
-    }
-    case "charge.succeeded": {
-      const amount = parseInt(data.amount / 100);
-      await fundsCollection.insertOne({
-        stripeAccountId: data.destination,
-        stripeCustomerId: data.customer,
-        amount,
-        plateformFeePercent: process.env.PLATEFORM_FEE,
-        status: status.CHARGE_SUCCESS,
-        paymentIntentId: data.payment_intent,
-        createDate: new Date().toISOString(),
-      });
-
-      break;
-    }
-    case "checkout.session.completed": {
-      if (data.payment_intent) {
-        await fundsCollection.updateOne(
-          {
-            paymentIntentId: data.payment_intent,
-          },
           {
             $set: {
-              status: status.COMPLETED,
+              stripeAccountId: data.individual.account,
+              products: { monthlyProductId, yearlyProductId },
             },
           }
         );
@@ -298,16 +332,15 @@ exports.webhook = async (req, res) => {
 //billingDetails
 exports.billingDetails = async (req, res) => {
   try {
-    if (req.session?.user?.username) {
-      const billingDetails = await Billing.getBillingDetails(
-        req.session.user.username
-      );
-      if (!!billingDetails?.billingId)
-        req.session.user.billingId = billingDetails.billingId;
-      res.send({ billing: billingDetails });
-    } else {
+    if (!req.session?.user?.username) {
       res.send({ billing: null });
+      return;
     }
+    const billingDetails = await Billing.getBillingDetails(
+      req.session.user.username
+    );
+
+    res.send({ billing: billingDetails });
   } catch (e) {
     console.log(e);
     res.status(500).send({ error: e });

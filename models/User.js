@@ -236,7 +236,7 @@ User.findByUsername = function(username) {
         }
         usersCollection.findOne({username: username}).then(function(userDoc) {
             if (userDoc) {
-                userDoc = new User(userDoc, true)
+                userDoc = new User(userDoc, true);
                 userDoc = {
                     _id: userDoc.data._id,
                     username: userDoc.data.username,
@@ -250,7 +250,9 @@ User.findByUsername = function(username) {
                     website: userDoc.data.website,
                     type: userDoc.data.type,
                     settings: userDoc.data.settings,
-                    stripeAccountId: userDoc.data.stripeAccountId
+                    stripeAccountId: userDoc.data.stripeAccountId,
+                    products: userDoc.data.products || null,
+                    status: userDoc.data.status || null
                 }
                 resolve(userDoc)
             } else {
@@ -364,12 +366,15 @@ User.prototype.resetPassword = function() {
 }
 
 //updating stripeId to null on subscription cancellation 
-User.findAndUpdateByBillingID = async function(billingId, stripeAccountId){
+User.findAndUpdateByBillingID = async function(billingId, status){
     try{
         const billingInfo = await billingCollection.findOne({ billingId });
+        console.log(billingInfo,'info')
+        let userUpdated = {};
         if(billingInfo){
-            await usersCollection.updateOne({_id: billingInfo.explorerId}, { $set:{ stripeAccountId}})
+             userUpdated = await usersCollection.updateOne({_id: billingInfo.explorerId}, { $set:{ status}})
         }
+        return userUpdated;
     }
     catch(error){
         console.log(error);
