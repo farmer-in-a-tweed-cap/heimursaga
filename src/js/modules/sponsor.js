@@ -292,7 +292,6 @@ export default class Sponsor {
           button.disabled = false;
           spinner.style.display = "none";
           button.textContent = "Submit";
-          console.log(response)
           if (response.success) {
             this.sponsorModal.hide()
             parent.window.notyf.success(`Sponsor subscription to ${this.username} successful!`);
@@ -321,7 +320,6 @@ export default class Sponsor {
           spinner.style.display = "none";
           button.textContent = "Submit";
           const response = await result.json();
-          console.log(response);
           if (response.success) {
             this.sponsorModal.hide()
             parent.window.notyf.success(`Sponsor subscription to ${this.username} successful!`);
