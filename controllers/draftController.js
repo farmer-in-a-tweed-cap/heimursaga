@@ -2,12 +2,21 @@ const Draft = require('../models/Draft')
 const Entry = require('../models/Entry')
 const GeoJSON = require('geojson')
 const { Photo } = require('../models/Photo')
+const billingCollection = require('../db').db().collection("billing")
+const { ObjectId } = require('mongodb')
 
 
 
 exports.viewCreateScreen = async function(req, res) {
+    let billing = await billingCollection.findOne({
+        explorerId:  new ObjectId(req.session.user._id),
+      });
     let journeys = await Entry.findJourneysByUsername(req.session.user.username)
-    res.render('create-entry', {pageName: 'create-entry', journeys: journeys})
+    res.render('create-entry', {
+        pageName: 'create-entry', 
+        journeys: journeys,
+        plan: billing?.plan,
+    })
 }
 
 exports.create = function(req, res) {
@@ -38,8 +47,11 @@ exports.create = function(req, res) {
 
 exports.viewSingle = async function(req, res) {
     try {
+        let billing = await billingCollection.findOne({
+            explorerId:  new ObjectId(req.session.user._id),
+          });
         let draft = await Draft.findSingleById(req.params.id, req.visitorId)
-        res.render('single-draft', {draft: draft, pageName: draft})
+        res.render('single-draft', {draft: draft, pageName: draft, plan: billing?.plan})
     } catch {
         res.render('pages-404')
     }
@@ -49,9 +61,10 @@ exports.viewEditScreen = async function(req, res) {
     try {
       let draft = await Draft.findSingleById(req.params.id, req.visitorId)
       let journeys = await Draft.findJourneysByUsername(req.session.user.username)
+      let billing = await billingCollection.findOne({explorerId:  new ObjectId(req.session.user._id),})
       let entryMarker = GeoJSON.parse(draft.GeoJSONcoordinates, {'Point': ['draft.GeoJSONcoordinates.coordinates[0]','draft.GeoJSONcoordinates.coordinates[1]']})
       if (draft.isVisitorOwner) {
-        res.render("edit-draft", {draft: draft, journeys: journeys, entrymarker: JSON.stringify(entryMarker), pageName: "edit-draft"})
+        res.render("edit-draft", {draft: draft, journeys: journeys, entrymarker: JSON.stringify(entryMarker), pageName: "edit-draft", plan: billing?.plan})
       } else {
         req.flash("errors", "You do not have permission to perform that action.")
         req.session.save(() => res.redirect("/"))

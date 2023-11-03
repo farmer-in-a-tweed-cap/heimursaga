@@ -34,9 +34,9 @@ exports.getSubscritionDetails = async function (req, res) {
 
     let { username, billingId } = req.session.user;
     let userDetail = await usersCollection.findOne({ username });
-    console.log(userDetail);
-    console.log(req.session.user);
-    console.log(req.params);
+    //console.log(userDetail);
+    //console.log(req.session.user);
+    //console.log(req.params);
     if (billingId) {
       let customerDetails = await connectAccCustomersCollection.findOne({
         cusExpId: userDetail._id,
@@ -45,15 +45,15 @@ exports.getSubscritionDetails = async function (req, res) {
       let plan = null;
 
       if (customerDetails) {
-        console.log(customerDetails);
+        //console.log(customerDetails);
         let sponsorDetails = await sponsorsCollection.findOne({
           custConnectAccId: customerDetails._id,
         });
-        console.log(sponsorDetails);
+        //console.log(sponsorDetails);
         const stripeAccountHolderDetails = await usersCollection.findOne({
           stripeAccountId,
         });
-        console.log(stripeAccountHolderDetails);
+        //console.log(stripeAccountHolderDetails);
         if (sponsorDetails?.plan) {
           plan = "yearly";
           if (

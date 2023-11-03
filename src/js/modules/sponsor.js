@@ -135,7 +135,7 @@ export default class Sponsor {
 
         <div class="mb-3 mx-5">
           <form id="payment-form">
-            <div id="card-element" class="p-2 border rounded">
+            <div id="card-element" class="p-2 border rounded mb-3">
               <!-- elements from stripe will be inserted here. -->
             </div>
           </form>
@@ -215,7 +215,7 @@ export default class Sponsor {
 
     <div class="my-3 mx-5">
       <form id="payment-form">
-        <div id="card-element" class="p-2 border rounded">
+        <div id="card-element" class="p-2 border rounded mb-3">
           <!-- elements from stripe will be inserted here. -->
         </div>
       </form>

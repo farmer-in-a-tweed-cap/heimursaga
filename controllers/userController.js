@@ -24,6 +24,7 @@ const Billing = require('../models/Billing')
 const Sponsor = require('../models/Sponsors')
 const billingCollection = require('../db').db().collection("billing")
 const Notification = require('../models/Notification')
+const { ObjectId } = require('mongodb')
 
 
 exports.sharedProfileData = async function(req, res, next) {
@@ -33,7 +34,11 @@ exports.sharedProfileData = async function(req, res, next) {
     isVisitorsProfile = req.profileUser._id.equals(req.session.user._id)
     isFollowing = await Follow.isVisitorFollowing(req.profileUser._id, req.visitorId)
   }
+  let billing = await billingCollection.findOne({
+    explorerId:  new ObjectId(req.session.user._id),
+  })
 
+  //console.log("usertype")
   req.isVisitorsProfile = isVisitorsProfile
   req.isFollowing = isFollowing
   // retrieve entry, follower, and following counts
@@ -47,6 +52,7 @@ exports.sharedProfileData = async function(req, res, next) {
   req.entryCount = entryCount
   req.followerCount = followerCount
   req.followingCount = followingCount
+  req.plan = billing?.plan
   //req.notifications = notifications
 
   next()
@@ -194,13 +200,11 @@ exports.viewSettings = async function(req, res) {
     const billing = await billingCollection.findOne({
       billingId:  req.session.user.billingId,
     });
-    console.log(req.session.user._id)
+
     const sponsored = await Sponsor.findAllSponsoredByUserId(req.session.user._id);
-    console.log(sponsored,'ehehhe')
   
     User.findByUsername(req.profileUser.username).then(async function(user){
     const sponsors = await Sponsor.findAllSponsorsByAccId(user.stripeAccountId);
-    console.log(sponsors)
     res.render('settings', {
       pageName: "settings",
       email: user.email,
@@ -384,6 +388,11 @@ exports.journalScreen = function(req, res) {
 
   Entry.findByAuthorId(req.profileUser._id).then(async function(entries) {
 
+    let billing = await billingCollection.findOne({
+      explorerId:  req.profileUser._id,
+    });
+
+
     let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
     let following = await Follow.getFollowingById(req.profileUser._id)
     let followers = await Follow.getFollowersById(req.profileUser._id)
@@ -395,6 +404,7 @@ exports.journalScreen = function(req, res) {
     if (req.isVisitorsProfile == true){
       res.render('journal', {
         pageName: "my-journal",
+        plan: billing?.plan,
         entries: entries,
         selectedJourney: null,
         journeys: journeys,
@@ -424,6 +434,7 @@ exports.journalScreen = function(req, res) {
     } else {
     res.render('journal', {
       pageName: "journal",
+      plan: billing?.plan,
       entries: entries,
       journeys: journeys,
       selectedJourney: null,
@@ -457,6 +468,11 @@ exports.journalScreen = function(req, res) {
 } else {
   Entry.findPublicByAuthorId(req.profileUser._id).then(async function(entries) {
 
+    let billing = await billingCollection.findOne({
+      explorerId:  req.profileUser._id,
+    });
+
+
     let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
     let following = await Follow.getFollowingById(req.profileUser._id)
     let followers = await Follow.getFollowersById(req.profileUser._id)
@@ -469,6 +485,7 @@ exports.journalScreen = function(req, res) {
     if (req.isVisitorsProfile == true){
       res.render('journal', {
         pageName: "my-journal",
+        plan: billing?.plan,
         entries: entries,
         journeys: journeys,
         selectedJourney: null,
@@ -498,6 +515,7 @@ exports.journalScreen = function(req, res) {
     } else {
     res.render('journal', {
       pageName: "journal",
+      plan: billing?.plan,
       entries: entries,
       journeys: journeys,
       selectedJourney: null,
@@ -535,6 +553,9 @@ exports.journalScreenPro = function(req, res) {
   // ask our post model for posts by a certain author id
 
   Entry.findByAuthorIdandJourney(req.params.journey, req.profileUser._id).then(async function(entries) {
+    let billing = await billingCollection.findOne({
+      explorerId:  req.profileUser._id,
+    });
 
     let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
     let following = await Follow.getFollowingById(req.profileUser._id)
@@ -548,6 +569,7 @@ exports.journalScreenPro = function(req, res) {
     if (req.isVisitorsProfile == true){
       res.render('journal', {
         pageName: "my-journal",
+        plan: billing?.plan,
         entries: entries,
         selectedJourney: req.params.journey,
         journeys: journeys,
@@ -577,6 +599,7 @@ exports.journalScreenPro = function(req, res) {
     } else {
     res.render('journal', {
       pageName: "journal",
+      plan: billing?.plan,
       entries: entries,
       selectedJourney: req.params.journey,
       drafts: drafts,
@@ -608,6 +631,9 @@ exports.journalScreenPro = function(req, res) {
 
 } else {
   Entry.findPublicByAuthorIdandJourney(req.params.journey, req.profileUser._id).then(async function(entries) {
+    let billing = await billingCollection.findOne({
+      explorerId:  req.profileUser._id,
+    });
 
     let entryMarker = GeoJSON.parse(entries, {GeoJSON: 'GeoJSONcoordinates', include: ['popup','_id']})
     let following = await Follow.getFollowingById(req.profileUser._id)
@@ -621,6 +647,7 @@ exports.journalScreenPro = function(req, res) {
     if (req.isVisitorsProfile == true){
       res.render('journal', {
         pageName: "my-journal",
+        plan: billing?.plan,
         entries: entries,
         selectedJourney: req.params.journey,
         journeys: journeys,
@@ -650,6 +677,7 @@ exports.journalScreenPro = function(req, res) {
     } else {
     res.render('journal', {
       pageName: "journal",
+      plan: billing?.plan,
       entries: entries,
       selectedJourney: req.params.journey,
       journeys: journeys,

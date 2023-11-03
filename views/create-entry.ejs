@@ -53,7 +53,7 @@
 						  
 							<div class="col-12 col-xl-12">
 
-							<!--INCLUDE EXPLORER PRO GATE HERE-->
+						<% if (plan != undefined && plan != "none") { %>
 
 							<div class="card" id="journeydiv">
 								<div class="card-header">
@@ -82,6 +82,8 @@
 
 								</div>
 							</div>
+
+							<% } %>
 
 							  <div class="card" id="bodydiv">
 								<div class="card-header">
@@ -238,20 +240,24 @@
 										<label class="form-check-label" for="entryprivate">Private</label>
 									</div>
 
-																<!--INCLUDE EXPLORER PRO GATE HERE-->
+									<% if (plan != undefined && plan != "none") { %>
 
 									<div class="form-check pb-3">
 										<input type="radio" class="form-check-input" name="flexRadioDefault" id="entrysponsors" value="sponsors" autocomplete="off">
 										<label class="form-check-label" for="entrysponsors">Sponsors Only</label>
 									</div>
 
+									<% } %>
+
 
 									<div class="submit_error form-text text-danger"></div>
 
-
-									<button type="submit" id="save-draft" formaction="/save-draft/?_csrf=<%=csrfToken%>" onclick="showLoader()" class="btn btn-secondary">Save to Drafts</button>
+									<div class="pt-3">
+										<button type="submit" id="save-draft" formaction="/save-draft/?_csrf=<%=csrfToken%>" onclick="showLoader()" class="btn btn-secondary">Save to Drafts</button>
 								 
-									<button type="submit" id="submit-entry" formaction="/create-entry/?_csrf=<%=csrfToken%>" class="btn btn-primary" onClick="showLoader()" disabled>Post Entry</button>
+										<button type="submit" id="submit-entry" formaction="/create-entry/?_csrf=<%=csrfToken%>" class="btn btn-primary" onClick="showLoader()" disabled>Post Entry</button>
+	
+									</div>
 
 
 								</div>

@@ -12,6 +12,8 @@ const { ObjectId } = require('mongodb')
 const { hasVisitorHighlighted } = require('../models/Highlight')
 const Bookmark = require('../models/Bookmark')
 const Follow = require('../models/Follow')
+const billingCollection = require('../db').db().collection("billing")
+
 
 
 
@@ -22,11 +24,18 @@ const Follow = require('../models/Follow')
 exports.viewCreateScreen = async function(req, res) {
     //include explorer pro gate here
     let journeys = await Entry.findAllJourneysByUsername(req.session.user.username)
-    res.render('create-entry', {pageName: 'create-entry', journeys: journeys})
+    let billing = await billingCollection.findOne({
+        explorerId:  new ObjectId(req.session.user._id),
+      });
+    res.render('create-entry', {
+        pageName: 'create-entry', 
+        journeys: journeys,
+        plan: billing?.plan,
+    })
 }
 
 exports.create = function(req, res) {
-    console.log(req.body)
+    //console.log(req.body)
     let entry = new Entry(req.body, req.files, ObjectId(), req.session.user._id, req.session.user.username)
     if (req.files.length) {
     let photo = new Photo(req.files)
@@ -84,9 +93,18 @@ exports.viewEditScreen = async function(req, res) {
     try {
       let entry = await Entry.findSingleById(req.params.id, req.visitorId)
       let journeys = await Entry.findAllJourneysByUsername(req.session.user.username)
+      let billing = await billingCollection.findOne({
+        explorerId:  new ObjectId(req.session.user._id),
+      });
       let entryMarker = GeoJSON.parse(entry.GeoJSONcoordinates, {'Point': ['entry.GeoJSONcoordinates.coordinates[0]','entry.GeoJSONcoordinates.coordinates[1]']})
       if (entry.isVisitorOwner) {
-        res.render("edit-entry", {entry: entry, journeys: journeys, entrymarker: JSON.stringify(entryMarker), pageName: "edit-entry"})
+        res.render("edit-entry", {
+            entry: entry, 
+            journeys: journeys, 
+            entrymarker: JSON.stringify(entryMarker), 
+            pageName: "edit-entry",
+            plan: billing?.plan
+        })
       } else {
         req.flash("errors", "You do not have permission to perform that action.")
         req.session.save(() => res.redirect("/"))

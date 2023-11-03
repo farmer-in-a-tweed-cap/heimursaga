@@ -44,7 +44,7 @@ Billing.getBillingDetails = async (username) => {
 
     return billingInfo;
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     return null;
   }
 };

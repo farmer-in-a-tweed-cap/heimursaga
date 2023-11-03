@@ -68,7 +68,7 @@
 																		<% } %>
 
 																			<div class="card-body text-center mt-2">
-																				<% if (type=="ExplorerPro" ) { %>
+																				<% if (plan != undefined && plan != "none") { %>
 																					<img src="<%= profileAvatar %>"
 																						class="img-fluid rounded-circle border border-primary mb-1"
 																						style="border-width: 3px !important;"
@@ -164,15 +164,17 @@
 
 
 																												<% } %>
-																													<% if(stripeAccountId
-																														&&
-																														status
-																														!=='transfer_disabled'
-																														){
-																														%>
+																												<% if(stripeAccountId
+																												&&
+																												status
+																												!=='transfer_disabled' && user
+																												&&
+																												!isVisitorsProfile
+																												){
+																												%>
 																														<button
 																															style="border: none; background: transparent; cursor: pointer;"
-																															id="sponsor-button"
+																															id="modal-button"
 																															class="text-blue"
 																															data-bs-toggle="modal"
 																															data-bs-target="#fund-sponser-modal">
@@ -205,41 +207,6 @@
 												</div>
 
 
-												<!-- Modal -->
-												<!--
-												<div class="modal fade" id="fund-confirm-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-													<div class="modal-dialog modal-dialog-centered">
-														<div class="modal-content">
-															<div class="modal-header">
-																<h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure you want to send funds to <span
-																		class="text-success">
-																		<%= profileUsername %>
-																	</span class="text-success">?</h1>
-																<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-															</div>
-															<form>
-																<div class="modal-body">
-																	<div class="input-group">
-																		<input id="amount" type="number" class="form-control" onchange="handleInput()"
-																			aria-label="Dollar amount (with dot and two decimal places)" required>
-																		<span class="input-group-text">$</span>
-																	</div>
-																	<div id="error" class="text-sm text-error" style="color: rgb(235, 81, 81);">
-												 
-																	</div>
-																</div>
-																<div class="modal-footer">
-																	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-																	<button id="fund-button" type="button" class="btn btn-primary">
-																		Give Fund
-																	</button>
-																</div>
-															</form>
-												
-														</div>
-													</div>
-												</div>
-											-->
 												<% } %>
 
 																															<button
@@ -279,41 +246,7 @@
 																												</div>
 
 																												<% } %>
-																													<% if(stripeAccountId
-																														&&
-																														status
-																														!=='transfer_disabled' && user
-																														&&
-																														!isVisitorsProfile
-																														){
-																														%>
-																														<button
-																															class="btn btn-primary mt-3"
-																															id="modal-button">sponsor
-																															modal</button>
-																														<% }
-																															%>
 
-																															<div class="modal fade"
-																																id="sponsor-modal"
-																																tabindex="-1">
-																																<div
-																																	class="modal-dialog modal-dialog-centered">
-																																	<div
-																																		class="modal-content">
-
-																																		<div class="modal-header"
-																																			id="modal-header">
-																																		</div>
-
-																																		<div class="modal-body"
-																																			id="modal-body">
-
-																																		</div>
-
-																																	</div>
-																																</div>
-																															</div>
 
 
 																			</div>
@@ -493,11 +426,11 @@
 
 																	<div class="card flex-fill"
 																		style="height: 100%; background-color: transparent; border-color: transparent; box-shadow: none;">
-																		<div class="mb-2">
+																		<div class="">
 
-																			<!--INCLUDE EXPLORER PRO GATE HERE-->
+																			<% if (plan != undefined && plan != "none") { %>
 
-																			<select class="form-select journeyOptions"
+																				<select class="form-select journeyOptions mb-2"
 																				name="journey" id="journeyOptions">
 
 																				<% if (selectedJourney) { %>
@@ -535,6 +468,9 @@
 																										<% } %>
 
 																			</select>
+																			<% } %>
+
+
 																		</div>
 																		<div id="journalmap" class="journalmap"
 																			style='width: 100%; height: 100%;'></div>
@@ -1103,13 +1039,13 @@
 
 								if (!Value) return;
 
-								console.log(Value)
+								//console.log(Value)
 							}
 
 							function submitJourney() {
 								const Value = document.querySelector('#journeyOptions').value;
 								axios.post(`/journal/${Value}`, { _csrf: csurf }).then(() => {
-									console.log('journey sent to server')
+									//console.log('journey sent to server')
 								})
 							}
 
