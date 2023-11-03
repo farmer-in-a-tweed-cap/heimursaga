@@ -99,15 +99,15 @@ exports.funding = async (req, res) => {
 
     const unit_amount = Math.ceil(amount * 100);
 
-    const percentPlateformFees = Math.ceil(
-      (process.env.PLATEFORM_FEE / 100) * amount * 100
+    const percentPlatformFees = Math.ceil(
+      (process.env.PLATFORM_FEE / 100) * amount * 100
     );
 
     const charges = await Stripe.createPaymentSession(
       unit_amount,
       token,
       stripeAccountId,
-      percentPlateformFees
+      percentPlatformFees
     );
     await Funds.create(charges, _id);
     res.send(charges);
