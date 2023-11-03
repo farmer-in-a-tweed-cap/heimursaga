@@ -97,7 +97,7 @@ const createPaymentSession = async (
   unit_amount,
   token,
   stripeAccountId,
-  percentPlateformFees
+  percentPlatformFees
 ) => {
   const charges = await Stripe.charges.create({
     amount: unit_amount,
@@ -107,7 +107,7 @@ const createPaymentSession = async (
       destination: stripeAccountId,
     },
     on_behalf_of: stripeAccountId,
-    application_fee_amount: percentPlateformFees,
+    application_fee_amount: percentPlatformFees,
   });
 
   return charges;
@@ -167,7 +167,7 @@ const createSponserSubscription = async (
         },
       ],
       expand: ["latest_invoice.payment_intent"],
-      application_fee_percent: process.env.PLATEFORM_FEE,
+      application_fee_percent: process.env.PLATFORM_FEE,
     },
     {
       stripeAccount: stripeAccountId,
