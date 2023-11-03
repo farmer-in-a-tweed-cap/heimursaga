@@ -15,7 +15,7 @@ export default class Sponsor {
     this.stripeAccountId = document.querySelector("#stripeAccountId").value;
     this.monthlyProductId = document.querySelector("#monthlyProductId").value;
     this.yearlyProductId = document.querySelector("#yearlyProductId").value;
-    this.explorer = "nelliebly";
+    this.explorer = document.querySelector("#profile-username").innerText;
     this.waitTimer;
     this.cardElement;
     this.sponserUser = this.sponserUser.bind(this); // Using .bind()
@@ -130,7 +130,7 @@ export default class Sponsor {
                 aria-label="Dollar amount (with dot and two decimal places)" required>
                 <span class="input-group-text">$</span>
             </div>
-            <div class="error"></div>
+            <div class="error text-danger"></div>
         </div>
 
         <div class="mb-3 mx-5">
@@ -174,11 +174,11 @@ export default class Sponsor {
     <hr>
 
     <div class="my-3 mx-5">
-      <div>You have subscribed to
+      <div>You are already sponsoring this explorer with a
         <span style="color: green; font-weight: bold;"> ${plan} </span>
-          Plan. 
+          subscription. 
       </div>
-        <button class="btn btn-secondary" id="back-btn">Back</button>
+        <button class="btn btn-secondary mt-3" id="back-btn">Back</button>
     </div>`);
     document
       .querySelector("#back-btn")
@@ -206,7 +206,7 @@ export default class Sponsor {
     <hr>
 
     <div class="my-3">
-        <input type="radio" class="btn-check" name="options-outlined" id="monthly-outlined" autocomplete="off">
+        <input type="radio" class="btn-check" name="options-outlined" id="monthly-outlined" autocomplete="off" checked>
         <label class="btn btn-outline-primary" for="monthly-outlined">$7/Monthly</label>
         
         <input type="radio" class="btn-check" name="options-outlined" id="yearly-outlined" autocomplete="off">
@@ -264,7 +264,9 @@ export default class Sponsor {
 
     button.disabled = true;
     spinner.style.display = "inline-block";
-    button.textContent = "Loading...";
+    button.innerHTML =
+    '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
+
 
     if (monthlyRadio.checked) monthlySubsActive = true;
     else if (yearlyRadio.checked) monthlySubsActive = false;
@@ -290,15 +292,15 @@ export default class Sponsor {
           button.disabled = false;
           spinner.style.display = "none";
           button.textContent = "Submit";
+          console.log(response)
           if (response.success) {
-            modal.classList.remove("show");
-            if (modalBackdrop) {
-              modalBackdrop.parentNode.removeChild(modalBackdrop);
-            }
+            this.sponsorModal.hide()
+            parent.window.notyf.success(`Sponsor subscription to ${this.username} successful!`);
           }
           return response;
         })
         .catch((err) => {
+          parent.window.notyf.error({background: '#3C73AA', message: `Subscription unsuccessful: ${err.message}`});
           button.disabled = false;
           spinner.style.display = "none";
           button.textContent = "Submit";
@@ -321,14 +323,14 @@ export default class Sponsor {
           const response = await result.json();
           console.log(response);
           if (response.success) {
-            modal.classList.remove("show");
-            if (modalBackdrop) {
-              modalBackdrop.parentNode.removeChild(modalBackdrop);
-            }
+            this.sponsorModal.hide()
+            parent.window.notyf.success(`Sponsor subscription to ${this.username} successful!`);
           }
+
           return response;
         })
         .catch((err) => {
+          parent.window.notyf.error({background: '#3C73AA', message: `Subscription unsuccessful: ${err.message}`});
           button.disabled = false;
           spinner.style.display = "none";
           button.textContent = "Submit";
@@ -341,7 +343,7 @@ export default class Sponsor {
     const amountField = document.getElementById("amount");
     const cardField = document.getElementById("card-element");
 
-    const fundSumitBtn = document.getElementById("one-time-payment");
+    const fundSubmitBtn = document.getElementById("one-time-payment");
     const { token, error } = await this.stripe.createToken(this.cardElement);
     if (error) {
       cardField.style.border = "1px solid red";
@@ -350,7 +352,7 @@ export default class Sponsor {
     console.log(error);
     this.cardToken = token.id;
 
-    if (fundSumitBtn && amountField) {
+    if (fundSubmitBtn && amountField) {
       amountField.style.border = "1px solid gray";
       let amount = parseFloat(amountField.value);
 
@@ -358,12 +360,19 @@ export default class Sponsor {
         if (amount.length) {
           amountField.style.border = "1px solid red";
         } else if (amount > 2000) {
-          console.error("amount should be less than 2001");
           amountField.style.border = "1px solid red";
+          const error = document.querySelector(".error");
+          error.innerHTML = "Amount must be less than 2001";
+  
+        }  else if (amount < 5) {
+        amountField.style.border = "1px solid red";
+        const error = document.querySelector(".error");
+        error.innerHTML = "Amount must be greater than 5";
+        
         } else {
-          fundSumitBtn.classList.add("disabled");
-          fundSumitBtn.innerHTML =
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+          fundSubmitBtn.classList.add("disabled");
+          fundSubmitBtn.innerHTML =
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
           fetch(
             `/funding/${this.stripeAccountId}/${amount}/${this.cardToken}`,
             {
@@ -375,15 +384,20 @@ export default class Sponsor {
           )
             .then(async (result) => {
               const response = await result.json();
-              fundSumitBtn.classList.remove("disabled");
-              fundSumitBtn.innerHTML = "Submit";
+              fundSubmitBtn.classList.remove("disabled");
+              fundSubmitBtn.innerHTML = "Submit";
               amountField.value = "";
+              if (response.status == "succeeded") {
+                this.sponsorModal.hide()
+                parent.window.notyf.success(`Sponsor payment to ${this.username} successful!`);
+              }
               return response;
             })
             .catch((err) => {
+              parent.window.notyf.error({background: '#3C73AA', message: `Payment unsuccessful: ${err.message}`});
               console.log(err.message);
-              fundSumitBtn.classList.remove("disabled");
-              fundSumitBtn.innerHTML = "Submit";
+              fundSubmitBtn.classList.remove("disabled");
+              fundSubmitBtn.innerHTML = "Submit";
             });
         }
       } else {
