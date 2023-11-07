@@ -1,7 +1,12 @@
 const User = require("./User");
-const Stripe = require("../stripe");
+const stripe = require("stripe");
+const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2020-08-27",
+  maxNetworkRetries: 2,
+});
 const { ObjectId } = require("mongodb");
 const billingCollection = require("../db").db().collection("billing");
+
 
 let Billing = function (explorerId, plan, hasTrial, endDate, billingId) {
   this.explorerId = explorerId;
@@ -15,7 +20,11 @@ let Billing = function (explorerId, plan, hasTrial, endDate, billingId) {
 Billing.createCustomer = async (username) => {
   try {
     const { _id, email } = await User.findByUsername(username);
-    const customer = await Stripe.addNewCustomer(email, username);
+    const customer = await Stripe.customers.create({
+        email,
+        name: username,
+        description: "New Customer",
+      });
     stripeCustomerId = customer.id;
 
     await billingCollection.insertOne({

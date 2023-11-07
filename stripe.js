@@ -6,6 +6,8 @@ const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {
   maxNetworkRetries: 2,
 });
 
+
+
 const createCheckoutSession = async (customerID, price) => {
   if (!customerID || !price)
     throw new Error("customerId or price Id cannot be null");
@@ -51,6 +53,9 @@ const addNewCustomer = async (email, username = "New customer") => {
 
   return customer;
 };
+
+//addNewCustomer("cnhamilton1@yahoo.com", "Christopher Hamilton");
+
 
 const createWebhook = (rawBody, sig) => {
   const event = Stripe.webhooks.constructEvent(
