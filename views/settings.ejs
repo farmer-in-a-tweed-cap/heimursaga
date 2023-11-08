@@ -317,7 +317,10 @@
 													</div>
 													<div class="manageBilling mb-2">
 														<button id="manage_billing" class="btn btn-primary">
-															Manage Subscription
+															<span id="button-spinner1"
+																class="spinner-border spinner-border-sm me-1"
+																role="status" aria-hidden="true" hidden></span>
+																Manage Subscription
 														</button>
 													</div>
 													<% } else if(plan==='monthly_exp' ) { %>
@@ -328,7 +331,10 @@
 														</div>
 														<div class="manageBilling mb-2">
 															<button id="manage_billing" class="btn btn-primary">
-																Manage Subscription
+																<span id="button-spinner1"
+																	class="spinner-border spinner-border-sm me-1"
+																	role="status" aria-hidden="true" hidden></span>
+																	Manage Subscription
 															</button>
 														</div>
 
@@ -372,7 +378,7 @@
 													</p>
 													<div class="d-flex flex-row gap-2 mb-4">
 														<div class="d-flex flex-column">
-															<select id="select_country">
+															<select class="form-select" id="select_country">
 																<option value="">Select Country....</option>
 																<option value="AU">Australia</option>
 																<option value="AT">Austria</option>
@@ -422,7 +428,7 @@
 														</div>
 														<div class="connect-bank">
 															<button id="connect-bank" class="btn btn-primary">
-																<span id="button-spinner"
+																<span id="button-spinner2"
 																	class="spinner-border spinner-border-sm me-1"
 																	role="status" aria-hidden="true" hidden></span>
 																Connect Bank
@@ -510,10 +516,6 @@
 
 				</div>
 
-				</div>
-
-
-				</div>
 			</main>
 
 			<script>
@@ -593,7 +595,7 @@
 					let username = `<%- username %>`
 					let country = selectedCountry;
 
-					let buttonSpinner = document.getElementById("button-spinner")
+					let buttonSpinner2 = document.getElementById("button-spinner2")
 
 
 					//monthly + annually
@@ -638,7 +640,11 @@
 
 					//manage Subscription link
 					if (manageSubscription) {
+						let buttonSpinner1 = document.getElementById("button-spinner1")
+
 						manageSubscription.addEventListener('click', function () {
+							buttonSpinner1.removeAttribute("hidden", true)
+
 
 							const requestOptions = {
 								method: 'GET',
@@ -660,7 +666,7 @@
 						connectBank.addEventListener('click', function () {
 							console.log('hit')
 							if (selectedCountry) {
-								buttonSpinner.removeAttribute("hidden", true)
+								buttonSpinner2.removeAttribute("hidden", true)
 								const requestOptions = {
 									method: 'GET',
 									headers: {

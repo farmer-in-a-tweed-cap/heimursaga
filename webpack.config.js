@@ -54,16 +54,7 @@ module.exports = {
         { from: "src/img", to: "img" }
       ]
     }),
-    // Copy dist folder to docs/dist
-   /* new FileManagerPlugin({
-      events: {
-        onEnd: {
-          copy: [
-            { source: "./dist/", destination: "./docs" }
-          ]
-        }
-      }
-    }),*/
+
     // Ignore momentjs locales
     new Webpack.IgnorePlugin({
       resourceRegExp: /^\.\/locale$/,

@@ -36,7 +36,7 @@ exports.subscribe = async function (req, res, next) {
 
       try {
         const session = await Stripe.createCheckoutSession(customerID, price);
-        req.flash("success", `Welcome, ${req.session.user.username}!`);
+        req.flash("success", `Welcome to Explorer Pro, ${req.session.user.username}!`);
         res.send({
           sessionId: session.id,
         });
@@ -197,6 +197,7 @@ exports.webhook = async (req, res) => {
         billing.hasTrial = true;
         billing.endDate = new Date(data.current_period_end * 1000);
 
+
         //update billing record
         await billingCollection.updateOne(
           { billingId: data.customer },
@@ -284,7 +285,8 @@ exports.webhook = async (req, res) => {
       if (billing) {
         await User.findAndUpdateByBillingID(billing.billingId, null);
 
-        console.log("You just canceled the subscription " + data.canceled_at);
+        //console.log("You just canceled the subscription " + data.canceled_at);
+
         billing.plan = "none";
         billing.hasTrial = false;
         billing.endDate = null;
@@ -294,9 +296,9 @@ exports.webhook = async (req, res) => {
           { billingId: data.customer },
           {
             $set: {
-              plan: billing.plan,
-              hasTrial: billing.hasTrial,
-              endDate: billing.endDate,
+              plan: "none",
+              hasTrial: false,
+              endDate: null,
             },
           }
         );
