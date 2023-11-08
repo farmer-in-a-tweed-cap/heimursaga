@@ -6,6 +6,7 @@ export default class Sponsor {
     this.sponsorModal = new bootstrap.Modal(
       document.querySelector("#sponsor-modal")
     );
+    this._csrf = document.querySelector('[name="_csrf"]').value
     this.sponsorModalHeader = document.querySelector("#modal-header");
     this.sponsorModalBody = document.querySelector("#modal-body");
     this.sponsorModalFooter = document.querySelector("#modal-footer");
@@ -100,6 +101,12 @@ export default class Sponsor {
       this.subscribeHTML();
     }
   };
+
+  createNotification(username, type, amount) {
+    axios.post(`/newSponsorNotification/${username}/${type}/${amount}`, {_csrf: this._csrf}).then(() => {
+      console.log('notification added')
+  })
+  }
 
   singlePaymentHTML() {
     this.sponsorModalHeader.innerHTML = DOMPurify.sanitize(
@@ -293,6 +300,7 @@ export default class Sponsor {
           spinner.style.display = "none";
           button.textContent = "Submit";
           if (response.success) {
+            this.createNotification(this.username, 'subscription', "monthly")
             this.sponsorModal.hide()
             parent.window.notyf.success(`Sponsor subscription to ${this.username} successful!`);
           }
@@ -321,6 +329,7 @@ export default class Sponsor {
           button.textContent = "Submit";
           const response = await result.json();
           if (response.success) {
+            this.createNotification(this.username, 'subscription', "yearly")
             this.sponsorModal.hide()
             parent.window.notyf.success(`Sponsor subscription to ${this.username} successful!`);
           }
@@ -386,6 +395,7 @@ export default class Sponsor {
               fundSubmitBtn.innerHTML = "Submit";
               amountField.value = "";
               if (response.status == "succeeded") {
+                this.createNotification(this.username, 'one-time-payment', amount)
                 this.sponsorModal.hide()
                 parent.window.notyf.success(`Sponsor payment to ${this.username} successful!`);
               }

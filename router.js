@@ -14,6 +14,7 @@ const router = express.Router()
 const billingController = require('./controllers/billingController')
 const { multerUploads } = require('./models/Photo')
 const connectAccCustomerController = require('./controllers/connectAccCustomerController')
+const notificationController = require('./controllers/notificationController')
 
 
 
@@ -116,6 +117,9 @@ router.get('/flag-button/:id', flagController.viewSingleFlags)
 // follow related routes
 router.post('/addFollow/:username', userController.mustBeLoggedIn, followController.addFollow)
 router.post('/removeFollow/:username', userController.mustBeLoggedIn, followController.removeFollow)
+
+// sponsor related routes
+router.post('/newSponsorNotification/:username/:type/:amount', userController.mustBeLoggedIn, notificationController.addSponsorNotification)
 
 
 // navigation related routes
