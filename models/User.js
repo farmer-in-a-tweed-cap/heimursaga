@@ -184,7 +184,7 @@ User.prototype.update = function() {
       this.cleanUp()
       //this.validate()
       if (!this.errors.length) {
-        await usersCollection.findOneAndUpdate({username: this.data.username}, {$set: {username: this.data.username, email: this.data.email, bio: this.data.bio, currentlyin: this.data.currentlyin, livesin: this.data.livesin, from: this.data.from, type: this.data.type, settings: {emailNotifications: {followers: this.data.settings.emailNotifications.followers, likes: this.data.settings.emailNotifications.likes}, pushNotifications: {followers: this.data.settings.pushNotifications.followers, likes: this.data.settings.pushNotifications.likes}}}})
+        await usersCollection.findOneAndUpdate({username: this.data.username}, {$set: {username: this.data.username, email: this.data.email, bio: this.data.bio, currentlyin: this.data.currentlyin, livesin: this.data.livesin, from: this.data.from, type: this.data.type}})
         resolve("success")
       } else {
         resolve("failure")
