@@ -2,10 +2,7 @@ const User = require("../models/User");
 const Entry = require("../models/Entry");
 const Follow = require("../models/Follow");
 const Flag = require("../models/Flag");
-const connectAccCustomersCollection = require("../db")
-  .db()
-  .collection("connectAccountCustomers");
-
+const connectAccCustomersCollection = require("../db").db().collection("connectAccountCustomers");
 const sponsorsCollection = require("../db").db().collection("sponsors");
 const followsCollection = require("../db").db().collection("follows");
 const usersCollection = require("../db").db().collection("users");
@@ -26,7 +23,6 @@ const { ObjectId } = require("mongodb");
 const Billing = require("../models/Billing");
 const ObjectID = require("mongodb").ObjectID;
 
-//usersCollection.updateMany({}, {$set: {registeredDate: new Date()}})
 
 exports.getSubscritionDetails = async function (req, res) {
   try {

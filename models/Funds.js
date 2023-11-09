@@ -8,12 +8,12 @@ let Funds = function (
   amount,
   status,
   createdAt,
-  plateformFeePercent
+  platformFeePercent
 ) {
   this.customerExpId = customerExpId;
   this.stripeAccountId = stripeAccountId;
   this.amount = amount;
-  this.plateformFeePercent = plateformFeePercent;
+  this.platformFeePercent = platformFeePercent;
   this.status = status;
   this.createdAt = createdAt;
   this.errors = [];
@@ -28,7 +28,7 @@ Funds.create = async (data, expId) => {
       customerExpId: ObjectId(expId),
       amount: parseFloat(amount / 100),
       status,
-      plateformFeePercent: process.env.PLATEFORM_FEE,
+      platformFeePercent: process.env.PLATFORM_FEE,
       createdAt: new Date().toISOString(),
     });
     return resp;

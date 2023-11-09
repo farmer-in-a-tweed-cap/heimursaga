@@ -66,11 +66,11 @@ export default class Notification {
                             </li>`
                 } else if (notification.type === "sponsor" && notification.action[1] === "one-time-payment" && notification.isRead === false){
                     return `<li class="list-group-item list-group-item-secondary">
-                            New sponsorship! <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a single payment of $${notification.action[0]}. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
+                            <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a single payment of $${notification.action[0]}. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
                             </li>`
                 } else if (notification.type === "sponsor" && notification.action[1] === "subscription" && notification.isRead === false){
                     return `<li class="list-group-item list-group-item-secondary">
-                            New sponsorship! <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a ${notification.action[0]} subscription. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
+                            <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a ${notification.action[0]} subscription. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
                             </li>`
                 }  else if (notification.type === "follow"){
                     return `<li class="list-group-item">
@@ -82,11 +82,11 @@ export default class Notification {
                             </li>`
                 } else if (notification.type === "sponsor" && notification.action[1] === "one-time-payment"){
                     return `<li class="list-group-item">
-                            New sponsorship! <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a single payment of $${notification.action[0]}. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
+                            <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a single payment of $${notification.action[0]}. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
                             </li>`
                 } else if (notification.type === "sponsor" && notification.action[1] === "subscription"){
                     return `<li class="list-group-item">
-                            New sponsorship! <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a ${notification.action[0]} subscription. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
+                            <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a ${notification.action[0]} subscription. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
                             </li>`
                 }
 
@@ -115,7 +115,7 @@ export default class Notification {
                             </li>`
                 } else if (notification.type === "sponsor" && notification.action[1] === "one-time-payment" && notification.isRead === false){
                     return `<li class="list-group-item list-group-item-secondary">
-                            New sponsorship! <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a single payment of $${notification.action[0]}. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
+                            <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a single payment of $${notification.action[0]}. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
                             </li>`
                 } else if (notification.type === "sponsor" && notification.action[1] === "subscription" && notification.isRead === false){
                     return `<li class="list-group-item list-group-item-secondary">
@@ -131,11 +131,11 @@ export default class Notification {
                             </li>`
                 } else if (notification.type === "sponsor" && notification.action[1] === "one-time-payment"){
                     return `<li class="list-group-item">
-                            New sponsorship! <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a single payment of $${notification.action[0]}. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
+                            <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a single payment of $${notification.action[0]}. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
                             </li>`
                 } else if (notification.type === "sponsor" && notification.action[1] === "subscription"){
                     return `<li class="list-group-item">
-                            New sponsorship! <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a ${notification.action[0]} subscription. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
+                            <a href="/journal/${notification.actor}"style="text-decoration: none;"><strong>${notification.actor}</strong></a> has sponsored you with a ${notification.action[0]} subscription. </br><small>${relativeTime.from(new Date(notification.createdDate))}</small><br/>
                             </li>`
                 }
 

@@ -35,7 +35,7 @@ exports.sharedProfileData = async function(req, res, next) {
     isFollowing = await Follow.isVisitorFollowing(req.profileUser._id, req.visitorId)
   }
   let billing = await billingCollection.findOne({
-    explorerId:  new ObjectId(req.session.user._id),
+    explorerId:  new ObjectId(req.profileUser._id),
   })
 
   //console.log("usertype")
