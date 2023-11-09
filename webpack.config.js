@@ -15,13 +15,15 @@ const opts = {
 module.exports = {
   entry: {
     app: "./src/js/app.js",
+    style: "./src/scss/light.scss"
   },
   mode: process.env.NODE_ENV === "production" ? "production" : "development",
   devtool: process.env.NODE_ENV === "production" ? false : "inline-source-map",
   output: {
     filename: "js/[name].js",
     path: Path.join(opts.rootDir, "dist"),
-    pathinfo: opts.devBuild
+    pathinfo: opts.devBuild,
+    publicPath: "",
   },
   performance: { hints: false },
   optimization: {
