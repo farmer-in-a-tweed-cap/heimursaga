@@ -91,7 +91,7 @@
 
           <% if (hasVisitorHighlighted) { %>
 
-          <button id="highlight-button" style="border: none; background: transparent;" class="text-primary">
+          <button id="highlight-button" style="border: none; background: transparent;" class="text-primary" data-toggle="tooltip" data-placement="bottom" title="highlight">
             <i id="icon-heimursaga-highlight" style="font-size: x-large; color: #AC6D46;" class="icon-heimursaga-highlight"></i>
             <div class="w-100"></div>
             <i id="highlight-check" class="highlight-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
@@ -99,7 +99,7 @@
 
           <% } else { %>
 
-          <button id="highlight-button" style="border: none; background: transparent;" class="text-blue">
+          <button id="highlight-button" style="border: none; background: transparent;" class="text-blue" data-toggle="tooltip" data-placement="bottom" title="highlight">
             <i id="icon-heimursaga-highlight" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-highlight"></i>
             <div class="w-100"></div>
             <i id="highlight-check" class="highlight-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check" hidden></i>
@@ -116,7 +116,7 @@
 
           <% if (hasVisitorBookmarked) { %>
 
-          <button id="bookmark-button" style="border: none; background: transparent;" class="text-primary">
+          <button id="bookmark-button" style="border: none; background: transparent;" class="text-primary" data-toggle="tooltip" data-placement="bottom" title="bookmark">
             <i id="icon-heimursaga-bookmark" style="font-size: x-large; color: #AC6D46;" class="icon-heimursaga-bookmark"></i>
             <div class="w-100"></div>
             <i id="bookmark-check" class="bookmark-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
@@ -124,7 +124,7 @@
   
           <% } else { %>
   
-          <button id="bookmark-button" style="border: none; background: transparent;" class="text-blue">
+          <button id="bookmark-button" style="border: none; background: transparent;" class="text-blue" data-toggle="tooltip" data-placement="bottom" title="bookmark">
             <i id="icon-heimursaga-bookmark" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-bookmark"></i>
             <div class="w-100"></div>
             <i id="bookmark-check" class="bookmark-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check" hidden></i>
@@ -144,7 +144,7 @@
   
           <% if (isVisitorFollowing) { %>
 
-          <button id="follow-button" style="border: none; background: transparent;" class="text-primary">
+          <button id="follow-button" style="border: none; background: transparent;" class="text-primary" data-toggle="tooltip" data-placement="bottom" title="follow">
             <i id="icon-heimursaga-follow-alt-2" style="font-size: x-large; color: #AC6D46;" class="icon-heimursaga-follow-alt-2"></i>
             <div class="w-100"></div>
             <i id="follow-check" class="follow-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
@@ -152,7 +152,7 @@
   
           <% } else { %>
   
-          <button id="follow-button" style="border: none; background: transparent;" class="text-blue">
+          <button id="follow-button" style="border: none; background: transparent;" class="text-blue" data-toggle="tooltip" data-placement="bottom" title="follow">
             <i id="icon-heimursaga-follow-alt-2" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-follow-alt-2"></i>
             <div class="w-100"></div>
             <i id="follow-check" class="follow-check" style="color: white; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
@@ -174,7 +174,7 @@
             <i id="fund-check" class="fund-check" style="color: white; width: 12; height: 12; margin-top: -12px;" data-feather="check"></i>
           </button>-->
 
-          <button id="share-button" style="border: none; background: transparent;" class="text-blue" value="https://heimursaga.com/entry/<%= entry._id %>">
+          <button id="share-button" style="border: none; background: transparent;" class="text-blue" value="https://heimursaga.com/entry/<%= entry._id %>" data-toggle="tooltip" data-placement="bottom" title="share">
             <i id="icon-heimursaga-share" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-share"></i>
             <div class="w-100"></div>
             <i id="share-check" class="share-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check" hidden></i>
@@ -186,7 +186,7 @@
 
           <div class="col">
   
-            <button id="share-button" style="border: none; background: transparent;" class="text-blue" value="https://heimursaga.com/entry/<%= entry._id %>">
+            <button id="share-button" style="border: none; background: transparent;" class="text-blue" value="https://heimursaga.com/entry/<%= entry._id %>" data-toggle="tooltip" data-placement="bottom" title="share">
               <i id="icon-heimursaga-share" style="font-size: x-large; color: #3C73AA;" class="icon-heimursaga-share"></i>
               <div class="w-100"></div>
               <i id="share-check" class="share-check" style="color: #AC6D46; width: 12; height: 12; margin-top: -12px;" data-feather="check" hidden></i>

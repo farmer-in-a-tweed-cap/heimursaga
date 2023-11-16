@@ -47,6 +47,9 @@ if (document.querySelector("#modal-button")) {new Sponsor()};
 import Flag from './modules/flag'
 if (document.querySelector("#flag-button")) {new Flag()};
 
+import Messaging from './modules/messaging'
+if (document.querySelector("#message-button")) {new Messaging()}
+
 
 
 
