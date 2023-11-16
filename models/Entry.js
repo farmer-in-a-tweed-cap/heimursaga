@@ -40,8 +40,10 @@ Entry.prototype.cleanUp = function() {
   var bodyExcerpt = sanitizeHTML((this.data.body.trim()).substr(0,maxLength), {allowedTags: [], allowedAttributes: {}})
   bodyExcerpt = bodyExcerpt.substr(0, Math.min(bodyExcerpt.length, bodyExcerpt.lastIndexOf(" ")))
   bodyExcerpt = bodyExcerpt.replace(/(\r\n|\n|\r)/gm," ")
+  var date = sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})
+  var dateString = new Date(date).toLocaleString('default',{month: 'short'})+" "+new Date(date).getDate()+", "+new Date(date).getFullYear()
 
-  popup = `<strong>${sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}})}</br><i class='align-middle me-0 fas fa-fw fa-map-marker-alt text-primary'></i></strong>${sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}})}</br><p>on ${sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})} by ${this.authorUsername}</p><p>${bodyExcerpt}...</p>`
+  popup = `<strong>${sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}})}</br><i class='align-middle me-0 fas fa-fw fa-map-marker-alt text-primary'></i></strong>${sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}})}</br><p>on ${dateString} by ${this.authorUsername}</p><p>${bodyExcerpt}...</p>`
   //popup = JSON.stringify(popup)
   popup = popup.replace (/(^")|("$)/g, '')
 
@@ -52,7 +54,7 @@ Entry.prototype.cleanUp = function() {
       _id: ObjectId(this.id),
       title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
       place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
-      date: new Date(sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})),
+      date: (sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})),
       body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
       GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
       popup: popup,

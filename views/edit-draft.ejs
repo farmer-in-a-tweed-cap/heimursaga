@@ -496,7 +496,9 @@
 			});
 			$("input[name=\"datesingle\"]").daterangepicker({
 				singleDatePicker: true,
-				showDropdowns: true
+				timePicker: true,
+				locale: {
+				format: 'M/DD/YYYY hh:mm A'}
 			});
 			var start = moment().subtract(29, "days");
 			var end = moment();

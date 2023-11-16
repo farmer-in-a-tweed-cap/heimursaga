@@ -579,17 +579,7 @@
 																								<small
 																									class="align-middle">
 																									<%= entry.place %> |
-																										<%= new
-																											Date(entry.date).toLocaleString('default',
-																											{
-																											month: 'short'
-																											}) %>
-																											<%= new
-																												Date(entry.date).getDate()
-																												%>, <%=
-																													new
-																													Date(entry.date).getFullYear()
-																													%>
+																										<%= new Date(entry.date).toLocaleString('default', {month: 'short'}) %> <%= new Date(entry.date).getDate()%>, <%= new Date(entry.date).getFullYear() %>
 																								</small><br />
 																								<small>by <strong>
 																										<%= entry.author.username
@@ -605,17 +595,8 @@
 																									<small
 																										class="align-middle">
 																										<%= entry.place
-																											%> | <%= new
-																												Date(entry.date).toLocaleString('default',
-																												{
-																												month: 'short'
-																												}) %>
-																												<%= new
-																													Date(entry.date).getDate()
-																													%>,
-																													<%= new
-																														Date(entry.date).getFullYear()
-																														%>
+																											%> | <%= new Date(entry.date).toLocaleString('default', {month: 'short'}) %> <%= new Date(entry.date).getDate()%>, <%= new Date(entry.date).getFullYear() %>
+
 																									</small><br />
 																									<small>by <strong>
 																											<%= entry.author.username
@@ -690,21 +671,8 @@
 																													<h5
 																														class="text-center text-muted">
 																														on
-																														<%= new
-																															Date(entry.date).toLocaleString('default',
-																															{
-																															month: 'long'
-																															})
-																															%>
-																															<%= new
-																																Date(entry.date).getDate()
-																																%>
-																																,
-																																<%= new
-																																	Date(entry.date).getFullYear()
-																																	%>
-																																	|
-																																	by
+																														<%= new Date(entry.date).toLocaleString('default',{month: 'long'})%> <%= new Date(entry.date).getDate()%>, <%= new Date(entry.date).getFullYear()%> |
+																														 by
 																																	<a
 																																		href="/journal/<%= entry.author.username %>">
 																																		<%= entry.author.username

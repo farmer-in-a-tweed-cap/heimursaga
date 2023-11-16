@@ -123,9 +123,9 @@
 								  <div class="mb-3">
 									<label class="form-label">When</label>
 									<label class="form-text text-muted">
-									  - date of occurence - may be different from the date you post</label
+									  - date of occurence - may be different from the date you post (<%= new Date(entry.date) %>)</label
 									>
-									<input required name="datesingle" class="form-control" type="text" value="<%= new Date(entry.date) %>"/>
+									<input required name="datesingle" class="form-control" type="text" value="<%= (entry.date) %>"/>
 								  </div>
 								  <div class="mb-3">
 									<label class="form-label">Tell Your Story</label>
