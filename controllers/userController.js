@@ -376,8 +376,8 @@ exports.selectType = function(req, res) {
       if (status == "success") {
           // user was updated in db
           req.session.save(function() {
-              req.flash("success", `Welcome to Heimursaga, ${user.username}!`)
               res.redirect(`/user-guide`)
+              req.flash("success", `Welcome to Heimursaga, ${req.params.username}!`)
           })
       } else {
           user.errors.forEach(function(error) {

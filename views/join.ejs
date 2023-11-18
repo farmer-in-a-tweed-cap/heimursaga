@@ -158,7 +158,6 @@
 			grecaptcha.ready(function() {
 			grecaptcha.execute('6LfYYBMpAAAAAPW1d-_ufKsir8h5db1FQ1itIH92', {action: 'submit'}).then(function(token) {
 				document.getElementById('button-spinner').removeAttribute("hidden", true)
-				console.log("submit clicked");
 				document.getElementById('g-recaptcha-response').value = token;
 				document.getElementById('registration-form').submit();		
 			});

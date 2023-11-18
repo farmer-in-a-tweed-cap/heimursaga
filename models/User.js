@@ -22,7 +22,7 @@ const fundsCollection = require("../db").db().collection("funds");
 
 let bulkOps = function(req, res) {
     try {
-        billingCollection.deleteMany({}).then((res) => {
+        /*billingCollection.deleteMany({}).then((res) => {
             console.log(res)
         })
         SponserCollection.deleteMany({}).then((res) => {
@@ -33,10 +33,10 @@ let bulkOps = function(req, res) {
         })
         connectAccCustomersCollection.deleteMany({}).then((res) => {
             console.log(res)
+        })*/
+        usersCollection.deleteMany({registeredDate:{$gt: new Date(2023, 5, 5)}}).then((res) => {
+            console.log(res)
         })
-        //usersCollection.deleteMany({registeredDate:{$gt: new Date(2023, 5, 5)}}).then((res) => {
-        //    console.log(res)
-        //})
         //usersCollection.updateMany({}, {$set: {settings: {emailNotifications: {followers: "true", likes: "true"}, pushNotifications: {followers: "true", likes: "true"}}}}).then((res) => {
         //    console.log(res)
         //})
