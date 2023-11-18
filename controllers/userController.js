@@ -25,6 +25,7 @@ const Sponsor = require('../models/Sponsors')
 const billingCollection = require('../db').db().collection("billing")
 const Notification = require('../models/Notification')
 const { ObjectId } = require('mongodb')
+const axios = require('axios');
 
 
 exports.sharedProfileData = async function(req, res, next) {
@@ -148,38 +149,61 @@ exports.accounttype = async function(req, res) {
 }}
 
 exports.register = function(req, res) {
-  let user = new User(req.body)
-  user.register().then(() => {
-    sendgrid.send({
-      to: "admin@heimursaga.com",
-      from: "admin@heimursaga.com",
-      subject: `New Explorer Account: ${user.data.username}`,
-      text: `An explorer has signed up for a new account. Username: ${user.data.username}, Email: ${user.data.email}, Journal link: https://heimursaga.com/journal/${user.data.username}.`,
-      html: `An explorer has signed up for a new account. </p>Username: ${user.data.username} </br>Email: ${user.data.email} </br>Journal Link: <a href="https://heimursaga.com/journal/${user.data.username}">https://heimursaga.com/journal/${user.data.username}</a>`,
-    });
-    sendgrid.send({
-      to: `${user.data.email}`,
-      from: "explorer1@heimursaga.com",
-      subject: `Welcome to Heimursaga, ${user.data.username}!`,
-      text: `Greetings ${user.data.username}, I wanted to personally welcome you to Heimursaga. We're so excited you've decided to join this community. Please read The Explorer Code (https://heimursaga.com/explorer-code) before posting any entries, and don't forget to follow and support your favorite explorers! Regards, explorer1`,
-      html: `<p>Greetings ${user.data.username},</p><p>I want to personally welcome you to Heimursaga! We're so excited you've decided to join this community.</p><p>Please read <a href="https://heimursaga.com/explorer-code">The Explorer Code</a> before posting any entries, and don't forget to follow and support your favorite explorers!</p><br><p>Regards, <br>explorer1</p>`,
+  axios.post('https://www.google.com/recaptcha/api/siteverify', null, {
+    params: {
+      secret: '6LfYYBMpAAAAADXANrVNGn0kwoepOaYcxbApyI7j',
+      response: req.body['g-recaptcha-response']
+    }
+    })
+    .then((response) => {
+      if(response.data.success) {
+        // The reCAPTCHA check was successful
+        let user = new User(req.body)
+        user.register().then(() => {
+          sendgrid.send({
+            to: "admin@heimursaga.com",
+            from: "admin@heimursaga.com",
+            subject: `New Explorer Account: ${user.data.username}`,
+            text: `An explorer has signed up for a new account. Username: ${user.data.username}, Email: ${user.data.email}, Journal link: https://heimursaga.com/journal/${user.data.username}.`,
+            html: `An explorer has signed up for a new account. </p>Username: ${user.data.username} </br>Email: ${user.data.email} </br>Journal Link: <a href="https://heimursaga.com/journal/${user.data.username}">https://heimursaga.com/journal/${user.data.username}</a>`,
+          });
+          sendgrid.send({
+            to: `${user.data.email}`,
+            from: "explorer1@heimursaga.com",
+            subject: `Welcome to Heimursaga, ${user.data.username}!`,
+            text: `Greetings ${user.data.username}, I wanted to personally welcome you to Heimursaga. We're so excited you've decided to join this community. Please read The Explorer Code (https://heimursaga.com/explorer-code) before posting any entries, and don't forget to follow and support your favorite explorers! Regards, explorer1`,
+            html: `<p>Greetings ${user.data.username},</p><p>I want to personally welcome you to Heimursaga! We're so excited you've decided to join this community.</p><p>Please read <a href="https://heimursaga.com/explorer-code">The Explorer Code</a> before posting any entries, and don't forget to follow and support your favorite explorers!</p><br><p>Regards, <br>explorer1</p>`,
+          });
+      
+            req.session.user = {
+              username: user.data.username,
+              avatar: user.avatar,
+              _id: user.data._id,
+            };
+            req.session.save(function () {
+              //req.flash("success", `Welcome to Heimursaga, ${user.data.username}!`);
+              res.redirect(`account-type/${user.data.username}`);
+            });
+        }).catch(function(e) {
+          req.flash('errors', e)
+          req.session.save(function() {
+            res.redirect('/join')
+          })
+        })
+      } else {
+        // The reCAPTCHA check failed
+        res.render("404")
+      }
+    })
+    .catch((error) => {
+      // Handle error
+      req.flash('errors', e)
+      req.session.save(function() {
+        res.redirect('/join')
+      })
+
     });
 
-      req.session.user = {
-        username: user.data.username,
-        avatar: user.avatar,
-        _id: user.data._id,
-      };
-      req.session.save(function () {
-        //req.flash("success", `Welcome to Heimursaga, ${user.data.username}!`);
-        res.redirect(`account-type/${user.data.username}`);
-      });
-  }).catch(function(e) {
-    req.flash('errors', e)
-    req.session.save(function() {
-      res.redirect('/join')
-    })
-  })
 }
 
 exports.home = async function(req, res) {

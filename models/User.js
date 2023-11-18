@@ -12,20 +12,34 @@ const followsCollection = require('../db').db().collection("follows")
 const draftsCollection = require('../db').db().collection("drafts")
 const likesCollection = require('../db').db().collection("likes")
 const highlightsCollection = require('../db').db().collection("highlights")
+const SponserCollection = require("../db").db().collection("sponsors");
+const connectAccCustomersCollection = require("../db").db().collection("connectAccountCustomers");
+const fundsCollection = require("../db").db().collection("funds");
+
+
 
 
 
 let bulkOps = function(req, res) {
     try {
-        //billingCollection.deleteMany({}).then((res) => {
-        //    console.log(res)
-        //})
+        billingCollection.deleteMany({}).then((res) => {
+            console.log(res)
+        })
+        SponserCollection.deleteMany({}).then((res) => {
+            console.log(res)
+        })
+        fundsCollection.deleteMany({}).then((res) => {
+            console.log(res)
+        })
+        connectAccCustomersCollection.deleteMany({}).then((res) => {
+            console.log(res)
+        })
         //usersCollection.deleteMany({registeredDate:{$gt: new Date(2023, 5, 5)}}).then((res) => {
         //    console.log(res)
         //})
-        usersCollection.updateMany({}, {$set: {settings: {emailNotifications: {followers: "true", likes: "true"}, pushNotifications: {followers: "true", likes: "true"}}}}).then((res) => {
-            console.log(res)
-        })
+        //usersCollection.updateMany({}, {$set: {settings: {emailNotifications: {followers: "true", likes: "true"}, pushNotifications: {followers: "true", likes: "true"}}}}).then((res) => {
+        //    console.log(res)
+        //})
         //followsCollection.deleteMany({createdDate:{$gt: new Date(2023, 5, 5)}}).then((res) => {
         //    console.log(res)
         //})

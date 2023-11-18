@@ -81,7 +81,7 @@ const connectBank = async (user) => {
     },
     business_profile: {
       mcc: 5962,
-      name: user.username || "travelling",
+      name: user.username || "traveling",
       product_description: "N/A",
       url: user.url,
     },
