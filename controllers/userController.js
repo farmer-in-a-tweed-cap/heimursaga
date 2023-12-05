@@ -151,13 +151,12 @@ exports.accounttype = async function(req, res) {
 exports.register = function(req, res) {
   axios.post('https://www.google.com/recaptcha/api/siteverify', null, {
     params: {
-      secret: '6LfYYBMpAAAAADXANrVNGn0kwoepOaYcxbApyI7j',
+      secret: process.env.RECAPTCHA_SECRET,
       response: req.body['g-recaptcha-response']
     }
     })
     .then((response) => {
-      if(response.data.success) {
-        // The reCAPTCHA check was successful
+      if(response.data.success && response.data.score > 0.5) {
         let user = new User(req.body)
         user.register().then(() => {
           sendgrid.send({
