@@ -303,6 +303,10 @@ export default class Sponsor {
             this.createNotification(this.username, 'subscription', "monthly")
             this.sponsorModal.hide()
             parent.window.notyf.success(`Sponsor subscription to ${this.username} successful!`);
+          } else {
+            parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful: ${response.error.raw.message}`});
+            const error = document.getElementById("error");
+            error.innerHTML = response.error.raw.message;
           }
           return response;
         })
@@ -332,6 +336,10 @@ export default class Sponsor {
             this.createNotification(this.username, 'subscription', "yearly")
             this.sponsorModal.hide()
             parent.window.notyf.success(`Sponsor subscription to ${this.username} successful!`);
+          } else {
+            parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful: ${response.error.raw.message}`});
+            const error = document.getElementById("error");
+            error.innerHTML = response.error.raw.message;
           }
 
           return response;
@@ -399,13 +407,13 @@ export default class Sponsor {
                 parent.window.notyf.success(`Sponsor payment to ${this.username} successful!`);
               } else {
                 parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful: ${response.error.raw.message}`});
+                const error = document.getElementById("error");
+                error.innerHTML = err.error.raw.message;
               }
               return response;
             })
             .catch((err) => {
-              parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful: ${err.error.raw.message}}`});
-              const error = document.getElementById("error");
-              error.innerHTML = err.error.raw.message;
+              parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful`});
               fundSubmitBtn.classList.remove("disabled");
               fundSubmitBtn.innerHTML = "Submit";
             });
