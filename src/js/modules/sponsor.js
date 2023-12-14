@@ -390,7 +390,7 @@ export default class Sponsor {
             }
           )
             .then(async (result) => {
-              console.log(result)
+              console.log(result.json())
               const response = await result.json();
               fundSubmitBtn.classList.remove("disabled");
               fundSubmitBtn.innerHTML = "Submit";
@@ -401,11 +401,15 @@ export default class Sponsor {
                 parent.window.notyf.success(`Sponsor payment to ${this.username} successful!`);
               } else {
                 parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful`});
+                const error = document.getElementById("error");
+                error.innerHTML = "Payment unsuccessful";
               }
               return response;
             })
             .catch((err) => {
               parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful`});
+              const error = document.getElementById("error");
+              error.innerHTML = "Payment unsuccessful";
               fundSubmitBtn.classList.remove("disabled");
               fundSubmitBtn.innerHTML = "Submit";
             });
