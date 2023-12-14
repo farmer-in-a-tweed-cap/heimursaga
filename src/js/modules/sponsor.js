@@ -398,6 +398,10 @@ export default class Sponsor {
                 this.createNotification(this.username, 'one-time-payment', amount)
                 this.sponsorModal.hide()
                 parent.window.notyf.success(`Sponsor payment to ${this.username} successful!`);
+              } else {
+                parent.window.notyf.error({background: '#3C73AA', message: `Payment unsuccessful: ${response.StripeCardError}`});
+                const error = document.getElementById("error");
+                error.innerHTML = response.StripeCardError;
               }
               return response;
             })
