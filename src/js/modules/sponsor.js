@@ -390,7 +390,7 @@ export default class Sponsor {
             }
           )
             .then(async (result) => {
-              console.log(result)
+              console.log(result.json())
               const response = await result.json();
               fundSubmitBtn.classList.remove("disabled");
               fundSubmitBtn.innerHTML = "Submit";
