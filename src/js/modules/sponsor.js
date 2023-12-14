@@ -306,9 +306,9 @@ export default class Sponsor {
           } else {
             parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful: ${response.error.raw.message}`});
             const error = document.querySelector(".error");
-            error.innerHTML = response.error.raw.message;
+            error.innerHTML = `Subscription payment unsuccessful: ${response.error.raw.message}`;
           }
-          return response;
+          return console.log(response);
         })
         .catch((err) => {
           //parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful.`});
@@ -339,7 +339,7 @@ export default class Sponsor {
           } else {
             parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful: ${response.error.raw.message}`});
             const error = document.querySelector(".error");
-            error.innerHTML = response.error.raw.message;
+            error.innerHTML = `Subscription payment unsuccessful: ${response.error.raw.message}`;
           }
 
           return response;
