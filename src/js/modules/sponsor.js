@@ -413,7 +413,7 @@ export default class Sponsor {
               return response;
             })
             .catch((err) => {
-              parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful: ${err.error.raw.message}`});
+              parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful: ${err}`});
               fundSubmitBtn.classList.remove("disabled");
               fundSubmitBtn.innerHTML = "Submit";
             });
