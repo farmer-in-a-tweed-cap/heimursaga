@@ -305,13 +305,13 @@ export default class Sponsor {
             parent.window.notyf.success(`Sponsor subscription to ${this.username} successful!`);
           } else {
             parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful: ${response.error.raw.message}`});
-            const error = document.getElementById("error");
+            const error = document.querySelector(".error");
             error.innerHTML = response.error.raw.message;
           }
           return response;
         })
         .catch((err) => {
-          parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful.`});
+          //parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful.`});
           button.disabled = false;
           spinner.style.display = "none";
           button.textContent = "Submit";
@@ -338,14 +338,14 @@ export default class Sponsor {
             parent.window.notyf.success(`Sponsor subscription to ${this.username} successful!`);
           } else {
             parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful: ${response.error.raw.message}`});
-            const error = document.getElementById("error");
+            const error = document.querySelector(".error");
             error.innerHTML = response.error.raw.message;
           }
 
           return response;
         })
         .catch((err) => {
-          parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful.`});
+         // parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful.`});
           button.disabled = false;
           spinner.style.display = "none";
           button.textContent = "Submit";
@@ -407,7 +407,7 @@ export default class Sponsor {
                 parent.window.notyf.success(`Sponsor payment to ${this.username} successful!`);
               } else {
                 parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful: ${response.error.raw.message}`});
-                const error = document.getElementById("error");
+                const error = document.querySelector(".error");
                 error.innerHTML = `Payment unsuccessful: ${response.error.raw.message}`;
               }
               return response;
