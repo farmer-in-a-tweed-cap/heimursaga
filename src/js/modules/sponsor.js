@@ -402,12 +402,13 @@ export default class Sponsor {
                 parent.window.notyf.error({background: '#3C73AA', message: `Payment unsuccessful: ${response.StripeCardError}`});
                 const error = document.getElementById("error");
                 error.innerHTML = response.StripeCardError;
+                console.log(response);
               }
               return response;
             })
             .catch((err) => {
               parent.window.notyf.error({background: '#3C73AA', message: `Payment unsuccessful: ${err.message}`});
-              console.log(err.message);
+              console.log(err);
               fundSubmitBtn.classList.remove("disabled");
               fundSubmitBtn.innerHTML = "Submit";
             });
