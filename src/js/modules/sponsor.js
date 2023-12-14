@@ -356,7 +356,6 @@ export default class Sponsor {
       cardField.style.border = "1px solid red";
       return;
     }
-    console.log(error);
     this.cardToken = token.id;
 
     if (fundSubmitBtn && amountField) {
@@ -390,7 +389,6 @@ export default class Sponsor {
             }
           )
             .then(async (result) => {
-              console.log(result.body)
               const response = await result.json();
               fundSubmitBtn.classList.remove("disabled");
               fundSubmitBtn.innerHTML = "Submit";
@@ -402,7 +400,7 @@ export default class Sponsor {
               } else {
                 parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful`});
               }
-              return console.log(response);
+              return console.log(response.error.raw.message);
             })
             .catch((err) => {
               parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful`});
