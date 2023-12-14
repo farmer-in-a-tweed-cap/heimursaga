@@ -398,7 +398,7 @@ export default class Sponsor {
                 this.sponsorModal.hide()
                 parent.window.notyf.success(`Sponsor payment to ${this.username} successful!`);
               } else {
-                parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful`});
+                parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful: ${response.error.raw.message}`});
               }
               return response;
             })
