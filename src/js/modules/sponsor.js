@@ -390,7 +390,7 @@ export default class Sponsor {
             }
           )
             .then(async (result) => {
-              console.log(result.json())
+              console.log(result.body)
               const response = await result.json();
               fundSubmitBtn.classList.remove("disabled");
               fundSubmitBtn.innerHTML = "Submit";
@@ -402,7 +402,7 @@ export default class Sponsor {
               } else {
                 parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful`});
               }
-              return response;
+              return console.log(response);
             })
             .catch((err) => {
               parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful`});
