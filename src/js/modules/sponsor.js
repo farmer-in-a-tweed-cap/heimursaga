@@ -406,14 +406,14 @@ export default class Sponsor {
                 this.sponsorModal.hide()
                 parent.window.notyf.success(`Sponsor payment to ${this.username} successful!`);
               } else {
-                //parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful: ${response.error.raw.message}`});
+                parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful: ${response.error.raw.message}`});
                 const error = document.getElementById("error");
-                error.innerHTML = `Payment unsuccessful: ${response.error.raw.message}`
+                error.innerHTML = `Payment unsuccessful: ${response.error.raw.message}`;
               }
               return response;
             })
             .catch((err) => {
-              parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful: ${err}`});
+              //parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful: ${err.error.raw.message}`});
               fundSubmitBtn.classList.remove("disabled");
               fundSubmitBtn.innerHTML = "Submit";
             });
