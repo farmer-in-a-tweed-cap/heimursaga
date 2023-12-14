@@ -304,9 +304,9 @@ export default class Sponsor {
             this.sponsorModal.hide()
             parent.window.notyf.success(`Sponsor subscription to ${this.username} successful!`);
           } else {
-            //parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful: ${response.error.raw.message}`});
-            //const error = document.querySelector(".error");
-            //error.innerHTML = `Subscription payment unsuccessful: ${response.error.raw.message}`;
+            parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful: ${response.raw.message}`});
+            const error = document.querySelector(".error");
+            error.innerHTML = `Subscription payment unsuccessful: ${response.raw.message}`;
           }
           return console.log(response);
         })
@@ -315,7 +315,7 @@ export default class Sponsor {
           button.disabled = false;
           spinner.style.display = "none";
           button.textContent = "Submit";
-          //console.log("error:", err);
+          console.log("error:", err);
         });
     } else {
       fetch(
@@ -337,9 +337,9 @@ export default class Sponsor {
             this.sponsorModal.hide()
             parent.window.notyf.success(`Sponsor subscription to ${this.username} successful!`);
           } else {
-            parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful: ${response.error.raw.message}`});
+            parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful: ${response.raw.message}`});
             const error = document.querySelector(".error");
-            error.innerHTML = `Subscription payment unsuccessful: ${response.error.raw.message}`;
+            error.innerHTML = `Subscription payment unsuccessful: ${response.raw.message}`;
           }
 
           return response;
