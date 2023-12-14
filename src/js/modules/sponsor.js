@@ -219,7 +219,7 @@ export default class Sponsor {
         <input type="radio" class="btn-check" name="options-outlined" id="yearly-outlined" autocomplete="off">
         <label class="btn btn-outline-primary" for="yearly-outlined">$60/Yearly</label>
     </div>
-
+    <div class="error text-danger"></div>
     <div class="my-3 mx-5">
       <form id="payment-form">
         <div id="card-element" class="p-2 border rounded mb-3">
@@ -304,9 +304,9 @@ export default class Sponsor {
             this.sponsorModal.hide()
             parent.window.notyf.success(`Sponsor subscription to ${this.username} successful!`);
           } else {
-            parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful: ${response.error.raw.message}`});
-            const error = document.querySelector(".error");
-            error.innerHTML = `Subscription payment unsuccessful: ${response.error.raw.message}`;
+            //parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful: ${response.error.raw.message}`});
+            //const error = document.querySelector(".error");
+            //error.innerHTML = `Subscription payment unsuccessful: ${response.error.raw.message}`;
           }
           return console.log(response);
         })
@@ -315,7 +315,7 @@ export default class Sponsor {
           button.disabled = false;
           spinner.style.display = "none";
           button.textContent = "Submit";
-          console.log("error:", err);
+          //console.log("error:", err);
         });
     } else {
       fetch(
