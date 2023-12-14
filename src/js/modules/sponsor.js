@@ -307,7 +307,7 @@ export default class Sponsor {
           return response;
         })
         .catch((err) => {
-          parent.window.notyf.error({background: '#3C73AA', message: `Subscription unsuccessful: ${err.message}`});
+          parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful.`});
           button.disabled = false;
           spinner.style.display = "none";
           button.textContent = "Submit";
@@ -337,7 +337,7 @@ export default class Sponsor {
           return response;
         })
         .catch((err) => {
-          parent.window.notyf.error({background: '#3C73AA', message: `Subscription unsuccessful: ${err.message}`});
+          parent.window.notyf.error({background: '#ac4946', message: `Subscription payment unsuccessful.`});
           button.disabled = false;
           spinner.style.display = "none";
           button.textContent = "Submit";
@@ -390,6 +390,7 @@ export default class Sponsor {
             }
           )
             .then(async (result) => {
+              console.log(result)
               const response = await result.json();
               fundSubmitBtn.classList.remove("disabled");
               fundSubmitBtn.innerHTML = "Submit";
@@ -399,16 +400,12 @@ export default class Sponsor {
                 this.sponsorModal.hide()
                 parent.window.notyf.success(`Sponsor payment to ${this.username} successful!`);
               } else {
-                parent.window.notyf.error({background: '#3C73AA', message: `Payment unsuccessful: ${response.StripeCardError}`});
-                const error = document.getElementById("error");
-                error.innerHTML = response.StripeCardError;
-                console.log(response);
+                parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful`});
               }
               return response;
             })
             .catch((err) => {
-              parent.window.notyf.error({background: '#3C73AA', message: `Payment unsuccessful: ${err.message}`});
-              console.log(err);
+              parent.window.notyf.error({background: '#ac4946', message: `Payment unsuccessful`});
               fundSubmitBtn.classList.remove("disabled");
               fundSubmitBtn.innerHTML = "Submit";
             });
