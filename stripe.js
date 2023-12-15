@@ -66,6 +66,15 @@ const createWebhook = (rawBody, sig) => {
   return event;
 };
 
+const createConnectWebhook = (rawBody, sig) => {
+  const event = Stripe.webhooks.constructEvent(
+    rawBody,
+    sig,
+    process.env.STRIPE_CONNECT_WEBHOOK_SECRET
+  );
+  return event;
+};
+
 const connectBank = async (user) => {
   const createdAccount = await Stripe.accounts.create({
     type: "custom",
@@ -249,5 +258,6 @@ module.exports = {
   createSponserSubscription,
   stripeAccountProductCreate,
   connectAccDel,
-  createConnectAccountLink
+  createConnectAccountLink,
+  createConnectWebhook
 };

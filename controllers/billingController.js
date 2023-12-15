@@ -343,6 +343,186 @@ exports.webhook = async (req, res) => {
   res.sendStatus(200);
 };
 
+exports.connectWebhook = async (req, res) => {
+  let event;
+
+  try {
+    event = Stripe.createConnectWebhook(req.body, req.header("Stripe-Signature"));
+  } catch (err) {
+    console.log(err);
+    return res.sendStatus(400);
+  }
+
+  const data = event.data.object;
+
+  console.log(event.type, " = stripe event");
+  switch (event.type) {
+    case "customer.subscription.created": {
+      const response = await ConnectAccountCustomer.find({
+        customerId: data.customer,
+      });
+      const custExpId = response?.cusExpId || null;
+      const stripAccId = response?.stripeAccountId || null;
+      if (custExpId && stripAccId) {
+        await Sponsor.create(response._id, data.plan.id, false, null);
+      }
+
+      const billing = await billingCollection
+        .find({
+          billingId: data.customer,
+        })
+        .toArray();
+
+      //false if subs to connect account
+      if (billing.length) {
+        if (data.plan.id === productToPriceMap.monthly_exp) {
+          console.log("You are talking about monthly explorer plan ");
+          billing.plan = "monthly_exp";
+        }
+
+        if (data.plan.id === productToPriceMap.yearly_exp) {
+          console.log("You are talking about annual explorer plan");
+          billing.plan = "yearly_exp";
+        }
+
+        billing.hasTrial = true;
+        billing.endDate = new Date(data.current_period_end * 1000);
+
+
+        //update billing record
+        await billingCollection.updateOne(
+          { billingId: data.customer },
+          {
+            $set: {
+              plan: billing.plan,
+              hasTrial: billing.hasTrial,
+              endDate: billing.endDate,
+            },
+          }
+        );
+
+        //update user subscription status
+        const resp = await User.findAndUpdateByBillingID(
+          data.customer,
+          subsStatus.transfer_enabled
+        );
+        console.log(resp);
+      }
+
+      break;
+    }
+    case "customer.subscription.updated": {
+      // started trial
+
+      const billing = await billingCollection
+        .find({
+          billingId: data.customer,
+        })
+        .toArray();
+
+      const existingCustomer = await ConnectAccountCustomer.find({
+        customerId: data.customerId,
+      });
+      if (!existingCustomer) {
+        const newCustomer = new ConnectAccountCustomer({
+          customerId: data.customerId,
+          cusExpId: data.cusExpId,
+          stripeAccountId: data.stripeAccountId,
+        });
+        newCustomer.createNew();
+      }
+
+      // if (billing.length) {
+      if (data.plan.id === productToPriceMap.monthly_exp) {
+        console.log("You are talking about monthly explorer plan ");
+        billing.plan = "monthly_exp";
+      }
+
+      if (data.plan.id === productToPriceMap.yearly_exp) {
+        console.log("You are talking about annual explorer plan");
+        billing.plan = "yearly_exp";
+      }
+
+      const isOnTrial = data.status === "trialing";
+
+      if (isOnTrial) {
+        billing.hasTrial = true;
+        billing.endDate = new Date(data.current_period_end * 1000);
+      } else if (data.status === "active") {
+        billing.hasTrial = false;
+        billing.endDate = new Date(data.current_period_end * 1000);
+      }
+
+      //update billing record
+      await billingCollection.updateOne(
+        { billingId: data.customer },
+        {
+          $set: {
+            plan: billing.plan,
+            hasTrial: billing.hasTrial,
+            endDate: billing.endDate,
+          },
+        }
+      );
+      // }
+
+      break;
+    }
+    case "customer.subscription.deleted": {
+      const billing = await billingCollection.findOne({
+        billingId: data.customer,
+      });
+      // cancelled
+      if (billing) {
+        await User.findAndUpdateByBillingID(billing.billingId, null);
+
+        //console.log("You just canceled the subscription " + data.canceled_at);
+
+        billing.plan = "none";
+        billing.hasTrial = false;
+        billing.endDate = null;
+
+        // update billing record
+        await billingCollection.updateOne(
+          { billingId: data.customer },
+          {
+            $set: {
+              plan: "none",
+              hasTrial: false,
+              endDate: null,
+            },
+          }
+        );
+      }
+
+      break;
+    }
+    case "account.updated": {
+      if (
+        data.individual.verification.status === "verified" &&
+        data.tos_acceptance.date
+      ) {
+        const { monthlyProductId, yearlyProductId } =
+          await Stripe.stripeAccountProductCreate(data.individual.account);
+
+        await userCollection.updateOne(
+          { email: data.email },
+          {
+            $set: {
+              stripeAccountId: data.individual.account,
+              products: { monthlyProductId, yearlyProductId },
+            },
+          }
+        );
+      }
+
+      break;
+    }
+    default:
+  }
+  res.sendStatus(200);
+};
+
 //billingDetails
 exports.billingDetails = async (req, res) => {
   try {

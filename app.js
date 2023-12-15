@@ -28,6 +28,8 @@ let sessionOptions = session({
 app.use(sessionOptions)
 app.use('/webhook', bodyParser.raw({ type: 'application/json' }))
 app.post('/webhook', billingController.webhook)
+app.use('/connectwebhook', bodyParser.raw({ type: 'application/json' }))
+app.post('/connectwebhook', billingController.connectWebhook)
 app.use(flash())
 
 app.use(function(req, res, next) {

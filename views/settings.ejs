@@ -462,7 +462,7 @@
 													<% } else if (plan && stripeAccountId) { %>
 														<div class="manageAccount mb-2">
 															<button id="manage_account" class="btn btn-primary">
-																<span id="button-spinner1"
+																<span id="button-spinner3"
 																	class="spinner-border spinner-border-sm me-1"
 																	role="status" aria-hidden="true" hidden></span>
 																	Manage Stripe Account
@@ -685,10 +685,10 @@
 					}
 
 					if (manageAccount) {
-						let buttonSpinner1 = document.getElementById("button-spinner1")
+						let buttonSpinner3 = document.getElementById("button-spinner3")
 
 						manageAccount.addEventListener('click', function () {
-							buttonSpinner1.removeAttribute("hidden", true)
+							buttonSpinner3.removeAttribute("hidden", true)
 
 
 							const requestOptions = {
@@ -709,7 +709,6 @@
 					// connect bank
 					if (connectBank) {
 						connectBank.addEventListener('click', function () {
-							console.log('hit')
 							if (selectedCountry) {
 								buttonSpinner2.removeAttribute("hidden", true)
 								const requestOptions = {
