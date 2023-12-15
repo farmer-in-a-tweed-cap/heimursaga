@@ -98,6 +98,16 @@ const connectBank = async (user) => {
   return { url: accountLink.url, stripeAccountId };
 };
 
+const createConnectAccountLink = async (accountId, username) => {
+  const accountLink = await Stripe.accountLinks.create({
+  account: accountId,
+  refresh_url: `${process.env.DOMAIN}/connectaccount/${accountId}`,
+  return_url: `${process.env.DOMAIN}/settings/${username}`,
+  type: "account_update",
+});
+return { url: accountLink.url };
+}
+
 const createPaymentSession = async (
   unit_amount,
   token,
@@ -239,4 +249,5 @@ module.exports = {
   createSponserSubscription,
   stripeAccountProductCreate,
   connectAccDel,
+  createConnectAccountLink
 };

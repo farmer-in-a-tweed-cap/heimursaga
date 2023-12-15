@@ -70,6 +70,17 @@ exports.Billing = async (req, res) => {
   }
 };
 
+exports.connectAccountLink = async (req, res) => {
+  try {
+    const { customer } = req.params;
+    const accountLink = await Stripe.createConnectAccountLink(customer, req.session.user.username);
+    res.json({ url: accountLink.url });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({ error: e });
+  }
+};
+
 //connect bank
 exports.ConnectBank = async (req, res) => {
   try {

@@ -165,6 +165,7 @@ router.post('/select-type/:username', userController.mustBeLoggedIn, userControl
 //subscription Routes
 router.get('/subscribe/:product_type',  billingController.subscribe)
 router.get('/billing/:email/:customer',  billingController.Billing)
+router.get('/connectaccount/:customer',  billingController.connectAccountLink)
 router.get('/connect_bank',  billingController.ConnectBank)
 router.get('/funding/:stripeAccountId/:amount/:token',  billingController.funding)
 

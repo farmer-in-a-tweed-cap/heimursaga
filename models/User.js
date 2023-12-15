@@ -17,9 +17,6 @@ const connectAccCustomersCollection = require("../db").db().collection("connectA
 const fundsCollection = require("../db").db().collection("funds");
 
 
-
-
-
 let bulkOps = function(req, res) {
     try {
         /*billingCollection.deleteMany({}).then((res) => {
@@ -34,12 +31,12 @@ let bulkOps = function(req, res) {
         connectAccCustomersCollection.deleteMany({}).then((res) => {
             console.log(res)
         })*/
-        usersCollection.deleteMany({registeredDate:{$gt: new Date(2023, 5, 5)}}).then((res) => {
+        //usersCollection.deleteMany({registeredDate:{$gt: new Date(2023, 5, 5)}}).then((res) => {
+          //  console.log(res)
+        //})
+        usersCollection.updateMany({}, {$set: {settings: {emailNotifications: {followers: "true", likes: "true"}, pushNotifications: {followers: "true", likes: "true"}}}}).then((res) => {
             console.log(res)
         })
-        //usersCollection.updateMany({}, {$set: {settings: {emailNotifications: {followers: "true", likes: "true"}, pushNotifications: {followers: "true", likes: "true"}}}}).then((res) => {
-        //    console.log(res)
-        //})
         //followsCollection.deleteMany({createdDate:{$gt: new Date(2023, 5, 5)}}).then((res) => {
         //    console.log(res)
         //})
@@ -80,7 +77,7 @@ User.prototype.cleanUp = function() {
         instagram: this.data.instagram,
         website: this.data.website,
         type: this.data.type,
-        settings: sanitizeHTML({emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}, pushNotifications: {followers: this.data.followerspushnotifications, likes: this.data.likespushnotifications}}, {allowedTags: [], allowedAttributes: {}}),
+        settings: {emailNotifications: {followers: this.data.followersemailnotifications, likes: this.data.likesemailnotifications}, pushNotifications: {followers: this.data.followerspushnotifications, likes: this.data.likespushnotifications}},
         resetPasswordToken: {type: String, required: false},
         resetPasswordExpires: {type: Date, required: false},
         registeredDate: new Date(),

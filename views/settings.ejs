@@ -44,6 +44,11 @@
 											href="#connect-bank-tab" role="tab">
 											Sponsorship
 										</a>
+										<% } else if (plan && stripeAccountId) { %>
+											<a class="list-group-item list-group-item-action" data-bs-toggle="list"
+											href="#connect-bank-tab" role="tab">
+											Sponsorship
+										</a>
 										<% } %>
 
 											<% if(plan && stripeAccountId){ %>
@@ -320,9 +325,12 @@
 															<span id="button-spinner1"
 																class="spinner-border spinner-border-sm me-1"
 																role="status" aria-hidden="true" hidden></span>
-																Manage Subscription
+															Manage Subscription
 														</button>
 													</div>
+
+
+
 													<% } else if(plan==='monthly_exp' ) { %>
 														<div class="mb-3">You have subscribed to the
 															<span style="color: green; font-weight: bold;"> Monthly
@@ -334,7 +342,7 @@
 																<span id="button-spinner1"
 																	class="spinner-border spinner-border-sm me-1"
 																	role="status" aria-hidden="true" hidden></span>
-																	Manage Subscription
+																Manage Subscription
 															</button>
 														</div>
 
@@ -360,6 +368,9 @@
 
 																		<% } %>
 																</div>
+
+
+
 											</div>
 
 										</div>
@@ -448,6 +459,15 @@
 														yearly is monthly x 12 with 10% discount)
 													</div>-->
 
+													<% } else if (plan && stripeAccountId) { %>
+														<div class="manageAccount mb-2">
+															<button id="manage_account" class="btn btn-primary">
+																<span id="button-spinner1"
+																	class="spinner-border spinner-border-sm me-1"
+																	role="status" aria-hidden="true" hidden></span>
+																	Manage Stripe Account
+															</button>
+														</div>
 													<% } %>
 											</div>
 
@@ -577,6 +597,8 @@
 					let explorerSubs = document.getElementById('explorer');
 
 					let manageSubscription = document.getElementById('manage_billing');
+					let manageAccount = document.getElementById('manage_account');
+
 
 					let connectBank = document.getElementById('connect-bank')
 
@@ -592,6 +614,7 @@
 					let plan = `<%- plan %>`;
 					let email = `<%- email %>`;
 					let customer = `<%- billingId %>`;
+					let accountId = `<%- stripeAccountId %>`;
 					let username = `<%- username %>`
 					let country = selectedCountry;
 
@@ -654,6 +677,28 @@
 							}
 
 							fetch(`/billing/${email}/${customer}`, requestOptions)
+								.then(async (response) => await response.json())
+								.then((result) => window.location.replace(result.url))
+								.catch((error) => console.log('error', error))
+
+						})
+					}
+
+					if (manageAccount) {
+						let buttonSpinner1 = document.getElementById("button-spinner1")
+
+						manageAccount.addEventListener('click', function () {
+							buttonSpinner1.removeAttribute("hidden", true)
+
+
+							const requestOptions = {
+								method: 'GET',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+							}
+
+							fetch(`/connectaccount/${accountId}`, requestOptions)
 								.then(async (response) => await response.json())
 								.then((result) => window.location.replace(result.url))
 								.catch((error) => console.log('error', error))
