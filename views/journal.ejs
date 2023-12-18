@@ -274,7 +274,7 @@
 																						href="/settings/<%= profileUsername %>">Add
 																						Bio</a>
 
-																					<% } if (bio=="undefined" &&
+																					<% } if (bio=="undefined" || bio=="" &&
 																						!isVisitorsProfile) { %>
 
 																						<i>This explorer has not yet
@@ -282,7 +282,7 @@
 
 																						<% } else { %>
 
-																							<% if (bio=="undefined" ) {
+																							<% if (bio=="undefined" || bio=="") {
 																								%>
 
 
@@ -304,7 +304,7 @@
 																							class="feather-sm me-1"></span>
 																						Currently in <strong>
 																							<% if
-																								(currentlyin=="undefined"
+																								(currentlyin=="undefined" || currentlyin==""
 																								&& isVisitorsProfile) {
 																								%>
 
@@ -313,7 +313,7 @@
 																									Location</a>
 
 																								<% } if
-																									(currentlyin=="undefined"
+																									(currentlyin=="undefined" || currentlyin==""
 																									&&
 																									!isVisitorsProfile)
 																									{ %>
@@ -323,7 +323,7 @@
 																									<% } else { %>
 
 																										<% if
-																											(currentlyin=="undefined"
+																											(currentlyin=="undefined" || currentlyin==""
 																											) { %>
 
 
@@ -343,7 +343,7 @@
 																							data-feather="home"
 																							class="feather-sm me-1"></span>
 																						Lives in <strong>
-																							<% if (livesin=="undefined"
+																							<% if (livesin=="undefined" || livesin==""
 																								&& isVisitorsProfile) {
 																								%>
 
@@ -352,7 +352,7 @@
 																									Location</a>
 
 																								<% } if
-																									(livesin=="undefined"
+																									(livesin=="undefined" || livesin==""
 																									&&
 																									!isVisitorsProfile)
 																									{ %>
@@ -362,7 +362,7 @@
 																									<% } else { %>
 
 																										<% if
-																											(livesin=="undefined"
+																											(livesin=="undefined" || livesin==""
 																											) { %>
 
 
@@ -382,7 +382,7 @@
 																							data-feather="map-pin"
 																							class="feather-sm me-1"></span>
 																						From <strong>
-																							<% if (from=="undefined" &&
+																							<% if (from=="undefined" || from=="" &&
 																								isVisitorsProfile) { %>
 
 																								<a
@@ -390,7 +390,7 @@
 																									Location</a>
 
 																								<% } if
-																									(from=="undefined"
+																									(from=="undefined" || from==""
 																									&&
 																									!isVisitorsProfile)
 																									{ %>
@@ -400,7 +400,8 @@
 																									<% } else { %>
 
 																										<% if
-																											(from=="undefined"
+																											(from=="undefined" || from==""
+																											) { %>
 																											) { %>
 
 
