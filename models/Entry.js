@@ -70,7 +70,7 @@ Entry.prototype.cleanUp = function() {
       _id: ObjectId(this.id),
       title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
       place: sanitizeHTML(this.data.place.trim(), {allowedTags: [], allowedAttributes: {}}),
-      date: new Date(sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})),
+      date: (sanitizeHTML(this.data.datesingle.trim(), {allowedTags: [], allowedAttributes: {}})),
       body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
       journey: sanitizeHTML(this.data.journeyname.trim(), {allowedTags: [], allowedAttributes: {}}),
       GeoJSONcoordinates: {type: "Point", coordinates: [coordinates[0],coordinates[1]]},
